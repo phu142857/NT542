@@ -1,0 +1,14 @@
+- name: Install Lynis
+  apt:
+    name: lynis
+    state: present
+    update_cache: yes
+
+- name: Run Lynis audit
+  command: lynis audit system --quick
+  register: lynis_output
+
+- name: Save audit output
+  copy:
+    content: "{{ lynis_output.stdout }}"
+    dest: /tmp/lynis_report.txt

@@ -1,0 +1,17 @@
+- name: Set password max days
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^PASS_MAX_DAYS'
+    line: "PASS_MAX_DAYS {{ password_max_days }}"
+
+- name: Set password min days
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^PASS_MIN_DAYS'
+    line: "PASS_MIN_DAYS {{ password_min_days }}"
+
+- name: Set password warn age
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^PASS_WARN_AGE'
+    line: "PASS_WARN_AGE {{ password_warn_days }}"

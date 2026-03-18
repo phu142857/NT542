@@ -1,0 +1,17 @@
+- name: Apply CIS Ubuntu Hardening
+  hosts: ubuntu_servers
+  become: yes
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - packages
+    - filesystem
+    - services
+    - ssh
+    - firewall
+    - password_policy
+    - logging_audit
+    - system_settings
+    - compliance_scan 

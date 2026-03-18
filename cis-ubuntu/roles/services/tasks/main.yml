@@ -1,0 +1,11 @@
+- name: Check if cups service exists
+  shell: systemctl list-unit-files | grep cups
+  register: cups_check
+  ignore_errors: yes
+
+- name: Disable cups service
+  service:
+    name: cups
+    state: stopped
+    enabled: no
+  when: cups_check.rc == 0

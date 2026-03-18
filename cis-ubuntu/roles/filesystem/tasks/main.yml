@@ -1,0 +1,17 @@
+- name: Disable cramfs
+  lineinfile:
+    path: /etc/modprobe.d/cramfs.conf
+    line: "install cramfs /bin/true"
+    create: yes
+
+- name: Disable squashfs
+  lineinfile:
+    path: /etc/modprobe.d/squashfs.conf
+    line: "install squashfs /bin/true"
+    create: yes
+
+- name: Disable udf
+  lineinfile:
+    path: /etc/modprobe.d/udf.conf
+    line: "install udf /bin/true"
+    create: yes

@@ -1,0 +1,5 @@
+ssh_port: 22
+password_max_days: 90
+password_min_days: 7
+password_warn_days: 7
+password_min_length: 12
