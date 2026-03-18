@@ -80,7 +80,7 @@ SUCCESS => "pong"
 Execute the automation:
 
 ```bash
-ansible-playbook playbooks/site.yml
+ansible-playbook playbooks/site.yml --ask-become-pass
 ```
 
 ---
