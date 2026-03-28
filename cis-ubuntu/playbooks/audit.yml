@@ -1,6 +1,0 @@
-- name: CIS Compliance Scan
-  hosts: ubuntu_servers
-  become: yes
-
-  roles:
-    - compliance_scan
