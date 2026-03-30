@@ -1,5 +1,17 @@
 ssh_port: 22
+
+# Password Policy Settings
 password_max_days: 90
 password_min_days: 7
 password_warn_days: 7
-password_min_length: 12
+password_min_length: 14
+password_digit_credit: -1
+password_upper_credit: -1
+password_lower_credit: -1
+password_special_credit: -1
+password_min_classes: 3
+password_max_repeat: 3
+password_diff_chars: 5
+password_history: 5
+password_fail_deny: 3
+password_unlock_time: 900

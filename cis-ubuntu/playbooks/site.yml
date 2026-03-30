@@ -11,6 +11,7 @@
     - services
     - ssh
     - firewall
+    - network
     - password_policy
     - logging_audit
     - system_settings

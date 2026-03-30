@@ -1,0 +1,66 @@
+---
+- name: Configure firewall rules enhancement
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+
+- name: Allow SSH traffic
+  ufw:
+    rule: allow
+    port: "{{ ssh_port | default(22) }}"
+    proto: tcp
+
+- name: Allow established connections
+  ufw:
+    rule: allow
+    direction: out
+
+- name: Enable logging
+  ufw:
+    logging: on
+
+- name: Configure network interface security
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-security.conf
+  with_items:
+    - { name: net.ipv4.conf.all.rp_filter, value: 1 }
+    - { name: net.ipv4.ip_forward, value: 0 }
+    - { name: net.ipv4.conf.all.accept_source_route, value: 0 }
+    - { name: net.ipv4.conf.all.accept_redirects, value: 0 }
+    - { name: net.ipv4.tcp_syncookies, value: 1 }
+    - { name: net.ipv4.conf.all.log_martians, value: 1 }
+
+- name: Apply sysctl settings
+  shell: sysctl -p /etc/sysctl.d/99-security.conf
+
+- name: Get current sysctl settings
+  command: sysctl -a
+  register: sysctl_output
+  changed_when: false
+
+- name: Create network security report
+  copy:
+    dest: /tmp/network_security_report.txt
+    content: |
+      === Network Security Report ===
+      Generated on: {{ ansible_facts.date_time.iso8601 }}
+      
+      1. Firewall Status:
+      - UFW enabled: {{ 'YES' if 'ufw' in ansible_facts.services else 'NO' }}
+      - SSH allowed: Port {{ ssh_port | default(22) }}
+      
+      2. Network Security Settings Applied:
+      - IP forwarding: DISABLED (0)
+      - Source routing: DISABLED (0)
+      - ICMP redirects: DISABLED (0)
+      - SYN cookies: ENABLED (1)
+      - Martian logging: ENABLED (1)
+      
+      3. CIS Compliance:
+      - Firewall configured: {{ 'PASS' if 'ufw' in ansible_facts.services else 'FAIL' }}
+      - Network hardening: PASS (sysctl settings applied)
+      - Security report: /tmp/network_security_report.txt

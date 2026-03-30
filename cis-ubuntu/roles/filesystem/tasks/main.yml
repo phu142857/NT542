@@ -15,3 +15,179 @@
     path: /etc/modprobe.d/udf.conf
     line: "install udf /bin/true"
     create: yes
+
+- name: Secure /etc/passwd permissions
+  file:
+    path: /etc/passwd
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Secure /etc/shadow permissions
+  file:
+    path: /etc/shadow
+    owner: root
+    group: shadow
+    mode: '0000'
+
+- name: Secure /etc/group permissions
+  file:
+    path: /etc/group
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Secure /etc/gshadow permissions
+  file:
+    path: /etc/gshadow
+    owner: root
+    group: shadow
+    mode: '0000'
+
+- name: Secure /etc/hosts permissions
+  file:
+    path: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Find and secure cron files
+  find:
+    paths: 
+      - /etc/cron.hourly
+      - /etc/cron.daily
+      - /etc/cron.weekly
+      - /etc/cron.monthly
+      - /etc/cron.d
+    file_type: file
+  register: cron_files
+
+- name: Set secure permissions on cron files
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ cron_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Secure /etc/crontab permissions
+  file:
+    path: /etc/crontab
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Secure at jobs directory
+  file:
+    path: /var/spool/cron/atjobs
+    owner: daemon
+    group: daemon
+    mode: '0700'
+    state: directory
+
+- name: Implement sticky bit on world-writable directories
+  file:
+    path: "{{ item }}"
+    mode: '1777'
+    state: directory
+  loop:
+    - /tmp
+    - /var/tmp
+
+- name: Find world-writable directories
+  shell: find / -type d -perm -002 2>/dev/null | grep -v -E '^/proc|^/sys|^/dev' | head -20
+  register: world_writable_dirs
+  changed_when: false
+
+- name: Secure world-writable directories (excluding standard ones)
+  file:
+    path: "{{ item }}"
+    mode: '0755'
+  loop: "{{ world_writable_dirs.stdout_lines }}"
+  when: item not in ['/tmp', '/var/tmp', '/var/spool/vbox', '/var/spool/cups']
+  ignore_errors: true
+
+- name: Configure home directory permissions
+  shell: find /home -type d ! -path "/home/*" -exec chmod 0755 {} \;
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+
+- name: Configure home file permissions
+  shell: find /home -type f ! -path "/home/*" -exec chmod 0644 {} \;
+  args:
+    executable: /bin/bash
+  ignore_errors: true
+
+- name: Find SUID files
+  shell: find / -type f -perm -4000 2>/dev/null | grep -v -E '^/proc|^/sys|^/dev' | head -50
+  register: suid_files
+  changed_when: false
+
+- name: Find SGID files
+  shell: find / -type f -perm -2000 2>/dev/null | grep -v -E '^/proc|^/sys|^/dev' | head -50
+  register: sgid_files
+  changed_when: false
+
+- name: Create SUID/SGID audit report
+  copy:
+    dest: /tmp/suid_sgid_audit.txt
+    content: |
+      === SUID/SGID File Audit Report ===
+      Generated on: {{ ansible_date_time.iso8601 }}
+      
+      SUID Files (setuid):
+      {% for file in suid_files.stdout_lines %}
+      {{ file }}
+      {% endfor %}
+      
+      SGID Files (setgid):
+      {% for file in sgid_files.stdout_lines %}
+      {{ file }}
+      {% endfor %}
+      
+      Total SUID files found: {{ suid_files.stdout_lines | length }}
+      Total SGID files found: {{ sgid_files.stdout_lines | length }}
+
+- name: Find world-writable files
+  shell: find / -type f -perm -002 2>/dev/null | grep -v -E '^/proc|^/sys|^/dev' | head -20
+  register: world_writable_files
+  changed_when: false
+
+- name: Find unowned files
+  shell: find / -type f \( -nouser -o -nogroup \) 2>/dev/null | grep -v -E '^/proc|^/sys|^/dev' | head -20
+  register: unowned_files
+  changed_when: false
+
+- name: Create filesystem security report
+  copy:
+    dest: /tmp/filesystem_security_report.txt
+    content: |
+      === Filesystem Security Report ===
+      Generated on: {{ ansible_date_time.iso8601 }}
+      
+      1. SUID/SGID Files:
+      - SUID files found: {{ suid_files.stdout_lines | length }}
+      - SGID files found: {{ sgid_files.stdout_lines | length }}
+      
+      2. World-Writable Files:
+      {% if world_writable_files.stdout_lines | length > 0 %}
+      WARNING: {{ world_writable_files.stdout_lines | length }} world-writable files found
+      {% else %}
+      GOOD: No world-writable files found
+      {% endif %}
+      
+      3. Unowned Files:
+      {% if unowned_files.stdout_lines | length > 0 %}
+      WARNING: {{ unowned_files.stdout_lines | length }} unowned files found
+      {% else %}
+      GOOD: No unowned files found
+      {% endif %}
+      
+      4. Summary:
+      - SUID/SGID audit completed
+      - World-writable files audit completed  
+      - Unowned files audit completed
+      - Report saved to: /tmp/filesystem_security_report.txt
