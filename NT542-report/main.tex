@@ -1,0 +1,92 @@
+\documentclass[a4paper, oneside]{project}
+\usepackage[utf8]{vietnam}
+\usepackage{placeins}
+\usepackage{amsfonts}
+\usepackage{textcomp}
+\usepackage{dblfloatfix}
+\usepackage{subfig}
+\usepackage{lineno}
+\usepackage{amssymb}
+\usepackage{tabularx,booktabs}
+\usepackage{longtable, lipsum}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{lscape}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage[sorting=nyt]{biblatex}
+\usepackage{mathtools}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{makecell}
+\usepackage{blindtext}
+\usepackage{subfiles} % Chèn các file nhỏ, giúp chia các chapter ra nhiều file hơn
+\usepackage{float} % For better float positioning with [H] option
+
+% Config reference
+\addbibresource{ref.bib}
+
+% Setup hype link in thesis
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true} 
+\DeclarePairedDelimiter\bra{\langle}{\rvert}
+\DeclarePairedDelimiter\ket{\lvert}{\rangle}
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1 \delimsize\vert #2}
+
+
+% Config information thesis
+\upperuniname{ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH}
+\uniname{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}
+\deptname{KHOA MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG}
+\stumajor{KỸ SƯ NGÀNH AN TOÀN THÔNG TIN}
+\title{Triển khai CIS Benchmark trên hệ thống Linux}
+\titleen{Linux CIS Benchmark Implementation}
+\supervisor{GIẢNG VIÊN HƯỚNG DẪN}
+\supervisorname{Thạc sĩ Trần Thị Dung}
+\stunamewithid{Nguyễn Tài Phú - 23521185\\Trần Minh Nhật - 23521099\\Châu Hoàng Phúc - 23521191}
+\reporttime{NĂM 2026}
+
+% Begin thesis
+\begin{document}
+
+\coverpage
+
+% % Begin above main thesis
+\frontmatter
+\clearpage
+\tableofcontents
+
+% Begin main thesis, start page numbering
+\counterwithin{equation}{section}
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+\setcounter{secnumdepth}{3}
+
+% Custom numbering for phases
+\newcommand{\phaserenumber}[1]{%
+  \renewcommand{\thetable}{3.#1.\arabic{table}}%
+  \renewcommand{\thefigure}{3.#1.\arabic{figure}}%
+  \setcounter{table}{0}%
+  \setcounter{figure}{0}%
+}
+\mainmatter
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+
+% Config page header
+\if @twoside
+  \fancyhead[EL,OR]{\bfseries\nouppercase\rightmark}
+\else
+  \fancyhead[R]{\bfseries\nouppercase\rightmark}
+\fi
+
+% Main chapter in thesis
+\subfile{chapters/main/chapter-1}
+\subfile{chapters/main/chapter-2}
+\subfile{chapters/main/chapter-3}
+\subfile{chapters/main/chapter-4}
+
+% Print references
+\printbibliography[heading=bibintoc, title = {Tài liệu tham khảo}]
+\end{document}

@@ -1,0 +1,189 @@
+PLAY [Phase 4: SSH Hardening] *********************************************************************************************************************
+
+TASK [Gathering Facts] ****************************************************************************************************************************
+[WARNING]: Host '192.168.122.12' is using the discovered Python interpreter at '/usr/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [192.168.122.12]
+[WARNING]: Host '192.168.122.5' is using the discovered Python interpreter at '/usr/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.20/reference_appendices/interpreter_discovery.html for more information.
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Disable root login] ***********************************************************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Set SSH protocol] *************************************************************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Enable password authentication] ***********************************************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Configure allowed users] ******************************************************************************************************
+ok: [192.168.122.5]
+ok: [192.168.122.12]
+
+TASK [phase_4/ssh : Set MaxAuthTries] *************************************************************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Set ClientAliveInterval] ******************************************************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [phase_4/ssh : Restart SSH] ******************************************************************************************************************
+changed: [192.168.122.5]
+changed: [192.168.122.12]
+
+TASK [phase_4/ssh : Create SSH hardening report] **************************************************************************************************
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/teifu142/ATE/UIT/NT542/cis-ubuntu/roles/phase_4/ssh/tasks/main.yml:45:14
+
+43   copy:
+44     dest: /tmp/ssh_hardening_report.txt
+45     content: |
+                ^ column 14
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+changed: [192.168.122.12]
+changed: [192.168.122.5]
+
+TASK [phase_4/ssh : Display SSH hardening report] *************************************************************************************************
+changed: [192.168.122.12]
+changed: [192.168.122.5]
+
+TASK [phase_4/ssh : Show SSH hardening results] ***************************************************************************************************
+ok: [192.168.122.12] => {
+    "ssh_report.stdout_lines": [
+        "=== SSH Hardening Configuration Report ===",
+        "Generated on: 2026-03-31T05:02:18Z",
+        "",
+        "SSH Configuration Summary:",
+        "- Root Login: Disabled",
+        "- Protocol: 2",
+        "- Password Authentication: Enabled",
+        "- Allowed Users: s1 s2",
+        "- Max Auth Tries: 3",
+        "- Client Alive Interval: 300 seconds",
+        "",
+        "SSH Security Status:",
+        "- SSH service restarted successfully",
+        "- Configuration applied to /etc/ssh/sshd_config",
+        "- Hardening level: CIS Benchmark compliant"
+    ]
+}
+ok: [192.168.122.5] => {
+    "ssh_report.stdout_lines": [
+        "=== SSH Hardening Configuration Report ===",
+        "Generated on: 2026-03-31T05:02:18Z",
+        "",
+        "SSH Configuration Summary:",
+        "- Root Login: Disabled",
+        "- Protocol: 2",
+        "- Password Authentication: Enabled",
+        "- Allowed Users: s1 s2",
+        "- Max Auth Tries: 3",
+        "- Client Alive Interval: 300 seconds",
+        "",
+        "SSH Security Status:",
+        "- SSH service restarted successfully",
+        "- Configuration applied to /etc/ssh/sshd_config",
+        "- Hardening level: CIS Benchmark compliant"
+    ]
+}
+
+TASK [common/fetch_results : Create results directory on controller] ******************************************************************************
+changed: [192.168.122.12 -> localhost]
+
+TASK [common/fetch_results : Check if system info report exists (Phase 1)] ************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch system information report (Phase 1)] ***************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if OpenSCAP report exists (Phase 1)] ***************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch OpenSCAP report (Phase 1)] *************************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if OpenSCAP info report exists (Phase 1)] **********************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch OpenSCAP info report (Phase 1)] ********************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if Lynis audit output exists (Phase 1)] ************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch Lynis audit output (Phase 1)] **********************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if Lynis audit summary exists (Phase 1)] ***********************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch Lynis audit summary (Phase 1)] *********************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if SUID/SGID audit report exists (Phase 2)] ********************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch SUID/SGID audit report (Phase 2)] ******************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if filesystem security report exists (Phase 2)] ****************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch filesystem security report (Phase 2)] **************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if ASLR config report exists (Phase 2)] ************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch ASLR config report (Phase 2)] **********************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if password policy report exists (Phase 3)] ********************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch password policy report (Phase 3)] ******************************************************************************
+skipping: [192.168.122.12]
+skipping: [192.168.122.5]
+
+TASK [common/fetch_results : Check if SSH hardening report exists (Phase 4)] **********************************************************************
+ok: [192.168.122.12]
+ok: [192.168.122.5]
+
+TASK [common/fetch_results : Fetch SSH hardening report (Phase 4)] ********************************************************************************
+changed: [192.168.122.12]
+changed: [192.168.122.5]
+
+TASK [common/fetch_results : Check if results directory exists] ***********************************************************************************
+ok: [192.168.122.12 -> localhost]
+
+TASK [common/fetch_results : Display collected results summary] ***********************************************************************************
+ok: [192.168.122.12 -> localhost] => {
+    "msg": "Results have been collected in ../results/phase_4 on the controller"
+}
+
+PLAY RECAP ****************************************************************************************************************************************
+192.168.122.12             : ok=16   changed=5    unreachable=0    failed=0    skipped=18   rescued=0    ignored=0   
+192.168.122.5              : ok=13   changed=4    unreachable=0    failed=0    skipped=18   rescued=0    ignored=0   

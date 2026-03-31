@@ -1,0 +1,8 @@
+=== ASLR Configuration Report ===
+Generated on: 2026-03-30T16:45:33Z
+
+ASLR Configuration:
+- kernel.randomize_va_space: 2 (Full randomization)
+- Status: ENABLED
+
+Report saved to: /tmp/aslr_config_report.txt

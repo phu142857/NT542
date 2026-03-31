@@ -1,0 +1,159 @@
+---
+- name: Create results directory on controller
+  file:
+    path: "{{ results_dir }}/{{ playbook_name }}"
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+# Phase 1 results fetching
+- name: Check if system info report exists (Phase 1)
+  stat:
+    path: /tmp/system_info_report.txt
+  register: system_info_stat
+  when: playbook_name == "phase_1"
+
+- name: Fetch system information report (Phase 1)
+  fetch:
+    src: /tmp/system_info_report.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/system_info_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_1" and system_info_stat.stat.exists == true
+
+- name: Check if OpenSCAP report exists (Phase 1)
+  stat:
+    path: /tmp/openscap_scan_result.txt
+  register: openscap_stat
+  when: playbook_name == "phase_1"
+
+- name: Fetch OpenSCAP report (Phase 1)
+  fetch:
+    src: /tmp/openscap_scan_result.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/openscap_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_1" and openscap_stat.stat.exists == true
+
+- name: Check if OpenSCAP info report exists (Phase 1)
+  stat:
+    path: /tmp/openscap_info.txt
+  register: openscap_info_stat
+  when: playbook_name == "phase_1"
+
+- name: Fetch OpenSCAP info report (Phase 1)
+  fetch:
+    src: /tmp/openscap_info.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/openscap_info_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_1" and openscap_info_stat.stat.exists == true
+
+- name: Check if Lynis audit output exists (Phase 1)
+  stat:
+    path: /tmp/lynis_audit_output.txt
+  register: lynis_audit_stat
+  when: playbook_name == "phase_1"
+
+- name: Fetch Lynis audit output (Phase 1)
+  fetch:
+    src: /tmp/lynis_audit_output.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/lynis_audit_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_1" and lynis_audit_stat.stat.exists == true
+
+- name: Check if Lynis audit summary exists (Phase 1)
+  stat:
+    path: /tmp/lynis_audit_summary.txt
+  register: lynis_summary_stat
+  when: playbook_name == "phase_1"
+
+- name: Fetch Lynis audit summary (Phase 1)
+  fetch:
+    src: /tmp/lynis_audit_summary.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/lynis_summary_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_1" and lynis_summary_stat.stat.exists == true
+
+# Phase 2 results fetching
+- name: Check if SUID/SGID audit report exists (Phase 2)
+  stat:
+    path: /tmp/suid_sgid_audit.txt
+  register: suid_sgid_stat
+  when: playbook_name == "phase_2"
+
+- name: Fetch SUID/SGID audit report (Phase 2)
+  fetch:
+    src: /tmp/suid_sgid_audit.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/suid_sgid_audit_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_2" and suid_sgid_stat.stat.exists == true
+
+- name: Check if filesystem security report exists (Phase 2)
+  stat:
+    path: /tmp/filesystem_security_report.txt
+  register: filesystem_stat
+  when: playbook_name == "phase_2"
+
+- name: Fetch filesystem security report (Phase 2)
+  fetch:
+    src: /tmp/filesystem_security_report.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/filesystem_security_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_2" and filesystem_stat.stat.exists == true
+
+- name: Check if ASLR config report exists (Phase 2)
+  stat:
+    path: /tmp/aslr_config_report.txt
+  register: aslr_stat
+  when: playbook_name == "phase_2"
+
+- name: Fetch ASLR config report (Phase 2)
+  fetch:
+    src: /tmp/aslr_config_report.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/aslr_config_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_2" and aslr_stat.stat.exists == true
+
+# Phase 3 results fetching
+- name: Check if password policy report exists (Phase 3)
+  stat:
+    path: /tmp/password_policy_report.txt
+  register: password_policy_stat
+  when: playbook_name == "phase_3"
+
+- name: Fetch password policy report (Phase 3)
+  fetch:
+    src: /tmp/password_policy_report.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/password_policy_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_3" and password_policy_stat.stat.exists == true
+
+# Phase 4 results fetching
+- name: Check if SSH hardening report exists (Phase 4)
+  stat:
+    path: /tmp/ssh_hardening_report.txt
+  register: ssh_hardening_stat
+  when: playbook_name == "phase_4"
+
+- name: Fetch SSH hardening report (Phase 4)
+  fetch:
+    src: /tmp/ssh_hardening_report.txt
+    dest: "{{ results_dir }}/{{ playbook_name }}/ssh_hardening_{{ inventory_hostname }}.txt"
+    flat: yes
+  when: playbook_name == "phase_4" and ssh_hardening_stat.stat.exists == true
+
+- name: Check if results directory exists
+  stat:
+    path: "{{ results_dir }}/{{ playbook_name }}"
+  register: results_dir_stat
+  delegate_to: localhost
+  run_once: true
+  become: no
+
+- name: Display collected results summary
+  debug:
+    msg: "Results have been collected in {{ results_dir }}/{{ playbook_name }} on the controller"
+  delegate_to: localhost
+  run_once: true
+  become: no
+  when: results_dir_stat.stat.exists == true

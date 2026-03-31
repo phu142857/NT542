@@ -1,0 +1,31 @@
+---
+- name: Install Lynis
+  apt:
+    name: lynis
+    state: present
+    update_cache: yes
+
+- name: Run Lynis audit
+  command: lynis audit system --quick
+  register: lynis_output
+
+- name: Save audit output
+  copy:
+    content: "{{ lynis_output.stdout }}"
+    dest: /tmp/lynis_report.txt
+
+- name: Create Lynis audit summary
+  copy:
+    dest: /tmp/lynis_audit_summary.txt
+    content: |
+      === Lynis Security Audit Summary ===
+      Generated on: {{ ansible_date_time.iso8601 }}
+      
+      Audit completed successfully.
+      Full report available at: /tmp/lynis_report.txt
+      
+      Summary:
+      - Tool: Lynis Security Audit
+      - Mode: Quick scan
+      - Status: Completed
+      - Report location: /tmp/lynis_report.txt

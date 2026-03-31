@@ -1,0 +1,114 @@
+\chapter{Tổng quan hệ thống}
+
+\section{Mục tiêu triển khai}
+\subsection{Mục tiêu chính}
+\vspace{5pt}
+\noindent Nghiên cứu này tập trung vào việc xây dựng một quy trình tự động hóa để nâng cao bảo mật cho hệ thống Ubuntu Server 24.04 LTS theo tiêu chuẩn CIS Level 1 Benchmark. Các mục tiêu chính bao gồm:
+
+\begin{itemize}
+\item Tự động hóa quá trình kiểm tra và hardening bảo mật
+\item Đảm bảo tuân thủ 100\% các yêu cầu CIS Level 1
+\item Giảm thiểu sai sót do con người trong quá trình cấu hình
+\item Tạo ra quy trình có thể tái sử dụng cho các hệ thống khác
+\end{itemize}
+
+\subsection{Lợi ích mong đợi}
+\vspace{5pt}
+\noindent Việc triển khai tự động hóa bảo mật mang lại nhiều lợi ích thực tiễn:
+
+\begin{itemize}
+\item Tiết kiệm thời gian và nguồn lực quản trị
+\item Tăng tính nhất quán giữa các hệ thống
+\item Dễ dàng theo dõi và báo cáo trạng thái bảo mật
+\item Nhanh chóng phát hiện và khắc phục các lỗ hổng
+\end{itemize}
+
+\section{Phạm vi triển khai}
+\subsection{Ubuntu Server 24.04 LTS}
+\vspace{5pt}
+\noindent Ubuntu Server 24.04 LTS là phiên bản LTS (Long Term Support) mới nhất, cung cấp:
+
+\begin{itemize}
+\item Hỗ trợ dài hạn đến năm 2029
+\item Kernel Linux 6.8 với nhiều cải tiến bảo mật
+\item Tích hợp sẵn các công cụ bảo mật hiện đại
+\item Cộng đồng hỗ trợ lớn và tài liệu phong phú
+\end{itemize}
+
+\vspace{5pt}
+\noindent Việc chọn phiên bản này đảm bảo tính ổn định và bảo mật lâu dài cho hệ thống sản xuất.
+
+\subsection{CIS Level 1 Benchmark}
+\vspace{5pt}
+\noindent CIS (Center for Internet Security) Level 1 Benchmark là tập hợp các quy tắc bảo mật cơ bản:
+
+\begin{itemize}
+\item 188 đề xuất cấu hình cho Ubuntu Server 24.04
+\item Phù hợp cho môi trường production
+\item Không ảnh hưởng đến chức năng hoạt động của hệ thống
+\item Được công nhận rộng rãi trong ngành công nghiệp
+\end{itemize}
+
+\section{Kiến trúc hệ thống}
+\subsection{Kiến trúc tổng thể}
+\vspace{5pt}
+\noindent Hệ thống được thiết kế theo mô hình 3 lớp:
+
+\begin{enumerate}
+\item \textbf{Lớp kiểm tra}: Sử dụng Lynis và OpenSCAP để quét và đánh giá
+\item \textbf{Lớp hardening}: Ansible playbooks thực hiện các thay đổi cấu hình
+\item \textbf{Lớp báo cáo}: Tạo báo cáo tuân thủ và đề xuất cải thiện
+\end{enumerate}
+
+\subsection{Luồng hoạt động}
+\vspace{5pt}
+\noindent Quy trình hoạt động của hệ thống:
+
+\begin{itemize}
+\item Bước 1: Quét hệ thống hiện tại để xác định trạng thái
+\item Bước 2: Áp dụng các quy tắc hardening tự động
+\item Bước 3: Xác thực lại các cấu hình đã áp dụng
+\item Bước 4: Tạo báo cáo chi tiết về kết quả
+\end{itemize}
+
+\subsection{Ansible}
+\vspace{5pt}
+\noindent Ansible là công cụ tự động hóa mã nguồn mở được chọn vì:
+
+\begin{itemize}
+\item Agentless - không cần cài đặt agent trên máy mục tiêu
+\item YAML-based - dễ đọc và bảo trì
+\item Idempotent - đảm bảo kết quả nhất quán
+\item Hỗ trợ rộng rãi cho các module hệ thống
+\end{itemize}
+
+\vspace{5pt}
+\noindent Ansible sẽ được sử dụng để:
+\begin{itemize}
+\item Cấu hình các tham số sysctl
+\item Quản lý file và permissions
+\item Cài đặt và cấu hình các dịch vụ
+\item Áp dụng các policy bảo mật
+\end{itemize}
+
+\subsection{Lynis}
+\vspace{5pt}
+\noindent Lynis là công cụ audit bảo mật mã nguồn mở:
+
+\begin{itemize}
+\item Hơn 200 test bảo mật khác nhau
+\item Hỗ trợ CIS Benchmark
+\item Cung cấp đề xuất cải thiện chi tiết
+\item Nhẹ và nhanh, không yêu cầu cài đặt phức tạp
+\end{itemize}
+
+\subsection{OpenSCAP}
+\vspace{5pt}
+\noindent OpenSCAP là bộ công cụ tuân thủ bảo mật của NIST:
+
+\begin{itemize}
+\item Hỗ trợ SCAP (Security Content Automation Protocol)
+\item Tích hợp với CIS Benchmark
+\item Khả năng xuất báo cáo theo nhiều định dạng
+\item Được sử dụng rộng rãi trong chính phủ Doanh nghiệp
+\end{itemize}

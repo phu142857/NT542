@@ -1,0 +1,17 @@
+---
+- name: "Phase 1: Core Security Foundations"
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase1
+  vars:
+    playbook_name: "phase_1"
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_1/system_info
+    - phase_1/packages
+    - phase_1/openscap
+    - phase_1/lynis
+    - common/fetch_results

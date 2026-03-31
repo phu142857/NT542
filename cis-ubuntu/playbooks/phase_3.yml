@@ -1,0 +1,14 @@
+---
+- name: "Phase 3: Password and Authentication"
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase3
+  vars:
+    playbook_name: "phase_3"
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_3/password_policy
+    - common/fetch_results

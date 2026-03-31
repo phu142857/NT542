@@ -1,0 +1,17 @@
+---
+# Template for future phases - copy this structure
+- name: "Phase X: [Phase Name]"
+  hosts: ubuntu_servers
+  become: yes
+  tags: phaseX
+  vars:
+    playbook_name: "phase_X"
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_X/[role1]
+    - phase_X/[role2]
+    - phase_X/[role3]
+    - common/fetch_results  # Always include this at the end

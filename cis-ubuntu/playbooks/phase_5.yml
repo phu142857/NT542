@@ -1,0 +1,11 @@
+---
+- name: Phase 5: Services Configuration
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase5
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_5/services

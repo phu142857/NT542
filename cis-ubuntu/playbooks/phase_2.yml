@@ -1,0 +1,16 @@
+---
+- name: "Phase 2: Filesystem & System Hardening"
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase2
+  vars:
+    playbook_name: "phase_2"
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_2/filesystem
+    - phase_2/system_settings
+    - phase_2/aslr
+    - common/fetch_results

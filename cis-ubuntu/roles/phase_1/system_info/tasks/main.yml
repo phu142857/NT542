@@ -1,0 +1,17 @@
+---
+- name: Gather system information
+  shell: sysctl -a
+  register: system_info
+  changed_when: false
+
+- name: Save system information to report
+  copy:
+    dest: /tmp/system_info_report.txt
+    content: |
+      === System Information Report ===
+      Generated on: {{ ansible_date_time.iso8601 }}
+      
+      System Information:
+      {{ system_info.stdout }}
+      
+      Report saved to: /tmp/system_info_report.txt

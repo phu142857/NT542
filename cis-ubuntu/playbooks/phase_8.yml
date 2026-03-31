@@ -1,0 +1,12 @@
+---
+- name: Phase 8: Compliance & Reporting
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase8
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_8/compliance_scan
+    - phase_8/comprehensive_report

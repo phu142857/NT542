@@ -24,36 +24,104 @@ Hệ thống đánh giá tuân thủ CIS benchmark cho Ubuntu với tích hợp 
 - Tạo báo cáo security recommendations
 - Tích hợp với báo cáo tổng hợp
 
-## Cấu trúc
+## Cấu trúc theo Phase
+
+Dự án được tổ chức theo 8 phase tương ứng với các giai đoạn hardening theo CIS Benchmark:
 
 ```
 cis-ubuntu/
 ├── playbooks/
-│   ├── site.yml                 # Main playbook with all roles
+│   ├── site.yml                 # Main playbook với tất cả phases
+│   ├── phase_1.yml             # Phase 1: Initial Setup
+│   ├── phase_2.yml             # Phase 2: Filesystem Configuration
+│   ├── phase_3.yml             # Phase 3: Password and Authentication
+│   ├── phase_4.yml             # Phase 4: SSH Configuration
+│   ├── phase_5.yml             # Phase 5: Services Configuration
+│   ├── phase_6.yml             # Phase 6: Network and Firewall
+│   ├── phase_7.yml             # Phase 7: Logging and Audit
+│   ├── phase_8.yml             # Phase 8: Compliance and Verification
 │   ├── audit.yml               # Compliance scan only
 │   └── comprehensive_scan.yml  # Complete system scan
 ├── roles/
-│   ├── system_info/            # System information gathering
-│   ├── compliance_scan/        # Lynis + OpenSCAP scanning
-│   └── [other CIS roles...]
+│   ├── phase_1/                # Initial Setup and System Information
+│   │   ├── system_info/
+│   │   └── packages/
+│   ├── phase_2/                # Filesystem Configuration
+│   │   ├── filesystem/
+│   │   └── system_settings/
+│   ├── phase_3/                # Password and Authentication
+│   │   └── password_policy/
+│   ├── phase_4/                # SSH Configuration
+│   │   └── ssh/
+│   ├── phase_5/                # Services Configuration
+│   │   └── services/
+│   ├── phase_6/                # Network and Firewall
+│   │   ├── network/
+│   │   └── firewall/
+│   ├── phase_7/                # Logging and Audit
+│   │   └── logging_audit/
+│   ├── phase_8/                # Compliance and Verification
+│   │   └── compliance_scan/
+│   └── README.md
 └── README.md
 ```
 
 ## Sử dụng
 
+### Triển khai theo từng phase:
+
+#### Phase 1: Initial Setup and System Information
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_1.yml
+```
+
+#### Phase 2: Filesystem Configuration
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_2.yml
+```
+
+#### Phase 3: Password and Authentication
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_3.yml
+```
+
+#### Phase 4: SSH Configuration
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_4.yml
+```
+
+#### Phase 5: Services Configuration
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_5.yml
+```
+
+#### Phase 6: Network and Firewall
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_6.yml
+```
+
+#### Phase 7: Logging and Audit
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_7.yml
+```
+
+#### Phase 8: Compliance and Verification
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/phase_8.yml
+```
+
+### Triển khai tuần tự tất cả phases:
+```bash
+# Triển khai tuần tự từ phase 1 đến 8
+for i in {1..8}; do
+    echo "Deploying Phase $i..."
+    ansible-playbook -i inventory/hosts.ini playbooks/phase_$i.yml
+done
+```
+
 ### Chạy full CIS benchmark với thu thập thông tin hệ thống:
 ```bash
-ansible-playbook -i inventory/hosts playbooks/site.yml
-```
-
-### Chạy comprehensive scan (khuyến khích):
-```bash
-ansible-playbook -i inventory/hosts playbooks/comprehensive_scan.yml
-```
-
-### Chạy chỉ compliance scan:
-```bash
-ansible-playbook -i inventory/hosts playbooks/audit.yml
+ansible-playbook -i inventory/hosts.ini playbooks/site.yml
 ```
 
 ## Files được tạo ra

@@ -1,0 +1,61 @@
+\chapter{Phương pháp triển khai}
+
+\section{Quy trình tổng thể}
+\subsection{Scan → Hardening → Validate → Report}
+\vspace{5pt}
+\noindent Quy trình triển khai bảo mật được thiết kế theo chu trình 4 bước chính, đảm bảo tính toàn diện và có thể lặp lại. Mỗi bước có vai trò cụ thể và liên kết chặt chẽ với nhau để tạo ra một hệ thống bảo mật hoàn chỉnh.
+
+\vspace{5pt}
+\noindent Quy trình này bắt đầu từ việc đánh giá trạng thái hiện tại, tiếp theo là áp dụng các biện pháp hardening, sau đó xác thực kết quả và cuối cùng là tạo báo cáo chi tiết. Vòng lặp này giúp đảm bảo hệ thống luôn được cập nhật và tuân thủ các tiêu chuẩn bảo mật mới nhất.
+
+\section{Phương pháp tiếp cận}
+\subsection{Manual Configuration}
+\vspace{5pt}
+\noindent Cấu hình thủ công là phương pháp truyền thống trong quản trị hệ thống. Administrator trực tiếp thực hiện các thay đổi trên hệ thống thông qua command line hoặc giao diện đồ họa.
+
+\vspace{5pt}
+\noindent Phương pháp này có ưu điểm là linh hoạt và dễ kiểm soát từng bước, nhưng nhược điểm lớn là tốn nhiều thời gian, dễ xảy ra sai sót, và khó đảm bảo tính nhất quán giữa nhiều hệ thống khác nhau.
+
+\vspace{5pt}
+\noindent Đối với các hệ thống quy mô nhỏ, cấu hình thủ công vẫn có thể được áp dụng cho các tác vụ đặc thù yêu cầu sự can thiệp chuyên sâu.
+
+\subsection{Automation bằng Ansible}
+\vspace{5pt}
+\noindent Ansible là công cụ tự động hóa mạnh mẽ giúp loại bỏ các thao tác thủ công lặp đi lặp lại. Với Ansible, chúng ta có thể định nghĩa toàn bộ quy trình hardening dưới dạng code, đảm bảo tính nhất quán và có thể tái sử dụng.
+
+\vspace{5pt}
+\noindent Ansible sử dụng YAML để định nghĩa các playbook, giúp administrator dễ dàng đọc, hiểu và chỉnh sửa. Khả năng idempotent của Ansible đảm bảo rằng việc chạy nhiều lần sẽ không gây ra các trạng thái không mong muốn.
+
+\vspace{5pt}
+\noindent Đặc biệt, Ansible hoạt động theo chế độ agentless, chỉ yêu cầu SSH và Python trên máy mục tiêu, giúp giảm thiểu sự phức tạp trong việc triển khai.
+
+\section{Thiết kế hệ thống Ansible}
+\subsection{Inventory}
+\vspace{5pt}
+\noindent Inventory là thành phần cơ bản của Ansible, dùng để định nghĩa danh sách các máy chủ mục tiêu. Inventory có thể được định nghĩa dưới dạng file INI, YAML, hoặc sử dụng dynamic inventory từ các nguồn như cloud providers.
+
+\vspace{5pt}
+\noindent Trong dự án này, inventory được cấu trúc theo nhóm máy chủ để dễ dàng quản lý và áp dụng các chính sách khác nhau cho từng nhóm. Mỗi nhóm có thể có các biến riêng biệt phù hợp với vai trò và yêu cầu bảo mật cụ thể.
+
+\vspace{5pt}
+\noindent Inventory cũng cho phép định nghĩa các biến toàn cục và biến riêng cho từng host, giúp linh hoạt trong việc cấu hình môi trường đa dạng.
+
+\subsection{Playbooks}
+\vspace{5pt}
+\noindent Playbooks là tập hợp các task được định nghĩa theo thứ tự thực hiện. Mỗi playbook có thể chứa một hoặc nhiều play, mỗi play áp dụng cho một nhóm host cụ thể và thực hiện các task thông qua các module Ansible.
+
+\vspace{5pt}
+\noindent Playbooks trong dự án này được chia thành các chức năng chính: scanning, hardening, validation, và reporting. Mỗi playbook được thiết kế để có thể chạy độc lập hoặc kết hợp với nhau theo quy trình tổng thể.
+
+\vspace{5pt}
+\noindent Các playbook sử dụng conditional logic, handlers, và error handling để đảm bảo tính robust và khả năng phục hồi khi gặp lỗi.
+
+\subsection{Roles}
+\vspace{5pt}
+\noindent Roles là cách tổ chức Ansible code theo cấu trúc module hóa, giúp tái sử dụng và bảo trì dễ dàng. Mỗi role có cấu trúc thư mục chuẩn gồm tasks, handlers, templates, files, vars, defaults, và meta.
+
+\vspace{5pt}
+\noindent Trong dự án này, các role được phân chia theo chức năng bảo mật: filesystem, network, services, users, logging, monitoring. Mỗi role chịu trách nhiệm về một lĩnh vực cụ thể của việc hardening bảo mật.
+
+\vspace{5pt}
+\noindent Cấu trúc role giúp dễ dàng mở rộng, cập nhật và chia sẻ giữa các dự án khác nhau, đồng thời đảm bảo tính nhất quán trong việc áp dụng các biện pháp bảo mật.

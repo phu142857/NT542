@@ -1,0 +1,11 @@
+---
+- name: Phase 7: Logging and Audit
+  hosts: ubuntu_servers
+  become: yes
+  tags: phase7
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  roles:
+    - phase_7/logging_audit
