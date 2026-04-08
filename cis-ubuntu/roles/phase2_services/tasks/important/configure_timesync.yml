@@ -1,0 +1,44 @@
+---
+# Configure time synchronization services
+
+- name: Ensure systemd-timesyncd is configured with authorized timeserver
+  lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^#?NTP='
+    line: 'NTP=pool.ntp.org'
+    state: present
+
+- name: Ensure systemd-timesyncd is enabled and running
+  service:
+    name: systemd-timesyncd
+    state: started
+    enabled: yes
+
+- name: Ensure chrony is not installed when using systemd-timesyncd
+  package:
+    name: chrony
+    state: absent
+  when: cis_use_systemd_timesyncd | default(true) | bool
+
+- name: Ensure chrony is configured with authorized timeserver
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    regexp: '^pool '
+    line: 'pool pool.ntp.org iburst'
+    state: present
+  when: not cis_use_systemd_timesyncd | default(true) | bool
+
+- name: Ensure chrony is running as user _chrony
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    regexp: '^#?user '
+    line: 'user _chrony'
+    state: present
+  when: not cis_use_systemd_timesyncd | default(true) | bool
+
+- name: Ensure chrony is enabled and running
+  service:
+    name: chrony
+    state: started
+    enabled: yes
+  when: not cis_use_systemd_timesyncd | default(true) | bool

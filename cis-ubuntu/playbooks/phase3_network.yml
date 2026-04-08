@@ -1,0 +1,11 @@
+---
+- name: Phase 3 - Network Configuration
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  roles:
+    - ../roles/phase3_network

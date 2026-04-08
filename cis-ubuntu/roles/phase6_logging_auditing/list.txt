@@ -1,0 +1,73 @@
+### Manual
+
+| Tên Khuyến nghị                                                |
+| :------------------------------------------------------------- |
+| Ensure journald log file access is configured                  |
+| Ensure journald log file rotation is configured                |
+| Ensure systemd-journal-upload authentication is configured     |
+| Ensure rsyslog logging is configured                           |
+| Ensure rsyslog is configured to send logs to a remote log host |
+| Ensure logrotate is configured                                 |
+| Ensure the running and on disk configuration is the same       |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                                                      |
+| :----------------------------------------------------------------------------------- |
+| Ensure journald service is enabled and active                                        |
+| Ensure only one logging system is in use                                             |
+| Ensure systemd-journal-remote is installed                                           |
+| Ensure systemd-journal-upload is enabled and active                                  |
+| Ensure systemd-journal-remote service is not in use                                  |
+| Ensure journald ForwardToSyslog is disabled                                          |
+| Ensure journald Compress is configured                                               |
+| Ensure journald Storage is configured                                                |
+| Ensure rsyslog is installed                                                          |
+| Ensure rsyslog service is enabled and active                                         |
+| Ensure journald is configured to send logs to rsyslog                                |
+| Ensure rsyslog log file creation mode is configured                                  |
+| Ensure rsyslog is not configured to receive logs from a remote client                |
+| Ensure access to all logfiles has been configured                                    |
+| Ensure auditd packages are installed                                                 |
+| Ensure auditd service is enabled and active                                          |
+| Ensure auditing for processes that start prior to auditd is enabled                  |
+| Ensure audit_backlog_limit is sufficient                                             |
+| Ensure audit log storage size is configured                                          |
+| Ensure audit logs are not automatically deleted                                      |
+| Ensure system is disabled when audit logs are full                                   |
+| Ensure system warns when audit logs are low on space                                 |
+| Ensure changes to system administration scope (sudoers) is collected                 |
+| Ensure actions as another user are always logged                                     |
+| Ensure events that modify the sudo log file are collected                            |
+| Ensure events that modify date and time information are collected                    |
+| Ensure events that modify the system's network environment are collected             |
+| Ensure use of privileged commands are collected                                      |
+| Ensure unsuccessful file access attempts are collected                               |
+| Ensure events that modify user/group information are collected                       |
+| Ensure discretionary access control permission modification events are collected     |
+| Ensure successful file system mounts are collected                                   |
+| Ensure session initiation information is collected                                   |
+| Ensure login and logout events are collected                                         |
+| Ensure file deletion events by users are collected                                   |
+| Ensure events that modify the system's Mandatory Access Controls are collected       |
+| Ensure successful and unsuccessful attempts to use the chcon command are collected   |
+| Ensure successful and unsuccessful attempts to use the setfacl command are collected |
+| Ensure successful and unsuccessful attempts to use the chacl command are collected   |
+| Ensure successful and unsuccessful attempts to use the usermod command are collected |
+| Ensure kernel module loading unloading and modification is collected                 |
+| Ensure the audit configuration is immutable                                          |
+| Ensure audit log files mode is configured                                            |
+| Ensure audit log files owner is configured                                           |
+| Ensure audit log files group owner is configured                                     |
+| Ensure the audit log file directory mode is configured                               |
+| Ensure audit configuration files mode is configured                                  |
+| Ensure audit configuration files owner is configured                                 |
+| Ensure audit configuration files group owner is configured                           |
+| Ensure audit tools mode is configured                                                |
+| Ensure audit tools owner is configured                                               |
+| Ensure audit tools group owner is configured                                         |
+| Ensure AIDE is installed                                                             |
+| Ensure filesystem integrity is regularly checked                                     |
+| Ensure cryptographic mechanisms are used to protect the integrity of audit tools     |

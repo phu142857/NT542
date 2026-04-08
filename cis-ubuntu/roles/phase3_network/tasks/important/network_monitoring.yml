@@ -1,0 +1,28 @@
+---
+# Network monitoring and IPv6 configuration
+
+- name: Ensure suspicious packets are logged
+  sysctl:
+    name: net.ipv4.conf.all.log_martians
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis-network.conf
+
+- name: Ensure ipv6 router advertisements are not accepted
+  sysctl:
+    name: net.ipv6.conf.all.accept_ra
+    value: '0'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis-network.conf
+  when: cis_disable_ipv6_ra | default(true) | bool
+
+- name: Ensure IPv6 status is identified
+  shell: sysctl -a 2>/dev/null | grep ipv6 | wc -l
+  register: ipv6_status
+  changed_when: false
+  failed_when: false
+
+- name: Display IPv6 status
+  debug:
+    msg: "IPv6 parameters found: {{ ipv6_status.stdout }}"
+  when: ipv6_status.stdout is defined

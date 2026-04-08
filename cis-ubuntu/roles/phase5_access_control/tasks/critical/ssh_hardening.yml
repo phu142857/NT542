@@ -1,0 +1,73 @@
+---
+# SSH Security Hardening
+
+- name: Ensure permissions on /etc/ssh/sshd_config are configured
+  file:
+    path: /etc/ssh/sshd_config
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Ensure permissions on SSH private host key files are configured
+  file:
+    path: "{{ item }}"
+    mode: '0600'
+    owner: root
+    group: root
+  loop:
+    - /etc/ssh/ssh_host_rsa_key
+    - /etc/ssh/ssh_host_ecdsa_key
+    - /etc/ssh/ssh_host_ed25519_key
+
+- name: Ensure permissions on SSH public host key files are configured
+  file:
+    path: "{{ item }}"
+    mode: '0644'
+    owner: root
+    group: root
+  loop:
+    - /etc/ssh/ssh_host_rsa_key.pub
+    - /etc/ssh/ssh_host_ecdsa_key.pub
+    - /etc/ssh/ssh_host_ed25519_key.pub
+
+- name: Ensure sshd PermitEmptyPasswords is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitEmptyPasswords'
+    line: 'PermitEmptyPasswords no'
+    state: present
+
+- name: Ensure sshd PermitRootLogin is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin no'
+    state: present
+
+- name: Ensure sshd MaxAuthTries is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MaxAuthTries'
+    line: 'MaxAuthTries 3'
+    state: present
+
+- name: Ensure sshd MaxSessions is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MaxSessions'
+    line: 'MaxSessions 3'
+    state: present
+
+- name: Ensure sshd HostbasedAuthentication is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?HostbasedAuthentication'
+    line: 'HostbasedAuthentication no'
+    state: present
+
+- name: Ensure sshd GSSAPIAuthentication is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?GSSAPIAuthentication'
+    line: 'GSSAPIAuthentication no'
+    state: present

@@ -1,0 +1,52 @@
+---
+# Comprehensive audit rules for system events
+
+- name: Ensure unsuccessful file access attempts are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S openat -F exit=-EACCES -k file_access'
+    state: present
+
+- name: Ensure discretionary access control permission modification events are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -k perm_mod'
+    state: present
+
+- name: Ensure successful file system mounts are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts'
+    state: present
+
+- name: Ensure session initiation information is collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /var/log/wtmp -p wa -k logins'
+    state: present
+
+- name: Ensure login and logout events are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /var/log/btmp -p wa -k logins'
+    state: present
+
+- name: Ensure file deletion events by users are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S unlinkat -S renameat -F auid>=1000 -F auid!=4294967295 -k delete'
+    state: present
+
+- name: Ensure successful and unsuccessful attempts to use the usermod command are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S usermod -F auid>=1000 -F auid!=4294967295 -k user_mod'
+    state: present
+
+- name: Ensure audit configuration files mode is configured
+  file:
+    path: /etc/audit
+    mode: '0700'
+    owner: root
+    group: root
+    recurse: yes

@@ -1,0 +1,18 @@
+---
+# Critical Security Tasks - Phase 4 Firewall
+# Configure single firewall utility with basic rules
+
+- name: Configure UFW firewall (default)
+  include_tasks: configure_ufw.yml
+  tags: ufw
+  when: cis_firewall_type == "ufw" or cis_firewall_type is not defined
+
+- name: Configure nftables firewall
+  include_tasks: configure_nftables.yml
+  tags: nftables
+  when: cis_firewall_type == "nftables"
+
+- name: Configure iptables firewall
+  include_tasks: configure_iptables.yml
+  tags: iptables
+  when: cis_firewall_type == "iptables"

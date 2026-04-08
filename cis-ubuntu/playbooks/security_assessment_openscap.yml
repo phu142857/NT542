@@ -1,0 +1,125 @@
+---
+- name: Security Assessment - OpenSCAP
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+    scap_version: "0.1.73"
+    scap_url: "https://github.com/ComplianceAsCode/content/releases/download/v{{ scap_version }}/scap-security-guide-{{ scap_version }}.zip"
+    scap_workdir: "/tmp/scap-security-guide"
+    
+  tasks:
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        mode: '0755'
+        
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        
+    - name: Install OpenSCAP scanner and utilities
+      apt:
+        name:
+          - openscap-scanner
+          - openscap-utils
+          - wget
+          - unzip
+        state: present
+        
+    - name: Download SCAP Security Guide
+      shell: wget --timeout=300 --tries=3 -O /tmp/scap-security-guide-{{ scap_version }}.zip {{ scap_url }}
+        
+    - name: Create temporary working directory
+      file:
+        path: "{{ scap_workdir }}"
+        state: directory
+        mode: '0755'
+        
+    - name: Extract SCAP Security Guide
+      unarchive:
+        src: "/tmp/scap-security-guide-{{ scap_version }}.zip"
+        dest: "{{ scap_workdir }}"
+        remote_src: yes
+        
+    - name: Find the extracted SCAP directory
+      find:
+        paths: "{{ scap_workdir }}"
+        file_type: directory
+        patterns: "scap-security-guide-*"
+      register: scap_dirs
+      
+    - name: Set SCAP directory path
+      set_fact:
+        scap_dir: "{{ scap_dirs.files[0].path }}"
+      when: scap_dirs.files | length > 0
+      
+    - name: Run OpenSCAP CIS Level 1 Server assessment
+      shell: |
+        cd {{ scap_dir }}
+        oscap xccdf eval \
+          --profile xccdf_org.ssgproject.content_profile_cis_level1_server \
+          --results /home/results/openscap-results-{{ ansible_date_time.iso8601 }}.xml \
+          --report /home/results/openscap-report-{{ ansible_date_time.iso8601 }}.html \
+          ssg-ubuntu2204-ds.xml
+      register: openscap_scan
+      failed_when: false
+      when: scap_dir is defined
+        
+    - name: Debug OpenSCAP output
+      debug:
+        var: openscap_scan.stdout_lines
+      when: openscap_scan is defined and openscap_scan.stdout_lines is defined
+        
+    - name: Check if OpenSCAP files were created
+      shell: ls -la /home/results/openscap-* 2>/dev/null || echo "No OpenSCAP files found"
+      register: openscap_files
+      when: scap_dir is defined
+        
+    - name: Debug OpenSCAP files
+      debug:
+        var: openscap_files.stdout_lines
+      when: openscap_files.stdout_lines is defined
+        
+    - name: Ensure local results directory exists for host
+      file:
+        path: "{{ results_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: false
+      when: scap_dir is defined
+        
+    - name: Fetch OpenSCAP results to local
+      fetch:
+        src: "/home/results/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
+        flat: yes
+      when: scap_dir is defined
+      failed_when: false
+        
+    - name: Fetch OpenSCAP report to local
+      fetch:
+        src: "/home/results/openscap-report-{{ ansible_date_time.iso8601 }}.html"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/openscap-report-{{ ansible_date_time.iso8601 }}.html"
+        flat: yes
+      when: scap_dir is defined
+      failed_when: false
+      
+    - name: Display OpenSCAP scan status
+      debug:
+        msg: "OpenSCAP scan completed. Results saved to {{ results_dir }}/"
+      when: openscap_scan is defined
+      
+    - name: Clean up temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/scap-security-guide-{{ scap_version }}.zip"
+        - "{{ scap_workdir }}"
+      when: scap_dir is defined

@@ -1,114 +1,368 @@
 \chapter{Tổng quan hệ thống}
 
-\section{Mục tiêu triển khai}
-\subsection{Mục tiêu chính}
+\section{Tổng quan CIS}
 \vspace{5pt}
-\noindent Nghiên cứu này tập trung vào việc xây dựng một quy trình tự động hóa để nâng cao bảo mật cho hệ thống Ubuntu Server 24.04 LTS theo tiêu chuẩn CIS Level 1 Benchmark. Các mục tiêu chính bao gồm:
+\noindent \textbf{CIS (Center for Internet Security)} là tổ chức phi lợi nhuận phát triển các tiêu chuẩn bảo mật được công nhận rộng rãi trong ngành công nghệ thông tin. CIS Benchmarks cung cấp các hướng dẫn cấu hình chi tiết để bảo mật hệ thống theo best practices.
+
+\vspace{5pt}
+\noindent \textbf{CIS Ubuntu Linux 24.04 LTS Benchmark v1.0.0} là tài liệu tham chiếu chứa 188 đề xuất cấu hình bảo mật cho Ubuntu Server 24.04 LTS. Các đề xuất được phân loại theo 7 nhóm chính và đánh giá theo 2 trạng thái:
 
 \begin{itemize}
-\item Tự động hóa quá trình kiểm tra và hardening bảo mật
-\item Đảm bảo tuân thủ 100\% các yêu cầu CIS Level 1
-\item Giảm thiểu sai sót do con người trong quá trình cấu hình
-\item Tạo ra quy trình có thể tái sử dụng cho các hệ thống khác
+\item \textbf{Automated:} Các khuyến nghị có thể tự động hóa việc đánh giá và xác nhận trạng thái đạt/không đạt
+\item \textbf{Manual:} Các khuyến nghị yêu cầu các bước thủ công để xác thực vì trạng thái cấu hình có thể thay đổi tùy thuộc vào môi trường cụ thể
 \end{itemize}
 
-\subsection{Lợi ích mong đợi}
+\section{Tổng quan Linux}
 \vspace{5pt}
-\noindent Việc triển khai tự động hóa bảo mật mang lại nhiều lợi ích thực tiễn:
+\noindent \textbf{Ubuntu Server 24.04 LTS} là phiên bản Long Term Support mới nhất, cung cấp nền tảng ổn định và an toàn cho môi trường production. Với kernel Linux 6.8 và các cải tiến bảo mật tích hợp, Ubuntu 24.04 LTS là lựa chọn lý tưởng cho triển khai các tiêu chuẩn bảo mật CIS.
 
+\vspace{5pt}
+\noindent \textbf{Kiến trúc bảo mật Linux} bao gồm nhiều lớp bảo vệ từ kernel level đến application level. Việc hardening hệ thống Linux đòi hỏi kiến thức sâu về:
 \begin{itemize}
-\item Tiết kiệm thời gian và nguồn lực quản trị
-\item Tăng tính nhất quán giữa các hệ thống
-\item Dễ dàng theo dõi và báo cáo trạng thái bảo mật
-\item Nhanh chóng phát hiện và khắc phục các lỗ hổng
+\item Kernel modules và filesystem security
+\item Network protocols và firewall configuration
+\item Access control và authentication mechanisms
+\item Logging và auditing systems
+\item System maintenance và file permissions
 \end{itemize}
 
-\section{Phạm vi triển khai}
-\subsection{Ubuntu Server 24.04 LTS}
+\subsection{Manual Hardening}
 \vspace{5pt}
-\noindent Ubuntu Server 24.04 LTS là phiên bản LTS (Long Term Support) mới nhất, cung cấp:
+\noindent \textbf{Phương pháp manual hardening} đòi hỏi người quản trị thực hiện từng bước kiểm tra và cấu hình thủ công. Mặc dù tốn thời gian hơn, phương pháp này cung cấp sự linh hoạt cao và kiểm soát chi tiết.
 
-\begin{itemize}
-\item Hỗ trợ dài hạn đến năm 2029
-\item Kernel Linux 6.8 với nhiều cải tiến bảo mật
-\item Tích hợp sẵn các công cụ bảo mật hiện đại
-\item Cộng đồng hỗ trợ lớn và tài liệu phong phú
-\end{itemize}
+\begin{longtable}{|p{0.05\linewidth}|p{0.85\linewidth}|}
+\hline
+\textbf{STT} & \textbf{Tên khuyến nghị} \\
+\hline
+\endhead
+1 & Ensure unused filesystems kernel modules are not available \\
+2 & Ensure GPG keys are configured \\
+3 & Ensure package manager repositories are configured \\
+4 & Ensure updates, patches, and additional security software are installed \\
+5 & Ensure only approved services are listening on a network interface \\
+6 & Ensure IPv6 status is identified \\
+7 & Ensure ufw outbound connections are configured \\
+8 & Ensure iptables are flushed with nftables \\
+9 & Ensure nftables outbound and established connections are configured \\
+10 & Ensure iptables outbound and established connections are configured \\
+11 & Ensure ip6tables outbound and established connections are configured \\
+12 & Ensure password complexity is configured \\
+13 & Ensure minimum password days is configured \\
+14 & Ensure journald log file access is configured \\
+15 & Ensure journald log file rotation is configured \\
+16 & Ensure systemd-journal-upload authentication is configured \\
+17 & Ensure rsyslog logging is configured \\
+18 & Ensure rsyslog is configured to send logs to a remote log host \\
+19 & Ensure rsyslog is not configured to receive logs from a remote client \\
+20 & Ensure logrotate is configured \\
+21 & Ensure running and on disk configuration is same \\
+22 & Ensure SUID and SGID files are reviewed \\
+\hline
+\caption{Danh sách các khuyến nghị CIS yêu cầu đánh giá thủ công}
+\label{tab:manual_recommendations}
+\end{longtable}
 
+\subsection{Automated Hardening}
 \vspace{5pt}
-\noindent Việc chọn phiên bản này đảm bảo tính ổn định và bảo mật lâu dài cho hệ thống sản xuất.
+\noindent \textbf{Phương pháp automation với Ansible} cho phép thực hiện hàng loạt các kiểm tra và cấu hình bảo mật một cách tự động, nhất quán và có thể tái sử dụng. Ansible cung cấp các module mạnh mẽ để tương tác với hệ thống Linux.
 
-\subsection{CIS Level 1 Benchmark}
-\vspace{5pt}
-\noindent CIS (Center for Internet Security) Level 1 Benchmark là tập hợp các quy tắc bảo mật cơ bản:
-
-\begin{itemize}
-\item 188 đề xuất cấu hình cho Ubuntu Server 24.04
-\item Phù hợp cho môi trường production
-\item Không ảnh hưởng đến chức năng hoạt động của hệ thống
-\item Được công nhận rộng rãi trong ngành công nghiệp
-\end{itemize}
-
-\section{Kiến trúc hệ thống}
-\subsection{Kiến trúc tổng thể}
-\vspace{5pt}
-\noindent Hệ thống được thiết kế theo mô hình 3 lớp:
-
-\begin{enumerate}
-\item \textbf{Lớp kiểm tra}: Sử dụng Lynis và OpenSCAP để quét và đánh giá
-\item \textbf{Lớp hardening}: Ansible playbooks thực hiện các thay đổi cấu hình
-\item \textbf{Lớp báo cáo}: Tạo báo cáo tuân thủ và đề xuất cải thiện
-\end{enumerate}
-
-\subsection{Luồng hoạt động}
-\vspace{5pt}
-\noindent Quy trình hoạt động của hệ thống:
-
-\begin{itemize}
-\item Bước 1: Quét hệ thống hiện tại để xác định trạng thái
-\item Bước 2: Áp dụng các quy tắc hardening tự động
-\item Bước 3: Xác thực lại các cấu hình đã áp dụng
-\item Bước 4: Tạo báo cáo chi tiết về kết quả
-\end{itemize}
-
-\subsection{Ansible}
-\vspace{5pt}
-\noindent Ansible là công cụ tự động hóa mã nguồn mở được chọn vì:
-
-\begin{itemize}
-\item Agentless - không cần cài đặt agent trên máy mục tiêu
-\item YAML-based - dễ đọc và bảo trì
-\item Idempotent - đảm bảo kết quả nhất quán
-\item Hỗ trợ rộng rãi cho các module hệ thống
-\end{itemize}
-
-\vspace{5pt}
-\noindent Ansible sẽ được sử dụng để:
-\begin{itemize}
-\item Cấu hình các tham số sysctl
-\item Quản lý file và permissions
-\item Cài đặt và cấu hình các dịch vụ
-\item Áp dụng các policy bảo mật
-\end{itemize}
-
-\subsection{Lynis}
-\vspace{5pt}
-\noindent Lynis là công cụ audit bảo mật mã nguồn mở:
-
-\begin{itemize}
-\item Hơn 200 test bảo mật khác nhau
-\item Hỗ trợ CIS Benchmark
-\item Cung cấp đề xuất cải thiện chi tiết
-\item Nhẹ và nhanh, không yêu cầu cài đặt phức tạp
-\end{itemize}
-
-\subsection{OpenSCAP}
-\vspace{5pt}
-\noindent OpenSCAP là bộ công cụ tuân thủ bảo mật của NIST:
-
-\begin{itemize}
-\item Hỗ trợ SCAP (Security Content Automation Protocol)
-\item Tích hợp với CIS Benchmark
-\item Khả năng xuất báo cáo theo nhiều định dạng
-\item Được sử dụng rộng rãi trong chính phủ Doanh nghiệp
-\end{itemize}
+\begin{longtable}{|p{0.05\linewidth}|p{0.75\linewidth}|p{0.1\linewidth}|}
+\hline
+\textbf{STT} & \textbf{Tên khuyến nghị} & \textbf{Module} \\
+\hline
+\endhead
+1 & Ensure cramfs kernel module is not available & modprobe \\
+2 & Ensure freevxfs kernel module is not available & modprobe \\
+3 & Ensure hfs kernel module is not available & modprobe \\
+4 & Ensure hfsplus kernel module is not available & modprobe \\
+5 & Ensure jffs2 kernel module is not available & modprobe \\
+6 & Ensure overlayfs kernel module is not available & modprobe \\
+7 & Ensure squashfs kernel module is not available & modprobe \\
+8 & Ensure udf kernel module is not available & modprobe \\
+9 & Ensure usb-storage kernel module is not available & modprobe \\
+10 & Ensure /tmp is a separate partition & parted \\
+11 & Ensure nodev option set on /tmp partition & mount \\
+12 & Ensure nosuid option set on /tmp partition & mount \\
+13 & Ensure noexec option set on /tmp partition & mount \\
+14 & Ensure /dev/shm is a separate partition & parted \\
+15 & Ensure nodev option set on /dev/shm partition & mount \\
+16 & Ensure nosuid option set on /dev/shm partition & mount \\
+17 & Ensure noexec option set on /dev/shm partition & mount \\
+18 & Ensure separate partition exists for /home & parted \\
+19 & Ensure nodev option set on /home partition & mount \\
+20 & Ensure nosuid option set on /home partition & mount \\
+21 & Ensure separate partition exists for /var & parted \\
+22 & Ensure nodev option set on /var partition & mount \\
+23 & Ensure nosuid option set on /var partition & mount \\
+24 & Ensure separate partition exists for /var/tmp & parted \\
+25 & Ensure nodev option set on /var/tmp partition & mount \\
+26 & Ensure nosuid option set on /var/tmp partition & mount \\
+27 & Ensure noexec option set on /var/tmp partition & mount \\
+28 & Ensure separate partition exists for /var/log & parted \\
+29 & Ensure nodev option set on /var/log partition & mount \\
+30 & Ensure nosuid option set on /var/log partition & mount \\
+31 & Ensure noexec option set on /var/log partition & mount \\
+32 & Ensure separate partition exists for /var/log/audit & parted \\
+33 & Ensure nodev option set on /var/log/audit partition & mount \\
+34 & Ensure nosuid option set on /var/log/audit partition & mount \\
+35 & Ensure noexec option set on /var/log/audit partition & mount \\
+36 & Ensure AppArmor is installed & apt \\
+37 & Ensure AppArmor is enabled in the bootloader configuration & lineinfile \\
+38 & Ensure all AppArmor Profiles are in enforce or complain mode & command \\
+39 & Ensure all AppArmor Profiles are enforcing & command \\
+40 & Ensure bootloader password is set & lineinfile \\
+41 & Ensure access to bootloader config is configured & file \\
+42 & Ensure address space layout randomization is enabled & sysctl \\
+43 & Ensure ptrace\_scope is restricted & sysctl \\
+44 & Ensure core dumps are restricted & sysctl \\
+45 & Ensure prelink is not installed & apt \\
+46 & Ensure Automatic Error Reporting is not enabled & lineinfile \\
+47 & Ensure message of the day is configured properly & copy \\
+48 & Ensure local login warning banner is configured properly & copy \\
+49 & Ensure remote login warning banner is configured properly & copy \\
+50 & Ensure access to /etc/motd is configured & file \\
+51 & Ensure access to /etc/issue is configured & file \\
+52 & Ensure access to /etc/issue.net is configured & file \\
+53 & Ensure GDM is removed & apt \\
+54 & Ensure GDM login banner is configured & lineinfile \\
+55 & Ensure GDM disable-user-list option is enabled & lineinfile \\
+56 & Ensure GDM screen locks when the user is idle & lineinfile \\
+57 & Ensure GDM screen locks cannot be overridden & lineinfile \\
+58 & Ensure GDM automatic mounting of removable media is disabled & lineinfile \\
+59 & Ensure GDM disabling automatic mounting of removable media is not overridden & lineinfile \\
+60 & Ensure GDM autorun-never is enabled & lineinfile \\
+61 & Ensure GDM autorun-never is not overridden & lineinfile \\
+62 & Ensure XDMCP is not enabled & lineinfile \\
+63 & Ensure autofs services are not in use & service \\
+64 & Ensure avahi daemon services are not in use & service \\
+65 & Ensure dhcp server services are not in use & service \\
+66 & Ensure dns server services are not in use & service \\
+67 & Ensure dnsmasq services are not in use & service \\
+68 & Ensure ftp server services are not in use & service \\
+69 & Ensure ldap server services are not in use & service \\
+70 & Ensure message access server services are not in use & service \\
+71 & Ensure network file system services are not in use & service \\
+72 & Ensure nis server services are not in use & service \\
+73 & Ensure print server services are not in use & service \\
+74 & Ensure rpcbind services are not in use & service \\
+75 & Ensure rsync services are not in use & service \\
+76 & Ensure samba file server services are not in use & service \\
+77 & Ensure snmp services are not in use & service \\
+78 & Ensure tftp server services are not in use & service \\
+79 & Ensure web proxy server services are not in use & service \\
+80 & Ensure web server services are not in use & service \\
+81 & Ensure xinetd services are not in use & service \\
+82 & Ensure X window server services are not in use & service \\
+83 & Ensure mail transfer agent is configured for local-only mode & lineinfile \\
+84 & Ensure NIS Client is not installed & apt \\
+85 & Ensure rsh client is not installed & apt \\
+86 & Ensure talk client is not installed & apt \\
+87 & Ensure telnet client is not installed & apt \\
+88 & Ensure ldap client is not installed & apt \\
+89 & Ensure ftp client is not installed & apt \\
+90 & Ensure a single time synchronization daemon is in use & service \\
+91 & Ensure systemd-timesyncd configured with authorized timeserver & lineinfile \\
+92 & Ensure systemd-timesyncd is enabled and running & service \\
+93 & Ensure chrony is configured with authorized timeserver & lineinfile \\
+94 & Ensure chrony is running as user \_chrony & user \\
+95 & Ensure chrony is enabled and running & service \\
+96 & Ensure cron daemon is enabled and active & service \\
+97 & Ensure permissions on /etc/crontab are configured & file \\
+98 & Ensure permissions on /etc/cron.hourly are configured & file \\
+99 & Ensure permissions on /etc/cron.daily are configured & file \\
+100 & Ensure permissions on /etc/cron.weekly are configured & file \\
+101 & Ensure permissions on /etc/cron.monthly are configured & file \\
+102 & Ensure permissions on /etc/cron.d are configured & file \\
+103 & Ensure crontab is restricted to authorized users & file \\
+104 & Ensure at is restricted to authorized users & file \\
+105 & Ensure wireless interfaces are disabled & service \\
+106 & Ensure bluetooth services are not in use & service \\
+107 & Ensure dccp kernel module is not available & modprobe \\
+108 & Ensure tipc kernel module is not available & modprobe \\
+109 & Ensure rds kernel module is not available & modprobe \\
+110 & Ensure sctp kernel module is not available & modprobe \\
+111 & Ensure ip forwarding is disabled & sysctl \\
+112 & Ensure packet redirect sending is disabled & sysctl \\
+113 & Ensure bogus icmp responses are ignored & sysctl \\
+114 & Ensure broadcast icmp requests are ignored & sysctl \\
+115 & Ensure icmp redirects are not accepted & sysctl \\
+116 & Ensure secure icmp redirects are not accepted & sysctl \\
+117 & Ensure reverse path filtering is enabled & sysctl \\
+118 & Ensure source routed packets are not accepted & sysctl \\
+119 & Ensure suspicious packets are logged & sysctl \\
+120 & Ensure tcp syn cookies is enabled & sysctl \\
+121 & Ensure ipv6 router advertisements are not accepted & sysctl \\
+122 & Ensure a single firewall configuration utility is in use & apt \\
+123 & Ensure ufw is installed & apt \\
+124 & Ensure iptables-persistent is not installed with ufw & apt \\
+125 & Ensure ufw service is enabled & service \\
+126 & Ensure ufw loopback traffic is configured & ufw \\
+127 & Ensure ufw firewall rules exist for all open ports & ufw \\
+128 & Ensure ufw default deny firewall policy & ufw \\
+129 & Ensure nftables is installed & apt \\
+130 & Ensure ufw is uninstalled or disabled with nftables & service \\
+131 & Ensure a nftables table exists & nftables \\
+132 & Ensure nftables base chains exist & nftables \\
+133 & Ensure nftables loopback traffic is configured & nftables \\
+134 & Ensure nftables default deny firewall policy & nftables \\
+135 & Ensure nftables service is enabled & service \\
+136 & Ensure nftables rules are permanent & copy \\
+137 & Ensure iptables packages are installed & apt \\
+138 & Ensure nftables is not in use with iptables & service \\
+139 & Ensure ufw is not in use with iptables & service \\
+140 & Ensure iptables default deny firewall policy & iptables \\
+141 & Ensure iptables loopback traffic is configured & iptables \\
+142 & Ensure iptables firewall rules exist for all open ports & iptables \\
+143 & Ensure ip6tables default deny firewall policy & iptables \\
+144 & Ensure ip6tables loopback traffic is configured & iptables \\
+145 & Ensure ip6tables firewall rules exist for all open ports & iptables \\
+146 & Ensure permissions on /etc/ssh/sshd\_config are configured & file \\
+147 & Ensure permissions on SSH private host key files are configured & file \\
+148 & Ensure permissions on SSH public host key files are configured & file \\
+149 & Ensure sshd access is configured & lineinfile \\
+150 & Ensure sshd Banner is configured & lineinfile \\
+151 & Ensure sshd Ciphers are configured & lineinfile \\
+152 & Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured & lineinfile \\
+153 & Ensure sshd DisableForwarding is enabled & lineinfile \\
+154 & Ensure sshd GSSAPIAuthentication is disabled & lineinfile \\
+155 & Ensure sshd HostbasedAuthentication is disabled & lineinfile \\
+156 & Ensure sshd IgnoreRhosts is enabled & lineinfile \\
+157 & Ensure sshd KexAlgorithms is configured & lineinfile \\
+158 & Ensure sshd LoginGraceTime is configured & lineinfile \\
+159 & Ensure sshd LogLevel is configured & lineinfile \\
+160 & Ensure sshd MACs are configured & lineinfile \\
+161 & Ensure sshd MaxAuthTries is configured & lineinfile \\
+162 & Ensure sshd MaxSessions is configured & lineinfile \\
+163 & Ensure sshd MaxStartups is configured & lineinfile \\
+164 & Ensure sshd PermitEmptyPasswords is disabled & lineinfile \\
+165 & Ensure sshd PermitRootLogin is disabled & lineinfile \\
+166 & Ensure sshd PermitUserEnvironment is disabled & lineinfile \\
+167 & Ensure sshd UsePAM is enabled & lineinfile \\
+168 & Ensure sudo is installed & apt \\
+169 & Ensure sudo commands use pty & lineinfile \\
+170 & Ensure sudo log file exists & file \\
+171 & Ensure users must provide password for privilege escalation & lineinfile \\
+172 & Ensure re-authentication for privilege escalation is not disabled globally & lineinfile \\
+173 & Ensure sudo authentication timeout is configured correctly & lineinfile \\
+174 & Ensure access to the su command is restricted & lineinfile \\
+175 & Ensure latest version of pam is installed & apt \\
+176 & Ensure libpam-modules is installed & apt \\
+177 & Ensure libpam-pwquality is installed & apt \\
+178 & Ensure pam\_unix module is enabled & lineinfile \\
+179 & Ensure pam\_faillock module is enabled & lineinfile \\
+180 & Ensure pam\_pwquality module is enabled & lineinfile \\
+181 & Ensure pam\_pwhistory module is enabled & lineinfile \\
+182 & Ensure password failed attempts lockout is configured & lineinfile \\
+183 & Ensure password unlock time is configured & lineinfile \\
+184 & Ensure password failed attempts lockout includes root account & lineinfile \\
+185 & Ensure password number of changed characters is configured & lineinfile \\
+186 & Ensure minimum password length is configured & lineinfile \\
+187 & Ensure password same consecutive characters is configured & lineinfile \\
+188 & Ensure password maximum sequential characters is configured & lineinfile \\
+189 & Ensure password dictionary check is enabled & lineinfile \\
+190 & Ensure password quality checking is enforced & lineinfile \\
+191 & Ensure password quality is enforced for the root user & lineinfile \\
+192 & Ensure password history remember is configured & lineinfile \\
+193 & Ensure password history is enforced for the root user & lineinfile \\
+194 & Ensure pam\_pwhistory includes use\_authtok & lineinfile \\
+195 & Ensure pam\_unix does not include nullok & lineinfile \\
+196 & Ensure pam\_unix does not include remember & lineinfile \\
+197 & Ensure pam\_unix includes a strong password hashing algorithm & lineinfile \\
+198 & Ensure pam\_unix includes use\_authtok & lineinfile \\
+199 & Ensure password expiration is configured & lineinfile \\
+200 & Ensure password expiration warning days is configured & lineinfile \\
+201 & Ensure strong password hashing algorithm is configured & lineinfile \\
+202 & Ensure inactive password lock is configured & lineinfile \\
+203 & Ensure all users last password change date is in the past & lineinfile \\
+204 & Ensure root is the only UID 0 account & lineinfile \\
+205 & Ensure root is the only GID 0 account & lineinfile \\
+206 & Ensure group root is the only GID 0 group & lineinfile \\
+207 & Ensure root account access is controlled & lineinfile \\
+208 & Ensure root path integrity & lineinfile \\
+209 & Ensure root user umask is configured & lineinfile \\
+210 & Ensure system accounts do not have a valid login shell & lineinfile \\
+211 & Ensure accounts without a valid login shell are locked & lineinfile \\
+212 & Ensure nologin is not listed in /etc/shells & lineinfile \\
+213 & Ensure default user shell timeout is configured & lineinfile \\
+214 & Ensure default user umask is configured & lineinfile \\
+215 & Ensure journald service is enabled and active & service \\
+216 & Ensure only one logging system is in use & service \\
+217 & Ensure systemd-journal-remote is installed & apt \\
+218 & Ensure systemd-journal-upload is enabled and active & service \\
+219 & Ensure systemd-journal-remote service is not in use & service \\
+220 & Ensure journald ForwardToSyslog is disabled & lineinfile \\
+221 & Ensure journald Compress is configured & lineinfile \\
+222 & Ensure journald Storage is configured & lineinfile \\
+223 & Ensure rsyslog is installed & apt \\
+224 & Ensure rsyslog service is enabled and active & service \\
+225 & Ensure journald is configured to send logs to rsyslog & lineinfile \\
+226 & Ensure rsyslog log file creation mode is configured & lineinfile \\
+227 & Ensure rsyslog is not configured to receive logs from a remote client & lineinfile \\
+228 & Ensure access to all logfiles has been configured & lineinfile \\
+229 & Ensure auditd packages are installed & apt \\
+230 & Ensure auditd service is enabled and active & service \\
+231 & Ensure auditing for processes that start prior to auditd is enabled & lineinfile \\
+232 & Ensure audit\_backlog\_limit is sufficient & sysctl \\
+233 & Ensure audit log storage size is configured & lineinfile \\
+234 & Ensure audit logs are not automatically deleted & lineinfile \\
+235 & Ensure system is disabled when audit logs are full & lineinfile \\
+236 & Ensure system warns when audit logs are low on space & lineinfile \\
+237 & Ensure changes to system administration scope (sudoers) is collected & lineinfile \\
+238 & Ensure actions as another user are always logged & lineinfile \\
+239 & Ensure events that modify the sudo log file are collected & lineinfile \\
+240 & Ensure events that modify date and time information are collected & lineinfile \\
+241 & Ensure events that modify the system's network environment are collected & lineinfile \\
+242 & Ensure use of privileged commands are collected & lineinfile \\
+243 & Ensure unsuccessful file access attempts are collected & lineinfile \\
+244 & Ensure events that modify user/group information are collected & lineinfile \\
+245 & Ensure discretionary access control permission modification events are collected & lineinfile \\
+246 & Ensure successful file system mounts are collected & lineinfile \\
+247 & Ensure session initiation information is collected & lineinfile \\
+248 & Ensure login and logout events are collected & lineinfile \\
+249 & Ensure file deletion events by users are collected & lineinfile \\
+250 & Ensure events that modify the system's Mandatory Access Controls are collected & lineinfile \\
+251 & Ensure successful and unsuccessful attempts to use the chcon command are collected & lineinfile \\
+252 & Ensure successful and unsuccessful attempts to use the setfacl command are collected & lineinfile \\
+253 & Ensure successful and unsuccessful attempts to use the chacl command are collected & lineinfile \\
+254 & Ensure successful and unsuccessful attempts to use the usermod command are collected & lineinfile \\
+255 & Ensure kernel module loading unloading and modification is collected & lineinfile \\
+256 & Ensure the audit configuration is immutable & lineinfile \\
+257 & Ensure audit log files mode is configured & file \\
+258 & Ensure audit log files owner is configured & file \\
+259 & Ensure audit log files group owner is configured & file \\
+260 & Ensure the audit log file directory mode is configured & file \\
+261 & Ensure audit configuration files mode is configured & file \\
+262 & Ensure audit configuration files owner is configured & file \\
+263 & Ensure audit configuration files group owner is configured & file \\
+264 & Ensure audit tools mode is configured & file \\
+265 & Ensure audit tools owner is configured & file \\
+266 & Ensure audit tools group owner is configured & file \\
+267 & Ensure AIDE is installed & apt \\
+268 & Ensure filesystem integrity is regularly checked & service \\
+269 & Ensure cryptographic mechanisms are used to protect the integrity of audit tools & lineinfile \\
+270 & Ensure permissions on /etc/passwd are configured & file \\
+271 & Ensure permissions on /etc/passwd- are configured & file \\
+272 & Ensure permissions on /etc/group are configured & file \\
+273 & Ensure permissions on /etc/group- are configured & file \\
+274 & Ensure permissions on /etc/shadow are configured & file \\
+275 & Ensure permissions on /etc/shadow- are configured & file \\
+276 & Ensure permissions on /etc/gshadow are configured & file \\
+277 & Ensure permissions on /etc/gshadow- are configured & file \\
+278 & Ensure permissions on /etc/shells are configured & file \\
+279 & Ensure permissions on /etc/security/opasswd are configured & file \\
+280 & Ensure world writable files and directories are secured & command \\
+281 & Ensure no files or directories without an owner and a group exist & command \\
+282 & Ensure accounts in /etc/passwd use shadowed passwords & lineinfile \\
+283 & Ensure /etc/shadow password fields are not empty & lineinfile \\
+284 & Ensure all groups in /etc/passwd exist in /etc/group & lineinfile \\
+285 & Ensure shadow group is empty & lineinfile \\
+286 & Ensure no duplicate UIDs exist & lineinfile \\
+287 & Ensure no duplicate GIDs exist & lineinfile \\
+288 & Ensure no duplicate user names exist & lineinfile \\
+289 & Ensure no duplicate group names exist & lineinfile \\
+290 & Ensure local interactive user home directories are configured & lineinfile \\
+291 & Ensure local interactive user dot files access is configured & lineinfile \\
+\hline
+\caption{Danh sách các khuyến nghị CIS có thể tự động hóa}
+\label{tab:automated_recommendations}
+\end{longtable}

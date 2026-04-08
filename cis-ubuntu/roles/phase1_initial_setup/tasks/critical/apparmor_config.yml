@@ -1,0 +1,31 @@
+---
+# Configure AppArmor security framework
+
+- name: Ensure AppArmor is installed
+  package:
+    name: apparmor
+    state: present
+
+- name: Ensure AppArmor utilities are installed
+  package:
+    name: apparmor-utils
+    state: present
+
+- name: Ensure AppArmor is enabled in bootloader
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash apparmor=1 security=apparmor"'
+    state: present
+
+- name: Ensure AppArmor service is enabled and running
+  service:
+    name: apparmor
+    state: started
+    enabled: yes
+
+- name: Put all AppArmor profiles in enforce mode
+  shell: aa-enforce /etc/apparmor.d/*
+  register: apparmor_enforce
+  changed_when: false
+  failed_when: false

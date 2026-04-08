@@ -1,0 +1,11 @@
+---
+- name: Phase 6 - Logging and Auditing
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  roles:
+    - ../roles/phase6_logging_auditing

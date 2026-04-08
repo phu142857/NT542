@@ -1,0 +1,40 @@
+### Manual
+
+| Tên Khuyến nghị                                                      |
+| :------------------------------------------------------------------- |
+| Ensure ufw outbound connections are configured                       |
+| Ensure iptables are flushed with nftables                            |
+| Ensure nftables outbound and established connections are configured  |
+| Ensure iptables outbound and established connections are configured  |
+| Ensure ip6tables outbound and established connections are configured |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                          |
+| :------------------------------------------------------- |
+| Ensure a single firewall configuration utility is in use |
+| Ensure ufw is installed                                  |
+| Ensure iptables-persistent is not installed with ufw     |
+| Ensure ufw service is enabled                            |
+| Ensure ufw loopback traffic is configured                |
+| Ensure ufw firewall rules exist for all open ports       |
+| Ensure ufw default deny firewall policy                  |
+| Ensure nftables is installed                             |
+| Ensure ufw is uninstalled or disabled with nftables      |
+| Ensure a nftables table exists                           |
+| Ensure nftables base chains exist                        |
+| Ensure nftables loopback traffic is configured           |
+| Ensure nftables default deny firewall policy             |
+| Ensure nftables service is enabled                       |
+| Ensure nftables rules are permanent                      |
+| Ensure iptables packages are installed                   |
+| Ensure nftables is not in use with iptables              |
+| Ensure ufw is not in use with iptables                   |
+| Ensure iptables default deny firewall policy             |
+| Ensure iptables loopback traffic is configured           |
+| Ensure iptables firewall rules exist for all open ports  |
+| Ensure ip6tables default deny firewall policy            |
+| Ensure ip6tables loopback traffic is configured          |
+| Ensure ip6tables firewall rules exist for all open ports |

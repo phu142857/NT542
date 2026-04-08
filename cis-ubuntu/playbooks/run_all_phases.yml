@@ -1,0 +1,46 @@
+---
+- name: Run All CIS Benchmark Phases
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  tasks:
+    - name: Clear Ansible cache and refresh password
+      shell: |
+        rm -rf ~/.ansible/tmp/ 2>/dev/null || true
+        chage -l {{ ansible_user }} 2>/dev/null || true
+        echo "Password cache cleared for {{ ansible_user }}"
+      changed_when: false
+      
+    - name: Run Phase 1 - Initial Setup
+      include_tasks: ../roles/phase1_initial_setup/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 2 - Services
+      include_tasks: ../roles/phase2_services/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 3 - Network Configuration
+      include_tasks: ../roles/phase3_network/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 4 - Host Based Firewall
+      include_tasks: ../roles/phase4_firewall/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 5 - Access Control
+      include_tasks: ../roles/phase5_access_control/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 6 - Logging and Auditing
+      include_tasks: ../roles/phase6_logging_auditing/tasks/main.yml
+      tags: critical,important
+    
+    - name: Run Phase 7 - System Maintenance
+      include_tasks: ../roles/phase7_system_maintenance/tasks/main.yml
+      tags: critical,important
+    

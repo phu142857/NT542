@@ -1,0 +1,15 @@
+---
+# Critical Security Tasks - Phase 3 Network
+# Network hardening and module disabling
+
+- name: Disable wireless and bluetooth interfaces
+  include_tasks: disable_wireless.yml
+  tags: wireless
+
+- name: Disable unnecessary network kernel modules
+  include_tasks: network_modules.yml
+  tags: network_modules
+
+- name: Apply network security hardening
+  include_tasks: network_hardening.yml
+  tags: network_hardening

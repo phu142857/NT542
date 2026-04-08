@@ -1,0 +1,32 @@
+---
+# User Default Configuration
+
+- name: Ensure nologin is not listed in /etc/shells
+  lineinfile:
+    path: /etc/shells
+    regexp: '^/usr/sbin/nologin'
+    state: absent
+
+- name: Ensure default user shell timeout is configured
+  lineinfile:
+    path: /etc/profile
+    regexp: '^#?TMOUT'
+    line: 'TMOUT=600'
+    state: present
+
+- name: Ensure default user umask is configured
+  lineinfile:
+    path: /etc/profile
+    regexp: '^#?umask'
+    line: 'umask 027'
+    state: present
+
+- name: Ensure all users last password change date is in the past
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 }' /etc/passwd); do
+      if [ "$user" != "root" ]; then
+        chage --lastday 0 "$user" 2>/dev/null || true
+      fi
+    done
+  register: password_change
+  changed_when: false

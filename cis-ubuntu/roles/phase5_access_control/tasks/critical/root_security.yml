@@ -1,0 +1,60 @@
+---
+# Root Account Security
+
+- name: Ensure root is the only UID 0 account
+  shell: |
+    awk -F: '($3 == "0") { print $1 }' /etc/passwd
+  register: uid_zero_accounts
+  changed_when: false
+
+- name: Display UID 0 accounts
+  debug:
+    msg: "UID 0 accounts: {{ uid_zero_accounts.stdout_lines }}"
+  when: uid_zero_accounts.stdout_lines | length > 1
+
+- name: Ensure root is the only GID 0 account
+  shell: |
+    awk -F: '($4 == "0") { print $1 }' /etc/passwd
+  register: gid_zero_accounts
+  changed_when: false
+
+- name: Display GID 0 accounts
+  debug:
+    msg: "GID 0 accounts: {{ gid_zero_accounts.stdout_lines }}"
+  when: gid_zero_accounts.stdout_lines | length > 1
+
+- name: Ensure root path integrity
+  lineinfile:
+    path: /root/.bashrc
+    regexp: '^PATH='
+    line: 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    state: present
+    create: yes
+
+- name: Ensure root user umask is configured
+  lineinfile:
+    path: /root/.bashrc
+    regexp: '^umask'
+    line: 'umask 077'
+    state: present
+
+- name: Ensure system accounts do not have a valid login shell
+  shell: |
+    awk -F: '($1!="root" && $3<1000 && $7!="/usr/sbin/nologin" && $7!="/bin/false") { print $1 ":" $7 }' /etc/passwd
+  register: system_accounts_shell
+  changed_when: false
+
+- name: Display system accounts with valid shells
+  debug:
+    msg: "System accounts with valid shells: {{ system_accounts_shell.stdout_lines }}"
+  when: system_accounts_shell.stdout_lines | length > 0
+
+- name: Ensure accounts without a valid login shell are locked
+  shell: |
+    for account in $(awk -F: '($7!="/usr/sbin/nologin" && $7!="/bin/false") { print $1 }' /etc/passwd); do
+      if [ "$account" != "root" ] && [ $(id -u "$account") -lt 1000 ]; then
+        usermod -L "$account"
+      fi
+    done
+  register: lock_accounts
+  changed_when: false

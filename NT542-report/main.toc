@@ -2,52 +2,18 @@
 \babel@toc {english}{}\relax 
 \contentsline {chapter}{M\d {u}c l\d {u}c}{i}{chapter*.1}%
 \contentsline {chapter}{\chapternumberline {1}Tổng quan hệ thống}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Mục tiêu triển khai}{1}{section.1.1}%
-\contentsline {subsection}{\numberline {1.1.1}Mục tiêu chính}{1}{subsection.1.1.1}%
-\contentsline {subsection}{\numberline {1.1.2}Lợi ích mong đợi}{1}{subsection.1.1.2}%
-\contentsline {section}{\numberline {1.2}Phạm vi triển khai}{1}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Ubuntu Server 24.04 LTS}{1}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}CIS Level 1 Benchmark}{2}{subsection.1.2.2}%
-\contentsline {section}{\numberline {1.3}Kiến trúc hệ thống}{2}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Kiến trúc tổng thể}{2}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Luồng hoạt động}{2}{subsection.1.3.2}%
-\contentsline {subsection}{\numberline {1.3.3}Ansible}{3}{subsection.1.3.3}%
-\contentsline {subsection}{\numberline {1.3.4}Lynis}{3}{subsection.1.3.4}%
-\contentsline {subsection}{\numberline {1.3.5}OpenSCAP}{3}{subsection.1.3.5}%
-\contentsline {chapter}{\chapternumberline {2}Phương pháp triển khai}{4}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Quy trình tổng thể}{4}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Scan → Hardening → Validate → Report}{4}{subsection.2.1.1}%
-\contentsline {section}{\numberline {2.2}Phương pháp tiếp cận}{4}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Manual Configuration}{4}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Automation bằng Ansible}{4}{subsection.2.2.2}%
-\contentsline {section}{\numberline {2.3}Thiết kế hệ thống Ansible}{5}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Inventory}{5}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Playbooks}{5}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Roles}{5}{subsection.2.3.3}%
-\contentsline {chapter}{\chapternumberline {3}Triển khai}{6}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Phase 1 – Core Security Foundations}{6}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}System Information Gathering}{6}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Package Management}{7}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}OpenSCAP Integration}{9}{subsection.3.1.3}%
-\contentsline {subsection}{\numberline {3.1.4}Lynis Security Audit}{10}{subsection.3.1.4}%
-\contentsline {section}{\numberline {3.2}Phase 2 – Filesystem \& System Hardening}{12}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Filesystem Security}{12}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}SUID/SGID Audit Report Creation}{16}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}System Settings}{18}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}ASLR Configuration}{19}{subsection.3.2.4}%
-\contentsline {section}{\numberline {3.3}Phase 3 – Password Policy Enhancement}{20}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Basic Password Policy}{20}{subsection.3.3.1}%
-\contentsline {section}{\numberline {3.4}Phase 4 – SSH Hardening}{25}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}SSH Configuration}{25}{subsection.3.4.1}%
-\contentsline {section}{\numberline {3.5}Phase 5 – Services Configuration}{27}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Service Management}{27}{subsection.3.5.1}%
-\contentsline {section}{\numberline {3.6}Phase 6 – Network \& Firewall}{28}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Network Security}{28}{subsection.3.6.1}%
-\contentsline {section}{\numberline {3.7}Phase 7 – Logging \& Audit}{28}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Audit System Configuration}{28}{subsection.3.7.1}%
-\contentsline {section}{\numberline {3.8}Phase 8 – Compliance \& Reporting}{29}{section.3.8}%
-\contentsline {subsection}{\numberline {3.8.1}Comprehensive Reporting}{29}{subsection.3.8.1}%
-\contentsline {chapter}{\chapternumberline {4}Tổng kết}{30}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Kết quả đạt được}{30}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Hạn chế}{30}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Hướng phát triển}{30}{section.4.3}%
+\contentsline {section}{\numberline {1.1}Tổng quan CIS}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Tổng quan Linux}{1}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Manual Hardening}{2}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Automated Hardening}{2}{subsection.1.2.2}%
+\contentsline {chapter}{\chapternumberline {2}Phương pháp triển khai}{13}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Quy trình tổng thể}{13}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Phương pháp tiếp cận}{13}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Manual Configuration}{13}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Automation bằng Ansible}{14}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Mô hình triển khai}{14}{section.2.3}%
+\contentsline {chapter}{\chapternumberline {3}Triển khai}{18}{chapter.3}%
+\contentsline {chapter}{\chapternumberline {4}Tổng kết}{19}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Kết quả đạt được}{19}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Hạn chế}{19}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Hướng phát triển}{19}{section.4.3}%

@@ -1,0 +1,59 @@
+---
+# Configure critical audit rules
+
+- name: Ensure changes to system administration scope (sudoers) is collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /etc/sudoers -p wa -k sudoers_changes'
+    state: present
+    create: yes
+
+- name: Ensure actions as another user are always logged
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S setuid -F auid>=1000 -F auid!=4294967295 -k setuid'
+    state: present
+
+- name: Ensure events that modify the sudo log file are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /var/log/sudo.log -p wa -k sudo_log'
+    state: present
+
+- name: Ensure events that modify date and time information are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time_change'
+    state: present
+
+- name: Ensure events that modify the system's network environment are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k hostname_change'
+    state: present
+
+- name: Ensure use of privileged commands are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a always,exit -F arch=b64 -F euid=0 -S execve -k privileged_commands'
+    state: present
+
+- name: Ensure events that modify user/group information are collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /etc/passwd -p wa -k identity'
+    state: present
+
+- name: Ensure kernel module loading unloading and modification is collected
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-w /etc/modules-load.d/ -p wa -k modules'
+    state: present
+
+- name: Ensure audit log files mode is configured
+  file:
+    path: /var/log/audit
+    mode: '0700'
+    owner: root
+    group: root
+    recurse: yes

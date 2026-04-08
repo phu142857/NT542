@@ -1,0 +1,7 @@
+---
+# Important Security Tasks - Phase 1
+# Medium impact security configurations
+
+- name: Configure login banners
+  include_tasks: login_banners.yml
+  tags: banners

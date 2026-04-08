@@ -1,0 +1,26 @@
+---
+# Remove X Window System services (server environments)
+
+- name: Ensure X window system packages are removed
+  package:
+    name:
+      - xserver-xorg
+      - xserver-xorg-core
+      - xinit
+      - x11-common
+      - x11-utils
+      - x11-xserver-utils
+    state: absent
+  when: cis_remove_x11 | default(false) | bool
+
+- name: Ensure display manager services are stopped
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - gdm
+    - lightdm
+    - sddm
+    - xdm
+  ignore_errors: yes

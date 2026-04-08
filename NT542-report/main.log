@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.3.30)  31 MAR 2026 13:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.3.30)  4 APR 2026 19:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1028,7 +1028,7 @@ Package babel Info: Hyphen rules for 'newzealand' set to \l@english
 )) (/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.code.tex
 File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 82.
+Package hyperref Info: Option `colorlinks' set `true' on input line 87.
 ) (/usr/share/texmf-dist/tex/latex/vntex/vietnam.sty
 Package: vietnam 2009/07/12 v1.3 support for Vietnamese
  (/usr/share/texmf-dist/tex/latex/base/ifthen.sty
@@ -1498,42 +1498,74 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box79
 \@float@everytoks=\toks52
 \@floatcapt=\box80
-)
-Package hyperref Info: Option `colorlinks' set `true' on input line 32.
+) (/usr/share/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count560
+\lst@gtempboxa=\box81
+\lst@token=\toks53
+\lst@length=\count561
+\lst@currlwidth=\dimen356
+\lst@column=\count562
+\lst@pos=\count563
+\lst@lostspace=\dimen357
+\lst@width=\dimen358
+\lst@newlines=\count564
+\lst@lineno=\count565
+\lst@maxwidth=\dimen359
+ (/usr/share/texmf-dist/tex/latex/listings/lstpatch.sty
+File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
+) (/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
+\c@lstnumber=\count566
+\lst@skipnumbers=\count567
+\lst@framebox=\box82
+) (/usr/share/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2025/11/14 1.11b listings configuration
+))
+Package: listings 2025/11/14 1.11b (Carsten Heinz)
 
+==> First Aid for listings.sty no longer applied!
+    Expected:
+        2024/09/23 1.10c (Carsten Heinz)
+    but found:
+        2025/11/14 1.11b (Carsten Heinz)
+    so I'm assuming it got fixed.
+Package hyperref Info: Option `colorlinks' set `true' on input line 34.
+(/usr/share/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)
 
 Package biblatex Warning: 'babel/polyglossia' detected but 'csquotes' missing.
 (biblatex)                Loading 'csquotes' recommended.
 
-\@quotelevel=\count560
-\@quotereset=\count561
+\@quotelevel=\count568
+\@quotereset=\count569
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for T5/cmr/m/n on input line 51.
-LaTeX Font Info:    Trying to load font information for T5+cmr on input line 51.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T5/cmr/m/n on input line 56.
+LaTeX Font Info:    Trying to load font information for T5+cmr on input line 56.
  (/usr/share/texmf-dist/tex/latex/vntex/t5cmr.fd
 File: t5cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 51.
-LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1571,17 +1603,17 @@ LaTeX Font Info:    ... okay on input line 51.
 
 (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count562
-\scratchdimen=\dimen356
-\scratchbox=\box81
-\nofMPsegments=\count563
-\nofMParguments=\count564
-\everyMPshowfont=\toks53
-\MPscratchCnt=\count565
-\MPscratchDim=\dimen357
-\MPnumerator=\count566
-\makeMPintoPDFobject=\count567
-\everyMPtoPDFconversion=\toks54
+\scratchcounter=\count570
+\scratchdimen=\dimen360
+\scratchbox=\box83
+\nofMPsegments=\count571
+\nofMParguments=\count572
+\everyMPshowfont=\toks54
+\MPscratchCnt=\count573
+\MPscratchDim=\dimen361
+\MPnumerator=\count574
+\makeMPintoPDFobject=\count575
+\everyMPtoPDFconversion=\toks55
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
@@ -1592,12 +1624,13 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
 Package caption Info: longtable package is loaded.
  (/usr/share/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 51.
+Package hyperref Info: Link coloring ON on input line 56.
  (./main.out) (./main.out)
 \@outlinefile=\write6
 \openout6 = `main.out'.
@@ -1612,7 +1645,7 @@ Package biblatex Info: ... file 'vietnamese.lbx' not found.
 
 
 Package biblatex Warning: Language 'vietnamese' not supported.
-(biblatex)                Using dummy definitions on input line 51.
+(biblatex)                Using dummy definitions on input line 56.
 
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Automatic encoding selection.
@@ -1622,35 +1655,36 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
 (./main.bbl)
-Package biblatex Info: Reference section=0 on input line 51.
-Package biblatex Info: Reference segment=0 on input line 51.
-LaTeX Font Info:    Calculating math sizes for size <20> on input line 53.
-LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 53.
+Package biblatex Info: Reference section=0 on input line 56.
+Package biblatex Info: Reference segment=0 on input line 56.
+\c@lstlisting=\count576
+LaTeX Font Info:    Calculating math sizes for size <20> on input line 58.
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 58.
  (/usr/share/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 53.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 58.
  (/usr/share/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 53.
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 58.
  (/usr/share/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 53.
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 58.
  (/usr/share/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 53.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 58.
  (/usr/share/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.80011> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12.00012> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc}] (./main.toc
@@ -1660,265 +1694,75 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 3.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 19.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 19.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 19.
- [1
+) [1
 
 
 
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]) [2] (./chapters/main/chapter-1.tex
+] (./chapters/main/chapter-1.tex
 Ch\uhorn \ohorn ng 1.
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 9.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 11.
 (/usr/share/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.34 \item T
-            Ã­ch há»£p sáºµn cÃ¡c cÃ´ng cá»¥ báº£o máº­t hiá»‡n Ä‘áº¡i [1
+l.63 \end{longtable}
+                     [1
 
 
-{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2]) (./chapters/main/chapter-2.tex [3]
+{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2]
+ignored: Infinite glue shrinkage found in box being split [3]
+ignored: Infinite glue shrinkage found in box being split [4]
+ignored: Infinite glue shrinkage found in box being split [5]
+ignored: Infinite glue shrinkage found in box being split [6]
+ignored: Infinite glue shrinkage found in box being split [7]
+ignored: Infinite glue shrinkage found in box being split [8]
+ignored: Infinite glue shrinkage found in box being split [9]
+ignored: Infinite glue shrinkage found in box being split [10]
+ignored: Infinite glue shrinkage found in box being split [11]) (./chapters/main/chapter-2.tex [12]
 Ch\uhorn \ohorn ng 2.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 4.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 4.
-LaTeX Info: Symbol \textrightarrow not provided by
-            font family ptm in TS1 encoding.
-            Default family used instead on input line 4.
-[4
-
-]) (./chapters/main/chapter-3.tex [5]
-Ch\uhorn \ohorn ng 3.
-LaTeX Font Info:    Trying to load font information for T5+cmtt on input line 27.
+LaTeX Font Info:    Trying to load font information for T5+cmtt on input line 46.
 (/usr/share/texmf-dist/tex/latex/vntex/t5cmtt.fd
 File: t5cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 25--37
- [][] 
+Overfull \hbox (8.09633pt too wide) in paragraph at lines 46--47
+[]\T5/ptm/b/n/12 Command Line Tools: \T5/cmtt/m/n/12 ansible-playbook\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 systemctl\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ufw\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 iptables\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 nftables\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 chmod\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 chown\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 mount\T5/ptm/m/n/12 ,
  []
 
-<graphics/phase-1/1.png, id=305, 988.69376pt x 541.02126pt>
-File: graphics/phase-1/1.png Graphic file (type png)
-<use graphics/phase-1/1.png>
-Package pdftex.def Info: graphics/phase-1/1.png  used on input line 45.
-(pdftex.def)             Requested size: 486.53883pt x 266.2337pt.
-[6
+[13
 
 ]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 75--83
- [][] 
- []
-
-[7 <./graphics/phase-1/1.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 89--99
- [][] 
+Overfull \hbox (5.10327pt too wide) in paragraph at lines 48--49
+[]\T5/ptm/b/n/12 File c§u h¼nh: \T5/cmtt/m/n/12 /etc/sysctl.conf\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/fstab\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/ssh/sshd_config\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/network/interfaces\T5/ptm/m/n/12 ,
  []
 
 
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 105--115
- [][] 
- []
-
-<graphics/phase-1/2.png, id=319, 974.64125pt x 160.6pt>
-File: graphics/phase-1/2.png Graphic file (type png)
-<use graphics/phase-1/2.png>
-Package pdftex.def Info: graphics/phase-1/2.png  used on input line 123.
-(pdftex.def)             Requested size: 486.53883pt x 80.1699pt.
-[8 <./graphics/phase-1/2.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 151--159
- [][] 
+Overfull \hbox (34.10582pt too wide) in paragraph at lines 64--65
+[]\T5/ptm/b/n/12 Ansible Com-mand Line Tools: \T5/cmtt/m/n/12 ansible-playbook\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-inventory\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-vault\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-galaxy\T5/ptm/m/n/12 ,
  []
 
 
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 165--173
- [][] 
+Overfull \hbox (42.99031pt too wide) in paragraph at lines 66--67
+[]\T5/ptm/b/n/12 Ansible Con-fig-u-ra-tion Files: \T5/cmtt/m/n/12 ansible.cfg\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 inventory/hosts\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 playbooks/*.yml\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 roles/*/tasks/main.yml\T5/ptm/m/n/12 ,
  []
 
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 179--187
- [][] 
+[14]
+Overfull \hbox (22.3667pt too wide) in paragraph at lines 139--140
+[]\T5/ptm/m/n/12 C i ^^_°t SSH server: \T5/cmtt/m/n/12 sudo apt install openssh-server \T5/ptm/m/n/12 (Ubuntu/Debian) ho°c \T5/cmtt/m/n/12 sudo pacman -S openssh
  []
 
-<graphics/phase-1/3.png, id=329, 991.705pt x 480.79625pt>
-File: graphics/phase-1/3.png Graphic file (type png)
-<use graphics/phase-1/3.png>
-Package pdftex.def Info: graphics/phase-1/3.png  used on input line 195.
-(pdftex.def)             Requested size: 486.53883pt x 235.88567pt.
-[9]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 223--231
- [][] 
- []
+[15] [16]) (./chapters/main/chapter-3.tex [17]
+Ch\uhorn \ohorn ng 3.
+) (./chapters/main/chapter-4.tex [18
 
-[10 <./graphics/phase-1/3.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 237--246
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 252--261
- [][] 
- []
-
-<graphics/phase-1/4.png, id=344, 990.70125pt x 544.0325pt>
-File: graphics/phase-1/4.png Graphic file (type png)
-<use graphics/phase-1/4.png>
-Package pdftex.def Info: graphics/phase-1/4.png  used on input line 269.
-(pdftex.def)             Requested size: 486.53883pt x 267.17595pt.
-[11 <./graphics/phase-1/4.png>]
-Overfull \hbox (5.90027pt too wide) in paragraph at lines 289--290
-[]\T5/ptm/m/n/12 C§u h¼nh quy·n truy cªp cho c¡c file h» thèng quan trång (/etc/passwd, /etc/shadow, /etc/group, /etc/gshadow) 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 301--310
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 316--325
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 331--340
- [][] 
- []
-
-[12]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 346--356
- [][] 
- []
-
-<graphics/phase-2/1.1.png, id=360, 867.24pt x 837.1275pt>
-File: graphics/phase-2/1.1.png Graphic file (type png)
-<use graphics/phase-2/1.1.png>
-Package pdftex.def Info: graphics/phase-2/1.1.png  used on input line 364.
-(pdftex.def)             Requested size: 486.53883pt x 469.64403pt.
-[13]
-<graphics/phase-2/1.2.png, id=369, 881.2925pt x 681.54625pt>
-File: graphics/phase-2/1.2.png Graphic file (type png)
-<use graphics/phase-2/1.2.png>
-Package pdftex.def Info: graphics/phase-2/1.2.png  used on input line 371.
-(pdftex.def)             Requested size: 486.53883pt x 376.26593pt.
- [14 <./graphics/phase-2/1.1.png>]
-<graphics/phase-2/1.3.png, id=376, 877.2775pt x 514.92375pt>
-File: graphics/phase-2/1.3.png Graphic file (type png)
-<use graphics/phase-2/1.3.png>
-Package pdftex.def Info: graphics/phase-2/1.3.png  used on input line 378.
-(pdftex.def)             Requested size: 486.53883pt x 285.58177pt.
- [15 <./graphics/phase-2/1.2.png>]
-<graphics/phase-2/2.png, id=383, 863.225pt x 947.54pt>
-File: graphics/phase-2/2.png Graphic file (type png)
-<use graphics/phase-2/2.png>
-Package pdftex.def Info: graphics/phase-2/2.png  used on input line 405.
-(pdftex.def)             Requested size: 486.53883pt x 534.05984pt.
- [16 <./graphics/phase-2/1.3.png>] [17 <./graphics/phase-2/2.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 433--442
- [][] 
- []
-
-<graphics/phase-2/3.png, id=397, 865.2325pt x 453.695pt>
-File: graphics/phase-2/3.png Graphic file (type png)
-<use graphics/phase-2/3.png>
-Package pdftex.def Info: graphics/phase-2/3.png  used on input line 450.
-(pdftex.def)             Requested size: 486.53883pt x 255.11974pt.
-[18 <./graphics/phase-2/3.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 478--486
- [][] 
- []
-
-<graphics/phase-2/4.png, id=405, 870.25125pt x 462.72874pt>
-File: graphics/phase-2/4.png Graphic file (type png)
-<use graphics/phase-2/4.png>
-Package pdftex.def Info: graphics/phase-2/4.png  used on input line 494.
-(pdftex.def)             Requested size: 486.53883pt x 258.70975pt.
-[19]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 526--533
- [][] 
- []
-
-[20 <./graphics/phase-2/4.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 539--552
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 558--567
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 573--581
- [][] 
- []
-
-<graphics/phase-3/1.png, id=417, 873.2625pt x 879.285pt>
-File: graphics/phase-3/1.png Graphic file (type png)
-<use graphics/phase-3/1.png>
-Package pdftex.def Info: graphics/phase-3/1.png  used on input line 589.
-(pdftex.def)             Requested size: 486.53883pt x 489.88731pt.
-[21]
-<graphics/phase-3/2.png, id=426, 879.285pt x 399.4925pt>
-File: graphics/phase-3/2.png Graphic file (type png)
-<use graphics/phase-3/2.png>
-Package pdftex.def Info: graphics/phase-3/2.png  used on input line 596.
-(pdftex.def)             Requested size: 486.53883pt x 221.05042pt.
- [22 <./graphics/phase-3/1.png>]
-<graphics/phase-3/3.png, id=435, 862.22125pt x 835.12pt>
-File: graphics/phase-3/3.png Graphic file (type png)
-<use graphics/phase-3/3.png>
-Package pdftex.def Info: graphics/phase-3/3.png  used on input line 603.
-(pdftex.def)             Requested size: 486.53883pt x 471.24475pt.
- [23 <./graphics/phase-3/2.png>] [24 <./graphics/phase-3/3.png>]
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 635--646
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 652--660
- [][] 
- []
-
-
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 666--674
- [][] 
- []
-
-<graphics/phase-4/1.png, id=448, 1205.50375pt x 683.55376pt>
-File: graphics/phase-4/1.png Graphic file (type png)
-<use graphics/phase-4/1.png>
-Package pdftex.def Info: graphics/phase-4/1.png  used on input line 682.
-(pdftex.def)             Requested size: 486.53883pt x 275.87817pt.
-[25]
-<graphics/phase-4/2.png, id=456, 1203.49625pt x 377.41pt>
-File: graphics/phase-4/2.png Graphic file (type png)
-<use graphics/phase-4/2.png>
-Package pdftex.def Info: graphics/phase-4/2.png  used on input line 689.
-(pdftex.def)             Requested size: 486.53883pt x 152.57378pt.
-<graphics/phase-4/3.png, id=457, 1216.545pt x 890.32625pt>
-File: graphics/phase-4/3.png Graphic file (type png)
-<use graphics/phase-4/3.png>
-Package pdftex.def Info: graphics/phase-4/3.png  used on input line 696.
-(pdftex.def)             Requested size: 486.53883pt x 356.06985pt.
- [26 <./graphics/phase-4/1.png> <./graphics/phase-4/2.png>] [27 <./graphics/phase-4/3.png>] [28]) (./chapters/main/chapter-4.tex [29]
+]
 Ch\uhorn \ohorn ng 4.
 )
 
-LaTeX Warning: Empty bibliography on input line 91.
+LaTeX Warning: Empty bibliography on input line 96.
 
-[30
+[19
 
 ]
 \tf@toc=\write7
@@ -1930,24 +1774,24 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: B9BBE948A43012EF1200631526D0F184;8490.
+(rerunfilecheck)             Checksum: CB41FB5306601E3968503903839A3097;2446.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 38170 strings out of 468995
- 698336 string characters out of 5460435
- 1647349 words of memory out of 5000000
- 66226 multiletter control sequences out of 15000+600000
- 672086 words of font info for 111 fonts, out of 8000000 for 9000
+ 39375 strings out of 468995
+ 715148 string characters out of 5460435
+ 1800178 words of memory out of 5000000
+ 67523 multiletter control sequences out of 15000+600000
+ 671329 words of font info for 103 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 99i,12n,118p,1239b,2311s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrb1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb>
-Output written on main.pdf (33 pages, 1344877 bytes).
+ 99i,11n,118p,1239b,1951s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb></usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb>
+Output written on main.pdf (21 pages, 129898 bytes).
 PDF statistics:
- 557 PDF objects out of 1000 (max. 8388607)
- 469 compressed objects within 5 object streams
- 130 named destinations out of 1000 (max. 500000)
- 501 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 235 PDF objects out of 1000 (max. 8388607)
+ 200 compressed objects within 2 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 149 words of extra memory for PDF output out of 10000 (max. 10000000)
 

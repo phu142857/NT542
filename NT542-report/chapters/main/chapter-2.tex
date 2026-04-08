@@ -1,7 +1,34 @@
 \chapter{Phương pháp triển khai}
 
 \section{Quy trình tổng thể}
-\subsection{Scan → Hardening → Validate → Report}
+
+
+\vspace{10pt}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=3.5cm, auto]
+    % Define styles
+    \tikzstyle{process} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!20, line width=0.8pt]
+    \tikzstyle{arrow} = [thick,->,>=stealth, line width=0.8pt]
+    
+    % Place nodes
+    \node (scan) [process] {Scan};
+    \node (hardening) [process, right of=scan, xshift=1cm] {Hardening};
+    \node (validate) [process, right of=hardening, xshift=1cm] {Validate};
+    \node (report) [process, right of=validate, xshift=1cm] {Report};
+    
+    % Draw arrows with proper spacing
+    \draw [arrow] (scan.east) -- (hardening.west);
+    \draw [arrow] (hardening.east) -- (validate.west);
+    \draw [arrow] (validate.east) -- (report.west);
+    
+    % Feedback loop connecting to top of nodes
+    \draw [arrow, dashed, bend right=60] (report.north) to node[above, text width=2cm, text centered] {Feedback Loop} (scan.north);
+\end{tikzpicture}
+\caption{Quy trình 4 bước triển khai bảo mật hệ thống}
+\label{fig:security_process}
+\end{figure}
+
 \vspace{5pt}
 \noindent Quy trình triển khai bảo mật được thiết kế theo chu trình 4 bước chính, đảm bảo tính toàn diện và có thể lặp lại. Mỗi bước có vai trò cụ thể và liên kết chặt chẽ với nhau để tạo ra một hệ thống bảo mật hoàn chỉnh.
 
@@ -11,7 +38,15 @@
 \section{Phương pháp tiếp cận}
 \subsection{Manual Configuration}
 \vspace{5pt}
-\noindent Cấu hình thủ công là phương pháp truyền thống trong quản trị hệ thống. Administrator trực tiếp thực hiện các thay đổi trên hệ thống thông qua command line hoặc giao diện đồ họa.
+\noindent Cấu hình thủ công là phương pháp truyền thống trong quản trị hệ thống. Administrator trực tiếp thực hiện các thay đổi trên hệ thống thông qua command line, giao diện đồ họa hoặc file config.
+
+\vspace{5pt}
+\noindent \textbf{Các công cụ sử dụng trong cấu hình thủ công:}
+\begin{itemize}
+\item \textbf{Command Line Tools:} \texttt{ansible-playbook}, \texttt{systemctl}, \texttt{ufw}, \texttt{iptables}, \texttt{nftables}, \texttt{chmod}, \texttt{chown}, \texttt{mount}, \texttt{netstat}, \texttt{lynis}, \texttt{aide}, \texttt{auditd}, \texttt{fail2ban}
+\item \textbf{Giao diện đồ họa (GUI):} AWX/Tower, Grafana, Webmin, Cockpit
+\item \textbf{File cấu hình:} \texttt{/etc/sysctl.conf}, \texttt{/etc/fstab}, \texttt{/etc/ssh/sshd\_config}, \texttt{/etc/network/interfaces}, \texttt{/etc/passwd}, \texttt{/etc/shadow}, \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/}
+\end{itemize}
 
 \vspace{5pt}
 \noindent Phương pháp này có ưu điểm là linh hoạt và dễ kiểm soát từng bước, nhưng nhược điểm lớn là tốn nhiều thời gian, dễ xảy ra sai sót, và khó đảm bảo tính nhất quán giữa nhiều hệ thống khác nhau.
@@ -24,38 +59,229 @@
 \noindent Ansible là công cụ tự động hóa mạnh mẽ giúp loại bỏ các thao tác thủ công lặp đi lặp lại. Với Ansible, chúng ta có thể định nghĩa toàn bộ quy trình hardening dưới dạng code, đảm bảo tính nhất quán và có thể tái sử dụng.
 
 \vspace{5pt}
+\noindent \textbf{Các công cụ sử dụng trong automation bằng Ansible:}
+\begin{itemize}
+\item \textbf{Ansible Command Line Tools:} \texttt{ansible-playbook}, \texttt{ansible-inventory}, \texttt{ansible-vault}, \texttt{ansible-galaxy}, \texttt{ansible-pull}
+\item \textbf{Ansible GUI Tools:} AWX/Tower, Ansible Semaphore, Rundeck, Jenkins với Ansible plugin
+\item \textbf{Ansible Configuration Files:} \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/*.yml}, \texttt{roles/*/tasks/main.yml}, \texttt{group\_vars/*}, \texttt{host\_vars/*}, \texttt{vars/*}, \texttt{vault/*}
+\end{itemize}
+
+\vspace{5pt}
 \noindent Ansible sử dụng YAML để định nghĩa các playbook, giúp administrator dễ dàng đọc, hiểu và chỉnh sửa. Khả năng idempotent của Ansible đảm bảo rằng việc chạy nhiều lần sẽ không gây ra các trạng thái không mong muốn.
 
 \vspace{5pt}
-\noindent Đặc biệt, Ansible hoạt động theo chế độ agentless, chỉ yêu cầu SSH và Python trên máy mục tiêu, giúp giảm thiểu sự phức tạp trong việc triển khai.
+\section{Mô hình triển khai}
 
-\section{Thiết kế hệ thống Ansible}
-\subsection{Inventory}
-\vspace{5pt}
-\noindent Inventory là thành phần cơ bản của Ansible, dùng để định nghĩa danh sách các máy chủ mục tiêu. Inventory có thể được định nghĩa dưới dạng file INI, YAML, hoặc sử dụng dynamic inventory từ các nguồn như cloud providers.
+\vspace{10pt}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=4cm and 3cm,
+    every node/.style={font=\small},
+    controller/.style={
+        rectangle, rounded corners,
+        minimum width=3cm, minimum height=1.5cm,
+        text centered, draw=black, fill=red!20,
+        align=center
+    },
+    worker/.style={
+        rectangle, rounded corners,
+        minimum width=2.8cm, minimum height=1.5cm,
+        text centered, draw=black, fill=blue!20,
+        align=center
+    },
+    arrow/.style={->, very thick}
+]
+
+% Nodes
+\node (worker1) [worker] {Worker 1\\Ubuntu 22.04};
+
+\node (worker2) [worker, below=1cm of worker1] {Worker 2\\Ubuntu 24.04};
+
+\node (controller) [controller, left=4cm of $(worker1)!0.5!(worker2)$] {Controller\\Arch Linux};
+
+% Arrows
+\draw [arrow] (controller.east) -- (worker1.west);
+\draw [arrow] (worker1.west) -- (controller.east);
+
+\draw [arrow] (controller.east) -- (worker2.west);
+\draw [arrow] (worker2.west) -- (controller.east);
+
+\end{tikzpicture}
+\caption{Mô hình triển khai Controller-Workers}
+\label{fig:deployment_model}
+\end{figure}
+
+\noindent
+\vspace{10pt}
+\textbf{Quy trình triển khai mô hình Controller--Workers}
+
+\noindent
+Quy trình triển khai hệ thống được thực hiện theo mô hình tập trung, trong đó
+máy Controller đóng vai trò điều phối và các Worker Nodes là các máy mục tiêu
+được cấu hình tự động thông qua Ansible. Các bước triển khai cụ thể như sau:
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 0: Chuẩn bị và cài đặt các thành phần cơ bản}
+
+Trước khi bắt đầu quy trình triển khai, cần chuẩn bị các thành phần cơ bản trên từng máy:
+
+\noindent\textit{Trên máy Controller:}
+\begin{itemize}
+\item Cài đặt Ansible: \texttt{sudo pacman -S ansible}
+\item Cài đặt SSH client: \texttt{sudo pacman -S openssh}
+\item Cài đặt Git (nếu cần): \texttt{sudo pacman -S git}
+\item Cấu hình file \texttt{ansible.cfg} và \texttt{inventory}
+\end{itemize}
+
+\noindent\textit{Trên các Worker Nodes:}
+\begin{itemize}
+\item Cài đặt SSH server: \texttt{sudo apt install openssh-server} (Ubuntu/Debian) hoặc \texttt{sudo pacman -S openssh} (Arch Linux)
+\item Cài đặt Python: \texttt{sudo apt install python3} (Ubuntu/Debian) hoặc \texttt{sudo pacman -S python} (Arch Linux)
+\item Khởi động SSH service: \texttt{sudo systemctl enable ssh \&\& sudo systemctl start ssh}
+\item Đảm bảo firewall cho phép kết nối SSH (port 22)
+\end{itemize}
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 1: Thiết lập môi trường Controller}
+
+\noindent
+Trong giai đoạn này, máy Controller được cài đặt Ansible và cấu hình cơ chế
+xác thực SSH key để kết nối đến các Worker Nodes một cách an toàn và không cần mật khẩu.
+
+\noindent
+\textit{Ví dụ: Tạo SSH key trên máy Controller}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+ssh-keygen -f ~NT542 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent Sau đó khởi động SSH agent và thêm key:
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+eval "\$(ssh-agent -s)" \\
+ssh-add ~NT542 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 2: Chuẩn bị các Worker Nodes}
+
+\noindent
+Các máy Worker được cài đặt SSH server và đảm bảo có môi trường Python để
+Ansible có thể thực thi các module từ xa. Đồng thời, public key từ Controller
+được sao chép sang các Worker để thiết lập kết nối tin cậy.
+
+\noindent
+\textit{Ví dụ: Copy SSH key đến các Worker}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+ssh-copy-id -i ~NT542.pub server2@192.168.122.174 \\
+ssh-copy-id -i ~NT542.pub server3@192.168.122.112 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 3: Cấu hình Inventory và Variables}
+
+\noindent
+Hệ thống inventory được thiết lập để định danh các Worker Nodes và khai báo
+các thông tin kết nối như user và private key. Điều này giúp Controller có thể
+quản lý nhiều máy từ một cấu hình tập trung.
+
+\noindent
+\textit{Ví dụ: File inventory}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+[servers] \\
+192.168.122.174 ansible\_user=server2 ansible\_ssh\_private\_key\_file=~/Path/to/key \\
+192.168.122.112 ansible\_user=server3 ansible\_ssh\_private\_key\_file=~/Path/to/key \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 4: Phát triển và thực thi Playbooks}
+
+\noindent
+Các playbook được xây dựng để tự động hóa việc cấu hình hệ thống theo tiêu chuẩn
+CIS Benchmark. Sau khi hoàn tất, có thể kiểm tra kết nối và thực thi playbook
+trên toàn bộ hệ thống.
+
+\noindent
+\textit{Ví dụ: Kiểm tra kết nối}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+ansible all -m ping \\
+\hline
+\end{tabular}
+\end{table}
+
+\textit{Ví dụ: Chạy playbook chính}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+ansible-playbook playbooks/site.yml --ask-become-pass \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 5: Kiểm tra và đánh giá hệ thống}
+
+\noindent
+Sau khi triển khai, hệ thống có thể được kiểm tra lại thông qua các playbook audit
+để đánh giá mức độ tuân thủ với tiêu chuẩn bảo mật.
+
+\noindent
+\textit{Ví dụ: Chạy audit}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{0.95\textwidth}|}
+\hline
+ansible-playbook playbooks/audit.yml \\
+\hline
+\end{tabular}
+\end{table}
 
 \vspace{5pt}
-\noindent Trong dự án này, inventory được cấu trúc theo nhóm máy chủ để dễ dàng quản lý và áp dụng các chính sách khác nhau cho từng nhóm. Mỗi nhóm có thể có các biến riêng biệt phù hợp với vai trò và yêu cầu bảo mật cụ thể.
+\noindent
+Nhờ quy trình này, việc triển khai và kiểm soát cấu hình hệ thống được thực hiện
+một cách nhất quán, giảm thiểu sai sót thủ công và nâng cao mức độ bảo mật tổng thể.
 
-\vspace{5pt}
-\noindent Inventory cũng cho phép định nghĩa các biến toàn cục và biến riêng cho từng host, giúp linh hoạt trong việc cấu hình môi trường đa dạng.
+\noindent\vspace{5pt}
+\textbf{Giai đoạn 6: Tổng kết và bảo trì hệ thống}
 
-\subsection{Playbooks}
-\vspace{5pt}
-\noindent Playbooks là tập hợp các task được định nghĩa theo thứ tự thực hiện. Mỗi playbook có thể chứa một hoặc nhiều play, mỗi play áp dụng cho một nhóm host cụ thể và thực hiện các task thông qua các module Ansible.
+Sau khi triển khai hoàn tất, cần thực hiện các bước bảo trì và giám sát định kỳ:
 
-\vspace{5pt}
-\noindent Playbooks trong dự án này được chia thành các chức năng chính: scanning, hardening, validation, và reporting. Mỗi playbook được thiết kế để có thể chạy độc lập hoặc kết hợp với nhau theo quy trình tổng thể.
+\noindent\textit{Các hoạt động bảo trì:}
+\begin{itemize}
+\item Theo dõi log của Ansible để phát hiện lỗi hoặc cảnh báo
+\item Cập nhật các playbook khi có phiên bản CIS Benchmark mới
+\item Thực hiện audit định kỳ (hàng tháng/quý) để đảm bảo tuân thủ
+\item Sao lưu cấu hình và các playbook đã tùy chỉnh
+\item Đào tạo nhân viên về quy trình vận hành và xử lý sự cố
+\end{itemize}
 
-\vspace{5pt}
-\noindent Các playbook sử dụng conditional logic, handlers, và error handling để đảm bảo tính robust và khả năng phục hồi khi gặp lỗi.
-
-\subsection{Roles}
-\vspace{5pt}
-\noindent Roles là cách tổ chức Ansible code theo cấu trúc module hóa, giúp tái sử dụng và bảo trì dễ dàng. Mỗi role có cấu trúc thư mục chuẩn gồm tasks, handlers, templates, files, vars, defaults, và meta.
-
-\vspace{5pt}
-\noindent Trong dự án này, các role được phân chia theo chức năng bảo mật: filesystem, network, services, users, logging, monitoring. Mỗi role chịu trách nhiệm về một lĩnh vực cụ thể của việc hardening bảo mật.
-
-\vspace{5pt}
-\noindent Cấu trúc role giúp dễ dàng mở rộng, cập nhật và chia sẻ giữa các dự án khác nhau, đồng thời đảm bảo tính nhất quán trong việc áp dụng các biện pháp bảo mật.
+\noindent\textit{Đánh giá hiệu quả:}
+\begin{itemize}
+\item Đo lường mức độ tuân thủ CIS Benchmark trước và sau triển khai
+\item Thời gian saved so với cấu hình thủ công
+\item Số lượng security incidents giảm sau khi áp dụng tiêu chuẩn
+\item Chi phí vận hành và bảo trì hệ thống
+\end{itemize}

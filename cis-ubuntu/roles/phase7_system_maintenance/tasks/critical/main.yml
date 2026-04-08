@@ -1,0 +1,15 @@
+---
+# Critical Security Tasks - Phase 7 System Maintenance
+# File permissions and system integrity
+
+- name: Configure critical system file permissions
+  include_tasks: file_permissions.yml
+  tags: file_permissions
+
+- name: Perform system integrity checks
+  include_tasks: system_integrity.yml
+  tags: system_integrity
+
+- name: Review SUID and SGID files
+  include_tasks: suid_sgid_review.yml
+  tags: suid_sgid

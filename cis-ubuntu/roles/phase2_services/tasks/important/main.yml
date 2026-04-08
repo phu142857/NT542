@@ -1,0 +1,15 @@
+---
+# Important Security Tasks - Phase 2 Services
+# Configure essential services and remove unnecessary clients
+
+- name: Remove unnecessary client applications
+  include_tasks: remove_clients.yml
+  tags: remove_clients
+
+- name: Configure time synchronization
+  include_tasks: configure_timesync.yml
+  tags: timesync
+
+- name: Configure cron daemon security
+  include_tasks: configure_cron.yml
+  tags: cron

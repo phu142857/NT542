@@ -1,0 +1,19 @@
+---
+# Critical Security Tasks - Phase 6 Logging and Auditing
+# Core logging system and auditd configuration
+
+- name: Configure logging system
+  include_tasks: logging_system.yml
+  tags: logging
+
+- name: Configure auditd service
+  include_tasks: auditd_config.yml
+  tags: auditd
+
+- name: Configure critical audit rules
+  include_tasks: audit_rules.yml
+  tags: audit_rules
+
+- name: Configure file integrity monitoring
+  include_tasks: file_integrity.yml
+  tags: integrity

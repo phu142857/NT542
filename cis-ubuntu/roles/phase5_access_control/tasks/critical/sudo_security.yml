@@ -1,0 +1,51 @@
+---
+# Sudo Security Configuration
+
+- name: Ensure sudo is installed
+  package:
+    name: sudo
+    state: present
+
+- name: Ensure sudo commands use pty
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^Defaults.*use_pty'
+    line: 'Defaults use_pty'
+    state: present
+
+- name: Ensure sudo log file exists
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^Defaults.*logfile'
+    line: 'Defaults logfile="/var/log/sudo.log"'
+    state: present
+
+- name: Ensure users must provide password for privilege escalation
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^%sudo.*NOPASSWD'
+    state: absent
+
+- name: Ensure sudo authentication timeout is configured correctly
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^Defaults.*timestamp_timeout'
+    line: 'Defaults timestamp_timeout=15'
+    state: present
+
+- name: Ensure access to the su command is restricted
+  file:
+    path: /etc/pam.d/su
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Configure su access restrictions
+  blockinfile:
+    path: /etc/pam.d/su
+    block: |
+      auth sufficient pam_rootok.so
+      auth required pam_wheel.so group=wheel
+      auth required pam_unix.so
+    state: present
+    create: yes

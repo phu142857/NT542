@@ -1,0 +1,56 @@
+---
+# Advanced logging configurations
+
+- name: Ensure systemd-journal-remote is installed
+  package:
+    name: systemd-journal-remote
+    state: present
+  when: cis_enable_remote_logging | default(false) | bool
+
+- name: Ensure systemd-journal-upload is enabled and active
+  service:
+    name: systemd-journal-upload
+    state: started
+    enabled: yes
+  when: cis_enable_remote_logging | default(false) | bool
+
+- name: Ensure systemd-journal-remote service is not in use
+  service:
+    name: systemd-journal-remote
+    state: stopped
+    enabled: no
+  when: not cis_enable_remote_logging | default(false) | bool
+
+- name: Ensure journald is configured to send logs to rsyslog
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?ForwardToSyslog'
+    line: 'ForwardToSyslog=yes'
+    state: present
+  when: cis_journald_to_rsyslog | default(true) | bool
+
+- name: Ensure rsyslog is not configured to receive logs from a remote client
+  lineinfile:
+    path: /etc/rsyslog.conf
+    regexp: '^\$ModLoad imtcp'
+    state: absent
+
+- name: Ensure logrotate is configured
+  copy:
+    content: |
+      /var/log/syslog
+      {
+          rotate 7
+          daily
+          missingok
+          notifempty
+          delaycompress
+          compress
+          postrotate
+              /usr/lib/rsyslog/rsyslog-rotate
+          endscript
+      }
+    dest: /etc/logrotate.d/syslog
+    mode: '0644'
+    owner: root
+    group: root

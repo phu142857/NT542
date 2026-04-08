@@ -1,0 +1,40 @@
+---
+# Configure file integrity monitoring
+
+- name: Ensure AIDE is installed
+  package:
+    name: aide
+    state: present
+
+- name: Initialize AIDE database
+  shell: aide --init
+  args:
+    creates: /var/lib/aide/aide.db.new
+  register: aide_init
+
+- name: Move AIDE database to active location
+  shell: mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+  when: aide_init.changed
+
+- name: Ensure filesystem integrity is regularly checked
+  cron:
+    name: "AIDE integrity check"
+    job: "/usr/bin/aide --check"
+    minute: "0"
+    hour: "2"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    state: present
+
+- name: Ensure cryptographic mechanisms are used to protect the integrity of audit tools
+  file:
+    path: "{{ item }}"
+    mode: '0755'
+    owner: root
+    group: root
+  loop:
+    - /usr/sbin/auditctl
+    - /usr/sbin/auditd
+    - /usr/sbin/ausearch
+    - /usr/sbin/aureport

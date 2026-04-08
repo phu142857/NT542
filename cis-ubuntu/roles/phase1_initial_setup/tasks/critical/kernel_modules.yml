@@ -1,0 +1,51 @@
+---
+# Disable unnecessary kernel modules
+- name: Disable cramfs kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install cramfs /bin/true"
+    create: yes
+    state: present
+
+- name: Disable freevxfs kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install freevxfs /bin/true"
+    state: present
+
+- name: Disable hfs kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install hfs /bin/true"
+    state: present
+
+- name: Disable hfsplus kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install hfsplus /bin/true"
+    state: present
+
+- name: Disable jffs2 kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install jffs2 /bin/true"
+    state: present
+
+- name: Disable squashfs kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install squashfs /bin/true"
+    state: present
+
+- name: Disable udf kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install udf /bin/true"
+    state: present
+
+- name: Disable usb-storage kernel module (if not needed)
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install usb-storage /bin/true"
+    state: present
+  when: cis_disable_usb_storage | default(false) | bool

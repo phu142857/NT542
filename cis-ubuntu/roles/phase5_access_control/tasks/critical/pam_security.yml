@@ -1,0 +1,62 @@
+---
+# PAM Security Configuration
+
+- name: Ensure latest version of pam is installed
+  package:
+    name: libpam-modules
+    state: latest
+
+- name: Ensure libpam-pwquality is installed
+  package:
+    name: libpam-pwquality
+    state: present
+
+- name: Ensure pam_faillock module is enabled
+  lineinfile:
+    path: /etc/pam.d/common-account
+    regexp: '^account.*pam_faillock.so'
+    line: 'account  required  pam_faillock.so'
+    state: present
+    create: yes
+
+- name: Ensure pam_pwquality module is enabled
+  lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '^password.*pam_pwquality.so'
+    line: 'password  requisite   pam_pwquality.so retry=3'
+    state: present
+
+- name: Ensure pam_pwhistory module is enabled
+  lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '^password.*pam_pwhistory.so'
+    line: 'password  sufficient   pam_pwhistory.so use_authtok remember=5'
+    state: present
+
+- name: Ensure password failed attempts lockout is configured
+  lineinfile:
+    path: /etc/security/faillock.conf
+    regexp: '^#?deny'
+    line: 'deny = 5'
+    state: present
+    create: yes
+
+- name: Ensure password unlock time is configured
+  lineinfile:
+    path: /etc/security/faillock.conf
+    regexp: '^#?unlock_time'
+    line: 'unlock_time = 900'
+    state: present
+
+- name: Ensure pam_unix does not include nullok
+  lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '.*pam_unix.so.*nullok'
+    state: absent
+
+- name: Ensure pam_unix includes a strong password hashing algorithm
+  lineinfile:
+    path: /etc/pam.d/common-password
+    regexp: '^password.*pam_unix.so'
+    line: 'password  [success=1 default=ignore]  pam_unix.so obscure use_authtok try_first_pass sha512'
+    state: present

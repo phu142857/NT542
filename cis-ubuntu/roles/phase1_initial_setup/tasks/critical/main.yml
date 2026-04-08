@@ -1,0 +1,19 @@
+---
+# Critical Security Tasks - Phase 1
+# High impact, low risk security hardening
+
+- name: Disable unnecessary kernel modules
+  include_tasks: kernel_modules.yml
+  tags: kernel_modules
+
+- name: Configure filesystem security
+  include_tasks: filesystem_security.yml
+  tags: filesystem
+
+- name: Configure AppArmor security framework
+  include_tasks: apparmor_config.yml
+  tags: apparmor
+
+- name: Apply system hardening
+  include_tasks: system_hardening.yml
+  tags: hardening

@@ -1,0 +1,19 @@
+---
+# Critical Security Tasks - Phase 5 Access Control
+# SSH, PAM, Root, and Sudo security
+
+- name: Configure SSH security hardening
+  include_tasks: ssh_hardening.yml
+  tags: ssh
+
+- name: Configure PAM security
+  include_tasks: pam_security.yml
+  tags: pam
+
+- name: Configure root account security
+  include_tasks: root_security.yml
+  tags: root
+
+- name: Configure sudo security
+  include_tasks: sudo_security.yml
+  tags: sudo

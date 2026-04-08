@@ -1,0 +1,11 @@
+---
+# Critical Security Tasks - Phase 2 Services
+# Disable unnecessary and potentially dangerous services
+
+- name: Disable unnecessary services
+  include_tasks: disable_services.yml
+  tags: disable_services
+
+- name: Remove X Window System
+  include_tasks: remove_x11.yml
+  tags: remove_x11

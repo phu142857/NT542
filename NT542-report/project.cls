@@ -21,7 +21,12 @@
 \newcommand{\uniname}[1]{\renewcommand{\@uniname}{#1}}
 \newcommand{\@deptname}{}
 \newcommand{\deptname}[1]{\renewcommand{\@deptname}{#1}}
-\newcommand{\@reporttype}{ĐỒ ÁN CHUYÊN NGÀNH}
+\newcommand{\@reporttype}{
+    \begin{center}
+        ĐỒ ÁN MÔN HỌC\\
+        \large Lập trình kịch bản tự động hóa cho quản trị và bảo mật mạng
+    \end{center}
+}
 \newcommand{\reporttype}[1]{\renewcommand{\@reporttype}{#1}}
 \newcommand{\@stumajor}{}
 \newcommand{\stumajor}[1]{\renewcommand{\@stumajor}{#1}}

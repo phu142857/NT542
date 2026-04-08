@@ -1,0 +1,68 @@
+---
+# System integrity checks and fixes
+
+- name: Ensure world writable files and directories are secured
+  shell: |
+    find / -type f -perm -002 -exec ls -la {} \; 2>/dev/null | head -20
+  register: world_writable_files
+  changed_when: false
+
+- name: Display world writable files
+  debug:
+    msg: "World writable files found: {{ world_writable_files.stdout_lines }}"
+  when: world_writable_files.stdout_lines | length > 0
+
+- name: Ensure no files or directories without an owner and a group exist
+  shell: |
+    find / -nouser -o -nogroup 2>/dev/null | head -10
+  register: orphan_files
+  changed_when: false
+
+- name: Display orphan files
+  debug:
+    msg: "Files without owner/group: {{ orphan_files.stdout_lines }}"
+  when: orphan_files.stdout_lines | length > 0
+
+- name: Ensure no duplicate UIDs exist
+  shell: |
+    awk -F: 'print $3}' /etc/passwd | sort | uniq -d
+  register: duplicate_uids
+  changed_when: false
+
+- name: Display duplicate UIDs
+  debug:
+    msg: "Duplicate UIDs: {{ duplicate_uids.stdout_lines }}"
+  when: duplicate_uids.stdout_lines | length > 0
+
+- name: Ensure no duplicate GIDs exist
+  shell: |
+    awk -F: 'print $3}' /etc/group | sort | uniq -d
+  register: duplicate_gids
+  changed_when: false
+
+- name: Display duplicate GIDs
+  debug:
+    msg: "Duplicate GIDs: {{ duplicate_gids.stdout_lines }}"
+  when: duplicate_gids.stdout_lines | length > 0
+
+- name: Ensure no duplicate user names exist
+  shell: |
+    awk -F: 'print $1}' /etc/passwd | sort | uniq -d
+  register: duplicate_users
+  changed_when: false
+
+- name: Display duplicate user names
+  debug:
+    msg: "Duplicate user names: {{ duplicate_users.stdout_lines }}"
+  when: duplicate_users.stdout_lines | length > 0
+
+- name: Ensure no duplicate group names exist
+  shell: |
+    awk -F: 'print $1}' /etc/group | sort | uniq -d
+  register: duplicate_groups
+  changed_when: false
+
+- name: Display duplicate group names
+  debug:
+    msg: "Duplicate group names: {{ duplicate_groups.stdout_lines }}"
+  when: duplicate_groups.stdout_lines | length > 0

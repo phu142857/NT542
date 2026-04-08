@@ -1,0 +1,16 @@
+---
+# Phase 6 - Logging and Auditing Tasks
+# CIS Ubuntu Linux 24.04 LTS Benchmark - Chapter 6
+
+# Run all critical and important tasks with single command:
+# ansible-playbook -i inventory/hosts.ini playbooks/phase6_logging_auditing.yml --tags "critical,important"
+
+# Critical Security Tasks
+- name: Run critical security tasks
+  include_tasks: critical/main.yml
+  tags: critical
+
+# Important Security Tasks  
+- name: Run important security tasks
+  include_tasks: important/main.yml
+  tags: important

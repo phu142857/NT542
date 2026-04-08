@@ -1,0 +1,77 @@
+### Manual
+
+| Tên Khuyến nghị                                                         |
+| :---------------------------------------------------------------------- |
+| Ensure unused filesystems kernel modules are not available              |
+| Ensure GPG keys are configured                                          |
+| Ensure package manager repositories are configured                      |
+| Ensure updates, patches, and additional security software are installed |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                                              |
+| :--------------------------------------------------------------------------- |
+| Ensure cramfs kernel module is not available                                 |
+| Ensure freevxfs kernel module is not available                               |
+| Ensure hfs kernel module is not available                                    |
+| Ensure hfsplus kernel module is not available                                |
+| Ensure jffs2 kernel module is not available                                  |
+| Ensure overlayfs kernel module is not available                              |
+| Ensure squashfs kernel module is not available                               |
+| Ensure udf kernel module is not available                                    |
+| Ensure usb-storage kernel module is not available                            |
+| Ensure /tmp is a separate partition                                          |
+| Ensure nodev option set on /tmp partition                                    |
+| Ensure nosuid option set on /tmp partition                                   |
+| Ensure noexec option set on /tmp partition                                   |
+| Ensure /dev/shm is a separate partition                                      |
+| Ensure nodev option set on /dev/shm partition                                |
+| Ensure nosuid option set on /dev/shm partition                               |
+| Ensure noexec option set on /dev/shm partition                               |
+| Ensure separate partition exists for /home                                   |
+| Ensure nodev option set on /home partition                                   |
+| Ensure nosuid option set on /home partition                                  |
+| Ensure separate partition exists for /var                                    |
+| Ensure nodev option set on /var partition                                    |
+| Ensure nosuid option set on /var partition                                   |
+| Ensure separate partition exists for /var/tmp                                |
+| Ensure nodev option set on /var/tmp partition                                |
+| Ensure nosuid option set on /var/tmp partition                               |
+| Ensure noexec option set on /var/tmp partition                               |
+| Ensure separate partition exists for /var/log                                |
+| Ensure nodev option set on /var/log partition                                |
+| Ensure nosuid option set on /var/log partition                               |
+| Ensure noexec option set on /var/log partition                               |
+| Ensure separate partition exists for /var/log/audit                          |
+| Ensure nodev option set on /var/log/audit partition                          |
+| Ensure nosuid option set on /var/log/audit partition                         |
+| Ensure noexec option set on /var/log/audit partition                         |
+| Ensure AppArmor is installed                                                 |
+| Ensure AppArmor is enabled in the bootloader configuration                   |
+| Ensure all AppArmor Profiles are in enforce or complain mode                 |
+| Ensure all AppArmor Profiles are enforcing                                   |
+| Ensure bootloader password is set                                            |
+| Ensure access to bootloader config is configured                             |
+| Ensure address space layout randomization is enabled                         |
+| Ensure ptrace_scope is restricted                                            |
+| Ensure core dumps are restricted                                             |
+| Ensure prelink is not installed                                              |
+| Ensure Automatic Error Reporting is not enabled                              |
+| Ensure message of the day is configured properly                             |
+| Ensure local login warning banner is configured properly                     |
+| Ensure remote login warning banner is configured properly                    |
+| Ensure access to /etc/motd is configured                                     |
+| Ensure access to /etc/issue is configured                                    |
+| Ensure access to /etc/issue.net is configured                                |
+| Ensure GDM is removed                                                        |
+| Ensure GDM login banner is configured                                        |
+| Ensure GDM disable-user-list option is enabled                               |
+| Ensure GDM screen locks when the user is idle                                |
+| Ensure GDM screen locks cannot be overridden                                 |
+| Ensure GDM automatic mounting of removable media is disabled                 |
+| Ensure GDM disabling automatic mounting of removable media is not overridden |
+| Ensure GDM autorun-never is enabled                                          |
+| Ensure GDM autorun-never is not overridden                                   |
+| Ensure XDMCP is not enabled                                                  |

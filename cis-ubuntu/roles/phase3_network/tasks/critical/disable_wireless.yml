@@ -1,0 +1,30 @@
+---
+# Disable wireless and bluetooth interfaces
+
+- name: Ensure wireless interfaces are disabled
+  shell: |
+    for iface in $(iwconfig 2>/dev/null | grep -E '^[a-zA-Z]' | awk '{print $1}'); do
+      ip link set "$iface" down
+    done
+  register: wireless_disable
+  changed_when: false
+  failed_when: false
+
+- name: Ensure bluetooth services are not in use
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - bluetooth
+    - bluez
+  ignore_errors: yes
+
+- name: Ensure bluetooth packages are removed
+  package:
+    name:
+      - bluez
+      - bluez-utils
+      - pulseaudio-module-bluetooth
+    state: absent
+  when: cis_remove_bluetooth | default(false) | bool

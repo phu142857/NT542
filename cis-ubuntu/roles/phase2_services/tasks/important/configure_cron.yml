@@ -1,0 +1,68 @@
+---
+# Configure cron daemon security
+
+- name: Ensure cron daemon is enabled and active
+  service:
+    name: cron
+    state: started
+    enabled: yes
+
+- name: Ensure permissions on /etc/crontab are configured
+  file:
+    path: /etc/crontab
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/cron.hourly are configured
+  file:
+    path: /etc/cron.hourly
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/cron.daily are configured
+  file:
+    path: /etc/cron.daily
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/cron.weekly are configured
+  file:
+    path: /etc/cron.weekly
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/cron.monthly are configured
+  file:
+    path: /etc/cron.monthly
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/cron.d are configured
+  file:
+    path: /etc/cron.d
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure crontab is restricted to authorized users
+  copy:
+    content: ""
+    dest: /etc/cron.allow
+    mode: '0600'
+    owner: root
+    group: root
+  when: cis_cron_allow_users is defined
+
+- name: Ensure at is restricted to authorized users
+  copy:
+    content: ""
+    dest: /etc/at.allow
+    mode: '0600'
+    owner: root
+    group: root
+  when: cis_at_allow_users is defined

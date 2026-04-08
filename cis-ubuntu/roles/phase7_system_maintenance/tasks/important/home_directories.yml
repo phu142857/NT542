@@ -1,0 +1,53 @@
+---
+# Configure user home directories and dot files
+
+- name: Ensure local interactive user home directories are configured
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
+      if [ "$user" != "root" ] && [ $(id -u "$user") -ge 1000 ]; then
+        if [ ! -d "/home/$user" ]; then
+          echo "Missing home directory for user: $user"
+        fi
+      fi
+    done
+  register: missing_home_dirs
+  changed_when: false
+
+- name: Display missing home directories
+  debug:
+    msg: "Missing home directories: {{ missing_home_dirs.stdout_lines }}"
+  when: missing_home_dirs.stdout_lines | length > 0
+
+- name: Ensure local interactive user dot files access is configured
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
+      if [ "$user" != "root" ] && [ $(id -u "$user") -ge 1000 ]; then
+        if [ -d "/home/$user" ]; then
+          find "/home/$user" -name ".*" -type f -perm /o+r 2>/dev/null | head -5
+        fi
+      fi
+    done
+  register: world_readable_dot_files
+  changed_when: false
+
+- name: Display world readable dot files
+  debug:
+    msg: "World readable dot files: {{ world_readable_dot_files.stdout_lines }}"
+  when: world_readable_dot_files.stdout_lines | length > 0
+
+- name: Ensure proper permissions on user home directories
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
+      if [ "$user" != "root" ] && [ $(id -u "$user") -ge 1000 ]; then
+        if [ -d "/home/$user" ]; then
+          stat -c "%a %U:%G /home/$user"
+        fi
+      fi
+    done
+  register: home_dir_permissions
+  changed_when: false
+
+- name: Display home directory permissions
+  debug:
+    msg: "Home directory permissions: {{ home_dir_permissions.stdout_lines }}"
+  when: home_dir_permissions.stdout_lines | length > 0

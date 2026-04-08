@@ -1,0 +1,29 @@
+### Manual
+
+| Tên Khuyến nghị                  |
+| :------------------------------- |
+| Ensure IPv6 status is identified |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                    |
+| :------------------------------------------------- |
+| Ensure wireless interfaces are disabled            |
+| Ensure bluetooth services are not in use           |
+| Ensure dccp kernel module is not available         |
+| Ensure tipc kernel module is not available         |
+| Ensure rds kernel module is not available          |
+| Ensure sctp kernel module is not available         |
+| Ensure ip forwarding is disabled                   |
+| Ensure packet redirect sending is disabled         |
+| Ensure bogus icmp responses are ignored            |
+| Ensure broadcast icmp requests are ignored         |
+| Ensure icmp redirects are not accepted             |
+| Ensure secure icmp redirects are not accepted      |
+| Ensure reverse path filtering is enabled           |
+| Ensure source routed packets are not accepted      |
+| Ensure suspicious packets are logged               |
+| Ensure tcp syn cookies is enabled                  |
+| Ensure ipv6 router advertisements are not accepted |

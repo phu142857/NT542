@@ -1,0 +1,28 @@
+---
+# Configure filesystem security options
+
+- name: Ensure /tmp has proper mount options
+  command: mount -o remount,nodev,nosuid,noexec /tmp
+  register: tmp_mount_result
+  failed_when: tmp_mount_result.rc != 0 and "already mounted" not in tmp_mount_result.stderr
+  changed_when: tmp_mount_result.rc == 0
+
+- name: Ensure /dev/shm has proper mount options
+  command: mount -o remount,nodev,nosuid,noexec /dev/shm
+  register: shm_mount_result
+  failed_when: shm_mount_result.rc != 0 and "already mounted" not in shm_mount_result.stderr
+  changed_when: shm_mount_result.rc == 0
+
+- name: Add /var/tmp security options to fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^.*/var/tmp.*'
+    line: "tmpfs /var/tmp tmpfs defaults,nodev,nosuid,noexec 0 0"
+    state: present
+    create: yes
+
+- name: Mount /var/tmp with security options
+  command: mount -t tmpfs -o nodev,nosuid,noexec tmpfs /var/tmp
+  register: var_tmp_mount_result
+  failed_when: var_tmp_mount_result.rc != 0 and "already mounted" not in var_tmp_mount_result.stderr
+  changed_when: var_tmp_mount_result.rc == 0
