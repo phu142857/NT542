@@ -14,6 +14,14 @@
   include_tasks: audit_rules.yml
   tags: audit_rules
 
+- name: Configure advanced audit rules
+  include_tasks: advanced_audit_rules.yml
+  tags: advanced_audit_rules
+
+- name: Configure log rotation
+  include_tasks: log_rotation.yml
+  tags: log_rotation
+
 - name: Configure file integrity monitoring
   include_tasks: file_integrity.yml
   tags: integrity

@@ -1,0 +1,78 @@
+---
+# Configure user defaults
+
+- name: Ensure nologin is not listed in /etc/shells
+  lineinfile:
+    path: /etc/shells
+    regexp: '^/usr/sbin/nologin'
+    line: '/usr/sbin/nologin'
+    state: present
+
+- name: Ensure default user shell timeout is configured
+  lineinfile:
+    path: /etc/default/useradd
+    regexp: '^#?SHELL'
+    line: 'SHELL=/bin/bash'
+    state: present
+
+- name: Ensure default user umask is configured
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?UMASK'
+    line: 'UMASK 027'
+    state: present
+
+- name: Ensure default user home directory is configured
+  lineinfile:
+    path: /etc/default/useradd
+    regexp: '^#?HOME'
+    line: 'HOME=/home'
+    state: present
+
+- name: Ensure default user inactive days is configured
+  lineinfile:
+    path: /etc/default/useradd
+    regexp: '^#?INACTIVE'
+    line: 'INACTIVE=35'
+    state: present
+
+- name: Ensure default user expire range is configured
+  lineinfile:
+    path: /etc/default/useradd
+    regexp: '^#?EXPIRE'
+    line: 'EXPIRE='
+    state: present
+
+- name: Ensure system accounts do not have a valid login shell
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
+      if [ "$user" != "root" ]; then
+        usermod -s /usr/sbin/nologin "$user" 2>/dev/null || true
+      fi
+    done
+  register: nologin_users
+  changed_when: false
+
+- name: Display accounts with nologin shell
+  debug:
+    msg: "Accounts with nologin shell: {{ nologin_users.stdout_lines }}"
+  when: nologin_users.stdout_lines is defined
+
+- name: Ensure accounts without a valid login shell are locked (excluding system and SSH users)
+  shell: |
+    for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
+      if [ "$user" != "root" ] && [ "$user" != "s1" ] && [ "$user" != "s2" ] && [[ "$user" != systemd-* ]] && [[ "$user" != sshd ]]; then
+        # Only lock user accounts with UID >= 1000 (regular users)
+        uid=$(id -u "$user" 2>/dev/null || echo "0")
+        if [ "$uid" -ge 1000 ]; then
+          usermod -L "$user" 2>/dev/null || true
+        fi
+      fi
+    done
+  register: locked_accounts
+  changed_when: false
+
+- name: Display locked accounts
+  debug:
+    msg: "Locked accounts: {{ locked_accounts.stdout_lines }}"
+  when: locked_accounts.stdout_lines is defined

@@ -9,43 +9,61 @@
 - name: Ensure sudo commands use pty
   lineinfile:
     path: /etc/sudoers
-    regexp: '^Defaults.*use_pty'
+    regexp: '^#?Defaults use_pty'
     line: 'Defaults use_pty'
     state: present
+    validate: /usr/sbin/visudo -cf %s
 
 - name: Ensure sudo log file exists
+  file:
+    path: /var/log/sudo.log
+    state: touch
+    mode: '0600'
+    owner: root
+    group: adm
+
+- name: Ensure sudo logging is configured
   lineinfile:
     path: /etc/sudoers
-    regexp: '^Defaults.*logfile'
+    regexp: '^#?Defaults logfile'
     line: 'Defaults logfile="/var/log/sudo.log"'
     state: present
+    validate: /usr/sbin/visudo -cf %s
 
 - name: Ensure users must provide password for privilege escalation
   lineinfile:
     path: /etc/sudoers
-    regexp: '^%sudo.*NOPASSWD'
-    state: absent
+    regexp: '^#?Defaults !targetpw'
+    line: 'Defaults !targetpw'
+    state: present
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Ensure re-authentication for privilege escalation is not disabled globally
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^#?Defaults !authenticate'
+    line: '# Defaults !authenticate'
+    state: present
+    validate: /usr/sbin/visudo -cf %s
 
 - name: Ensure sudo authentication timeout is configured correctly
   lineinfile:
     path: /etc/sudoers
-    regexp: '^Defaults.*timestamp_timeout'
+    regexp: '^#?Defaults timestamp_timeout'
     line: 'Defaults timestamp_timeout=15'
     state: present
+    validate: /usr/sbin/visudo -cf %s
 
-- name: Ensure access to the su command is restricted
-  file:
+- name: Ensure access to su command is restricted
+  lineinfile:
     path: /etc/pam.d/su
-    mode: '0644'
-    owner: root
-    group: root
-
-- name: Configure su access restrictions
-  blockinfile:
-    path: /etc/pam.d/su
-    block: |
-      auth sufficient pam_rootok.so
-      auth required pam_wheel.so group=wheel
-      auth required pam_unix.so
+    regexp: '^#?auth sufficient pam_rootok.so'
+    line: 'auth sufficient pam_rootok.so'
     state: present
-    create: yes
+
+- name: Ensure su wheel group restriction
+  lineinfile:
+    path: /etc/pam.d/su
+    regexp: '^#?auth required pam_wheel.so'
+    line: 'auth required pam_wheel.so use_uid'
+    state: present

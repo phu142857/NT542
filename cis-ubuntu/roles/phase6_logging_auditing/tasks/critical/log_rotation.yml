@@ -1,0 +1,150 @@
+---
+# Configure log rotation
+
+- name: Ensure logrotate is configured
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart rsyslog
+
+- name: Ensure logrotate configuration for audit logs
+  copy:
+    content: |
+      /var/log/audit/audit.log {
+          daily
+          missingok
+          rotate 52
+          compress
+          delaycompress
+          sharedscripts
+              postrotate
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service auditd reload >/dev/null 2>&1 || true
+          endscript
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service auditd reload >/dev/null 2>&1 || true
+      }
+    dest: /etc/logrotate.d/audit
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure logrotate configuration for system logs
+  copy:
+    content: |
+      /var/log/syslog {
+          weekly
+          missingok
+          rotate 4
+          compress
+          delaycompress
+          sharedscripts
+              postrotate
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+          endscript
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+      }
+    dest: /etc/logrotate.d/syslog
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure logrotate configuration for auth logs
+  copy:
+    content: |
+      /var/log/auth.log {
+          monthly
+          missingok
+          rotate 12
+          compress
+          delaycompress
+          sharedscripts
+              postrotate
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+          endscript
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+      }
+    dest: /etc/logrotate.d/auth
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure logrotate configuration for kern logs
+  copy:
+    content: |
+      /var/log/kern.log {
+          monthly
+          missingok
+          rotate 12
+          compress
+          delaycompress
+          sharedscripts
+              postrotate
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+          endscript
+                  /usr/lib/rsyslog/rsyslog-postrotate
+                  /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+      }
+    dest: /etc/logrotate.d/kern
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create logrotate template
+  copy:
+    content: |
+      # Logrotate configuration template
+      # Compress old logs
+      compress
+      
+      # Delay compression by one day
+      delaycompress
+      
+      # Keep old logs for specified duration
+      rotate {{ item.rotate | default(4) }}
+      
+      # Don't error if log file is missing
+      missingok
+      
+      # Run post-rotation script
+      sharedscripts
+          postrotate
+              /usr/lib/rsyslog/rsyslog-postrotate
+              /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+          endscript
+              /usr/lib/rsyslog/rsyslog-postrotate
+              /usr/sbin/service rsyslog reload >/dev/null 2>&1 || true
+    dest: /etc/logrotate.d/template
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - { path: /var/log/audit/audit.log, rotate: 52 }
+    - { path: /var/log/syslog, rotate: 4 }
+    - { path: /var/log/auth.log, rotate: 12 }
+    - { path: /var/log/kern.log, rotate: 12 }
+
+- name: Ensure logrotate cron job is configured
+  cron:
+    name: "logrotate"
+    job: "/usr/sbin/logrotate /etc/logrotate.conf"
+    minute: "30"
+    hour: "2"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    state: present
+
+- name: Restart rsyslog service
+  service:
+    name: rsyslog
+    state: restarted
+    enabled: yes

@@ -1,0 +1,118 @@
+# CIS Ubuntu Logrotate Configuration
+# Rotate system logs weekly
+weekly
+
+# Keep 4 weeks of backlogs
+rotate 4
+
+# Create new (empty) log files after rotating old ones
+create
+
+# Use date as a suffix of the rotated file
+dateext
+
+# Compress rotated logs
+compress
+
+# Delay compression to the next rotation cycle
+delaycompress
+
+# Delete uncompressed log files
+missingok
+
+# Rotate empty log files
+notifempty
+
+# Create log directory if it doesn't exist
+create 0640 root adm
+
+# System logs
+/var/log/syslog {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}
+
+/var/log/auth.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+/var/log/kern.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+/var/log/daemon.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+/var/log/mail.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+/var/log/user.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+# Audit logs
+/var/log/audit/audit.log {
+    weekly
+    rotate 4
+    create 0600 root root
+    compress
+    delaycompress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        /sbin/service auditd restart
+    endscript
+}
+
+# Sudo logs
+/var/log/sudo.log {
+    weekly
+    rotate 4
+    create 0640 root adm
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
