@@ -40,7 +40,7 @@
     for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
       if [ "$user" != "root" ] && [ $(id -u "$user") -ge 1000 ]; then
         if [ -d "/home/$user" ]; then
-          stat -c "%a %U:%G /home/$user"
+          stat -c "%a %U:%G" "/home/$user"
         fi
       fi
     done

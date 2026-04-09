@@ -18,6 +18,7 @@
   loop:
     - bluetooth
     - bluez
+  when: ansible_facts.services[item] is defined
   ignore_errors: yes
 
 - name: Ensure bluetooth packages are removed

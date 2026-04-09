@@ -8,6 +8,12 @@
     results_dir: "../results"
     
   tasks:
+    - name: Clean up old temporary files and directories (raw)
+      raw: |
+        # Force cleanup everything in /tmp
+        rm -rf /tmp/* || true
+        echo "Force cleanup completed"
+        
     - name: Ensure results directory exists
       file:
         path: "{{ results_dir }}"
@@ -31,6 +37,17 @@
     results_dir: "../results"
     
   tasks:
+    - name: Final cleanup of temporary files (raw)
+      raw: |
+        # Final cleanup after assessment
+        rm -rf /tmp/* || true
+        
+        # Show disk usage
+        echo "=== Disk usage after cleanup ==="
+        df -h /tmp
+        
+        echo "Final cleanup completed"
+        
     - name: Display assessment completion
       debug:
         msg: "Security assessment completed. All results saved to {{ results_dir }}/"

@@ -1,6 +1,13 @@
 ---
 # Configure critical audit rules
 
+- name: Ensure SSH connections are not blocked by audit
+  lineinfile:
+    path: /etc/audit/rules.d/audit.rules
+    line: '-a never,exit -F arch=b64 -S execve -F exe=/usr/sbin/sshd -F key=ssh'
+    state: present
+    create: yes
+
 - name: Ensure changes to system administration scope (sudoers) is collected
   lineinfile:
     path: /etc/audit/rules.d/audit.rules

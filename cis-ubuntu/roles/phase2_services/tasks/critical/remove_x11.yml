@@ -23,4 +23,5 @@
     - lightdm
     - sddm
     - xdm
+  when: ansible_facts.services[item] is defined
   ignore_errors: yes

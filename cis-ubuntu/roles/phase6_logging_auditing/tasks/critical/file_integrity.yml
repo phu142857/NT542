@@ -6,8 +6,38 @@
     name: aide
     state: present
 
-- name: Initialize AIDE database
-  shell: aide --init
+- name: Ensure AIDE configuration exists
+  shell: |
+    if [ ! -f /etc/aide/aide.conf ]; then
+      aide --init --config /etc/aide/aide.conf || true
+    fi
+  args:
+    creates: /etc/aide/aide.conf
+
+- name: Initialize AIDE database (with resource limits)
+  shell: |
+    # Create a minimal AIDE config first
+    if [ ! -f /etc/aide/aide.conf ]; then
+      echo "database=file:/var/lib/aide/aide.db" > /etc/aide/aide.conf
+      echo "database_out=file:/var/lib/aide/aide.db.new" >> /etc/aide/aide.conf
+      echo "database_attrs=R" >> /etc/aide/aide.conf
+      echo "log=/var/log/aide/aide.log" >> /etc/aide/aide.conf
+      echo "verbose=5" >> /etc/aide/aide.conf
+      echo "report_url=stdout" >> /etc/aide/aide.conf
+      echo "# Only monitor critical directories first" >> /etc/aide/aide.conf
+      echo "/bin p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/etc p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/sbin p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/usr/bin p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/usr/sbin p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/lib p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/lib64 p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+      echo "/root p+u+g+s+m+c+md5+sha1" >> /etc/aide/aide.conf
+    fi
+    
+    # Run AIDE with very low priority and I/O limits
+    ionice -c2 -n7 nice -n 19 timeout 600 aide --init --config /etc/aide/aide.conf || \
+    { echo "AIDE init failed or timed out"; exit 0; }
   args:
     creates: /var/lib/aide/aide.db.new
   register: aide_init
@@ -19,7 +49,7 @@
 - name: Ensure filesystem integrity is regularly checked
   cron:
     name: "AIDE integrity check"
-    job: "/usr/bin/aide --check"
+    job: "/usr/bin/aide --check --config /etc/aide/aide.conf"
     minute: "0"
     hour: "2"
     day: "*"

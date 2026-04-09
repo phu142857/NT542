@@ -21,11 +21,12 @@
     line: 'umask 027'
     state: present
 
-- name: Ensure all users last password change date is in the past
+- name: Ensure all users last password change date is current (not forcing immediate change)
   shell: |
     for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 }' /etc/passwd); do
       if [ "$user" != "root" ]; then
-        chage --lastday 0 "$user" 2>/dev/null || true
+        # Set last password change to today, not forcing immediate change
+        chage --lastday $(date +%Y-%m-%d) "$user" 2>/dev/null || true
       fi
     done
   register: password_change

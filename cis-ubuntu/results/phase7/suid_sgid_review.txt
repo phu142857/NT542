@@ -1,0 +1,28 @@
+SUID Files Review:
+-rwsr-xr-x 1 root root 342632 Mar  4 17:55 /usr/lib/openssh/ssh-keysign
+-rwsr-xr-- 1 root messagebus 34960 Aug  9  2024 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+-rwsr-xr-x 1 root root 18736 Dec  2  2024 /usr/lib/polkit-1/polkit-agent-helper-1
+-rwsr-xr-x 1 root root 44760 May 30  2024 /usr/bin/chsh
+-rwsr-xr-x 1 root root 277936 Mar  2 12:56 /usr/bin/sudo
+-rwsr-xr-x 1 root root 55680 Mar  6 16:00 /usr/bin/su
+-rwsr-xr-x 1 root root 39296 Apr  8  2024 /usr/bin/fusermount3
+-rwsr-xr-x 1 root root 51584 Mar  6 16:00 /usr/bin/mount
+-rwsr-xr-x 1 root root 72792 May 30  2024 /usr/bin/chfn
+-rwsr-xr-x 1 root root 39296 Mar  6 16:00 /usr/bin/umount
+-rwsr-xr-x 1 root root 76248 May 30  2024 /usr/bin/gpasswd
+-rwsr-xr-x 1 root root 64152 May 30  2024 /usr/bin/passwd
+-rwsr-xr-x 1 root root 40664 May 30  2024 /usr/bin/newgrp
+
+SGID Files Review:
+-rwxr-sr-x 1 root utmp 14488 Feb 10 00:34 /usr/lib/x86_64-linux-gnu/utempter/utempter
+-r-xr-sr-x 1 root postdrop 22960 Apr  8  2024 /usr/sbin/postdrop
+-rwxr-sr-x 1 root shadow 31040 Sep 15  2025 /usr/sbin/unix_chkpwd
+-rwxr-sr-x 1 root shadow 26944 Sep 15  2025 /usr/sbin/pam_extrausers_chkpwd
+-r-xr-sr-x 1 root postdrop 22912 Apr  8  2024 /usr/sbin/postqueue
+-rwxr-sr-x 1 root shadow 27152 May 30  2024 /usr/bin/expiry
+-rwxr-sr-x 1 root mail 22680 Apr  8  2024 /usr/bin/dotlockfile
+-rwxr-sr-x 1 root _ssh 309688 Mar  4 17:55 /usr/bin/ssh-agent
+-rwxr-sr-x 1 root shadow 72184 May 30  2024 /usr/bin/chage
+-rwxr-sr-x 1 root crontab 39664 Feb 10 00:34 /usr/bin/crontab
+
+Generated: 2026-04-09T08:51:27Z

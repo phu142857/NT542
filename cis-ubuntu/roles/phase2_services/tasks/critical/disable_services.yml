@@ -1,0 +1,118 @@
+---
+# Disable unnecessary services according to CIS Ubuntu 24.04 LTS Benchmark
+
+- name: Check and disable telnet service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - telnet.socket
+    - telnet
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+
+- name: Check and disable rsh service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - rsh.socket
+    - rsh
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+
+- name: Check and disable rlogin service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - rlogin.socket
+    - rlogin
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+
+- name: Check and disable ypbind service (NIS)
+  systemd:
+    name: ypbind
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['ypbind'] is defined
+  ignore_errors: yes
+
+- name: Check and disable tftp service
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - tftp.socket
+    - tftp
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+
+- name: Check and disable isc-dhcp-server service
+  systemd:
+    name: isc-dhcp-server
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['isc-dhcp-server'] is defined
+  ignore_errors: yes
+
+- name: Check and disable slapd service (OpenLDAP)
+  systemd:
+    name: slapd
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['slapd'] is defined
+  ignore_errors: yes
+
+- name: Check and disable apache2 service (if not needed)
+  systemd:
+    name: apache2
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['apache2'] is defined
+  ignore_errors: yes
+
+- name: Check and disable nfs-server service
+  systemd:
+    name: nfs-server
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['nfs-server'] is defined
+  ignore_errors: yes
+
+- name: Check and disable rpcbind service
+  systemd:
+    name: rpcbind
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['rpcbind'] is defined
+  ignore_errors: yes
+
+- name: Check and disable cups service (printing)
+  systemd:
+    name: cups
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['cups'] is defined
+  ignore_errors: yes
+
+- name: Check and disable avahi-daemon service (mDNS)
+  systemd:
+    name: avahi-daemon
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['avahi-daemon'] is defined
+  ignore_errors: yes
+
+- name: Check and disable bluetooth service
+  systemd:
+    name: bluetooth
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['bluetooth'] is defined
+  ignore_errors: yes

@@ -19,7 +19,8 @@
     name: systemd-journal-remote
     state: stopped
     enabled: no
-  when: not cis_enable_remote_logging | default(false) | bool
+  when: not cis_enable_remote_logging | default(false) | bool and ansible_facts.services['systemd-journal-remote'] is defined
+  ignore_errors: yes
 
 - name: Ensure journald is configured to send logs to rsyslog
   lineinfile:

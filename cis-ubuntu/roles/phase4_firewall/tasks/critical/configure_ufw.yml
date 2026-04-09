@@ -26,6 +26,13 @@
     direction: in
   when: cis_firewall_type == "ufw" or cis_firewall_type is not defined
 
+- name: Ensure SSH is allowed in firewall
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+  when: cis_firewall_type == "ufw" or cis_firewall_type is not defined
+
 - name: Ensure ufw default deny firewall policy
   ufw:
     state: enabled

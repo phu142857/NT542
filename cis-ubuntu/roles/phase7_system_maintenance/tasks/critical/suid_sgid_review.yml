@@ -6,6 +6,7 @@
     find / -type f -perm -4000 -exec ls -la {} \; 2>/dev/null
   register: suid_files
   changed_when: false
+  failed_when: suid_files.rc != 0 and suid_files.stdout == ""
 
 - name: Display SUID files
   debug:
@@ -17,11 +18,20 @@
     find / -type f -perm -2000 -exec ls -la {} \; 2>/dev/null
   register: sgid_files
   changed_when: false
+  failed_when: sgid_files.rc != 0 and sgid_files.stdout == ""
 
 - name: Display SGID files
   debug:
     msg: "SGID files found: {{ sgid_files.stdout_lines }}"
   when: sgid_files.stdout_lines | length > 0
+
+- name: Ensure results directory exists
+  file:
+    path: "{{ results_dir }}/phase7"
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+  become: false
 
 - name: Save SUID/SGID review report
   copy:
@@ -32,6 +42,7 @@
       SGID Files Review:
       {{ sgid_files.stdout }}
       
-      Generated: {{ ansible_date_time.iso8601 }}
+      Generated: {{ ansible_facts.date_time.iso8601 }}
     dest: "{{ results_dir }}/phase7/suid_sgid_review.txt"
   delegate_to: localhost
+  become: false
