@@ -1,0 +1,47 @@
+---
+# Ensure mail transfer agent is configured for local-only mode
+
+- name: Check if postfix is installed
+  package_facts:
+    manager: auto
+
+- name: Configure postfix for local-only mode
+  lineinfile:
+    path: /etc/postfix/main.cf
+    regexp: '^inet_interfaces'
+    line: 'inet_interfaces = localhost'
+    state: present
+  when: "'postfix' in ansible_facts.packages"
+  notify: restart postfix
+
+- name: Configure postfix to only listen on localhost
+  lineinfile:
+    path: /etc/postfix/main.cf
+    regexp: '^inet_protocols'
+    line: 'inet_protocols = ipv4'
+    state: present
+  when: "'postfix' in ansible_facts.packages"
+  notify: restart postfix
+
+- name: Ensure postfix is enabled and running
+  service:
+    name: postfix
+    state: started
+    enabled: yes
+  when: "'postfix' in ansible_facts.packages"
+
+- name: Configure exim4 for local-only mode
+  lineinfile:
+    path: /etc/exim4/update-exim4.conf.conf
+    regexp: '^dc_local_interfaces'
+    line: 'dc_local_interfaces="127.0.0.1 ; ::1"'
+    state: present
+  when: "'exim4' in ansible_facts.packages"
+  notify: restart exim4
+
+- name: Ensure exim4 is enabled and running
+  service:
+    name: exim4
+    state: started
+    enabled: yes
+  when: "'exim4' in ansible_facts.packages"

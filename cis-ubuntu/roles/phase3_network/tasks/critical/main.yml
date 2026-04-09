@@ -6,9 +6,17 @@
   include_tasks: disable_wireless.yml
   tags: wireless
 
-- name: Disable unnecessary network kernel modules
-  include_tasks: network_modules.yml
-  tags: network_modules
+- name: Disable additional network kernel modules
+  include_tasks: network_kernel_modules.yml
+  tags: network_kernel_modules
+
+- name: Configure network kernel parameters
+  include_tasks: network_parameters.yml
+  tags: network_parameters
+
+- name: Identify IPv6 status
+  include_tasks: ipv6_status.yml
+  tags: ipv6_status
 
 - name: Apply network security hardening
   include_tasks: network_hardening.yml

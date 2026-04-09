@@ -9,3 +9,23 @@
 - name: Remove X Window System
   include_tasks: remove_x11.yml
   tags: remove_x11
+
+- name: Disable message access services
+  include_tasks: message_services.yml
+  tags: message_services
+
+- name: Configure mail transfer agent
+  include_tasks: mail_config.yml
+  tags: mail_config
+
+- name: Remove unnecessary client packages
+  include_tasks: client_removal.yml
+  tags: client_removal
+
+- name: Configure time synchronization
+  include_tasks: time_sync.yml
+  tags: time_sync
+
+- name: Configure cron security
+  include_tasks: cron_security.yml
+  tags: cron_security

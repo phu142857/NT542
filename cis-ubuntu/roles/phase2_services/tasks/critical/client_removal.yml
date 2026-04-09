@@ -1,0 +1,42 @@
+---
+# Remove unnecessary client packages
+
+- name: Ensure NIS Client is not installed
+  package:
+    name: nis
+    state: absent
+
+- name: Ensure rsh client is not installed
+  package:
+    name: rsh-client
+    state: absent
+
+- name: Ensure talk client is not installed
+  package:
+    name: talk
+    state: absent
+
+- name: Ensure telnet client is not installed
+  package:
+    name: telnet
+    state: absent
+
+- name: Ensure ldap client is not installed
+  package:
+    name: ldap-utils
+    state: absent
+
+- name: Ensure ftp client is not installed
+  package:
+    name: ftp
+    state: absent
+
+- name: Ensure rsh client is not installed (alternative package)
+  package:
+    name: rsh
+    state: absent
+
+- name: Ensure talk client is not installed (alternative package)
+  package:
+    name: talkd
+    state: absent
