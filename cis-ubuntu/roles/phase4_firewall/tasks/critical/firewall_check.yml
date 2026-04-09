@@ -1,0 +1,35 @@
+---
+# Ensure a single firewall configuration utility is in use
+
+- name: Check if multiple firewalls are installed
+  shell: |
+    count=0
+    if command -v ufw >/dev/null 2>&1; then ((count++)); fi
+    if command -v iptables >/dev/null 2>&1; then ((count++)); fi
+    if command -v nftables >/dev/null 2>&1; then ((count++)); fi
+    echo "Firewall utilities found: $count"
+  register: firewall_count
+  changed_when: false
+
+- name: Display firewall utility count
+  debug:
+    msg: "Firewall utilities found: {{ firewall_count.stdout }}"
+  when: firewall_count.stdout is defined
+
+- name: Ensure only one firewall utility is installed
+  fail:
+    msg: "Multiple firewall utilities detected. Please ensure only one is in use."
+  when: firewall_count.stdout | int > 1
+  ignore_errors: yes
+
+- name: Ensure iptables-persistent is not installed with ufw
+  package:
+    name: iptables-persistent
+    state: absent
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure netfilter-persistent is not installed with ufw
+  package:
+    name: netfilter-persistent
+    state: absent
+  when: cis_firewall_type == "ufw"
