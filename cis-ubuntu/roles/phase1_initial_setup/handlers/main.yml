@@ -1,0 +1,7 @@
+---
+# Handlers for Phase 1 Initial Setup
+
+- name: update grub
+  listen: "update grub"
+  command: update-grub
+  become: yes

@@ -14,6 +14,18 @@
   include_tasks: apparmor_config.yml
   tags: apparmor
 
+- name: Configure AppArmor profiles
+  include_tasks: apparmor_profiles.yml
+  tags: apparmor_profiles
+
+- name: Configure bootloader security
+  include_tasks: bootloader_security.yml
+  tags: bootloader
+
+- name: Remove prelink package
+  include_tasks: prelink_removal.yml
+  tags: prelink
+
 - name: Apply system hardening
   include_tasks: system_hardening.yml
   tags: hardening

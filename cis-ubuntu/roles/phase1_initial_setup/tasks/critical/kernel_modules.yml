@@ -43,9 +43,50 @@
     line: "install udf /bin/true"
     state: present
 
+- name: Disable overlayfs kernel module
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install overlayfs /bin/true"
+    state: present
+
 - name: Disable usb-storage kernel module (if not needed)
   lineinfile:
     path: /etc/modprobe.d/cis.conf
     line: "install usb-storage /bin/true"
     state: present
   when: cis_disable_usb_storage | default(false) | bool
+
+- name: Blacklist unnecessary kernel modules
+  lineinfile:
+    path: /etc/modprobe.d/cis-blacklist.conf
+    line: "blacklist {{ item }}"
+    state: present
+    create: yes
+  loop:
+    - cramfs
+    - freevxfs
+    - hfs
+    - hfsplus
+    - jffs2
+    - overlayfs
+    - squashfs
+    - udf
+    - usb-storage
+
+- name: Remove currently loaded unnecessary kernel modules
+  modprobe:
+    name: "{{ item }}"
+    state: absent
+  ignore_errors: yes
+  loop:
+    - cramfs
+    - freevxfs
+    - hfs
+    - hfsplus
+    - jffs2
+    - overlayfs
+    - squashfs
+    - udf
+    - usb-storage
+  ignore_errors: yes
+  when: item != "squashfs"
