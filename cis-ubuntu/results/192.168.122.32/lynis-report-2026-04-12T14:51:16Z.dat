@@ -1,7 +1,7 @@
 # Lynis Report
 report_version_major=1
 report_version_minor=0
-report_datetime_start=2026-04-12 14:36:42
+report_datetime_start=2026-04-12 14:51:18
 auditor=[Not Specified]
 lynis_version=3.0.7
 os=Linux
@@ -110,7 +110,7 @@ boot_service[]=udisks2
 boot_service[]=ufw
 boot_service[]=unattended-upgrades
 boot_service[]=vgauth
-uptime_in_seconds=8117
+uptime_in_seconds=8993
 uptime_in_days=0
 suggestion[]=BOOT-5264|Consider hardening system services|Run '/usr/bin/systemd-analyze security SERVICE' for each service|-|
 boot_loader=GRUB2
@@ -490,7 +490,7 @@ compiler_world_executable[]=/usr/bin/x86_64-linux-gnu-as
 suggestion[]=HRDN-7222|Harden compilers like restricting access to root user only|-|-|
 compiler_installed=1
 lynis_tests_done=267
-report_datetime_end=2026-04-12 14:37:09
+report_datetime_end=2026-04-12 14:51:46
 dhcp_client_running=0
 arpwatch_running=0
 firewall_active=1

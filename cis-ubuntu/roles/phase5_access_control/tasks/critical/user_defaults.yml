@@ -111,3 +111,8 @@
   debug:
     msg: "Locked accounts: {{ locked_accounts.stdout_lines }}"
   when: locked_accounts.stdout_lines is defined
+
+- name: Set password expiry for s1 user
+  shell: |
+    chage -M 90 -W 14 -m 7 s1
+  ignore_errors: yes

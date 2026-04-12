@@ -33,3 +33,7 @@
 - name: Configure fail2ban for intrusion prevention
   include_tasks: fail2ban_config.yml
   tags: fail2ban_config
+
+- name: Clean up old packages
+  include_tasks: package_cleanup.yml
+  tags: package_cleanup

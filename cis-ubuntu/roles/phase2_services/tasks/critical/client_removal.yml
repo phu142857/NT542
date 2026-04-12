@@ -17,6 +17,7 @@
   apt:
     name:
       - libpam-tmpdir
+      - debsums
     state: present
   ignore_errors: yes
 

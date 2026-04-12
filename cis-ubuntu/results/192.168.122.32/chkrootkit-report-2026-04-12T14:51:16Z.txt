@@ -126,7 +126,7 @@ Searching for Mumblehard Linux ...                          nothing found
 Searching for Backdoor.Linux.Mokes.a ...                    nothing found
 Searching for Malicious TinyDNS ...                         nothing found
 Searching for Linux.Xor.DDoS ...                            INFECTED: Possible Malicious Linux.Xor.DDoS installed
-/tmp/ansible/ansible-tmp-1776004629.7814374-294097-176279879993226/AnsiballZ_command.py
+/tmp/ansible/ansible-tmp-1776005506.7213857-321085-243204540219082/AnsiballZ_command.py
 Searching for Linux.Proxy.1.0 ...                           nothing found
 Searching for CrossRAT ...                                  nothing found
 Searching for Hidden Cobra ...                              nothing found
