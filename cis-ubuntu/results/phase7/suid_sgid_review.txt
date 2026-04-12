@@ -11,6 +11,7 @@ SUID Files Review:
 -rwsr-xr-x 1 root root 72072 Feb  6  2024 /usr/bin/gpasswd
 -rwsr-xr-x 1 root root 59976 Feb  6  2024 /usr/bin/passwd
 -rwsr-xr-x 1 root root 35200 Mar  6 16:10 /usr/bin/umount
+-rwsr-xr-x 1 root root 10232 Apr  3  2018 /usr/sbin/pam-tmpdir-helper
 -rwsr-xr-- 1 root messagebus 35112 Oct 25  2022 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 -rwsr-xr-x 1 root root 338536 Mar  4 17:55 /usr/lib/openssh/ssh-keysign
 -rwsr-xr-x 1 root root 135960 Apr 24  2024 /snap/snapd/21759/usr/lib/snapd/snap-confine
@@ -43,4 +44,4 @@ SGID Files Review:
 -rwxr-sr-x 1 root shadow 43168 Jan 10  2024 /snap/core20/2318/usr/sbin/pam_extrausers_chkpwd
 -rwxr-sr-x 1 root shadow 43160 Jan 10  2024 /snap/core20/2318/usr/sbin/unix_chkpwd
 
-Generated: 2026-04-12T13:23:58Z
+Generated: 2026-04-12T14:26:21Z

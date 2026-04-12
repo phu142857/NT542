@@ -29,3 +29,7 @@
 - name: Configure cron security
   include_tasks: cron_security.yml
   tags: cron_security
+
+- name: Configure fail2ban for intrusion prevention
+  include_tasks: fail2ban_config.yml
+  tags: fail2ban_config

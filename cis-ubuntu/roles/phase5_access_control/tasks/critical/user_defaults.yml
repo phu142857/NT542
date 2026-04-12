@@ -22,6 +22,41 @@
     line: 'UMASK 027'
     state: present
 
+- name: Configure password hashing rounds
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?SHA_CRYPT_MIN_ROUNDS'
+    line: 'SHA_CRYPT_MIN_ROUNDS 5000'
+    state: present
+
+- name: Configure password hashing rounds (max)
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?SHA_CRYPT_MAX_ROUNDS'
+    line: 'SHA_CRYPT_MAX_ROUNDS 5000'
+    state: present
+
+- name: Configure minimum password age
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?PASS_MIN_DAYS'
+    line: 'PASS_MIN_DAYS 7'
+    state: present
+
+- name: Configure maximum password age
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?PASS_MAX_DAYS'
+    line: 'PASS_MAX_DAYS 90'
+    state: present
+
+- name: Configure password warning age
+  lineinfile:
+    path: /etc/login.defs
+    regexp: '^#?PASS_WARN_AGE'
+    line: 'PASS_WARN_AGE 14'
+    state: present
+
 - name: Ensure default user home directory is configured
   lineinfile:
     path: /etc/default/useradd

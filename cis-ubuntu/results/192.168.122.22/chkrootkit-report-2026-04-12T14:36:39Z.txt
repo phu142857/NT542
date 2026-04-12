@@ -78,6 +78,19 @@ WARNING: The following suspicious files and directories were found:
 /usr/lib/python3/dist-packages/twisted/words/newsfragments/.gitignore
 /usr/lib/python3/dist-packages/twisted/trial/newsfragments/.gitignore
 /usr/lib/python3/dist-packages/twisted/names/newsfragments/.gitignore
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/noentry/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htpasswd
 /usr/lib/ruby/vendor_ruby/rubygems/tsort/.document
 /usr/lib/ruby/vendor_ruby/rubygems/optparse/.document
 /usr/lib/ruby/vendor_ruby/rubygems/ssl_certs/.document
@@ -126,7 +139,7 @@ Searching for Malicious TinyDNS...                          not found
 Searching for Linux.Xor.DDoS...                             WARNING
 
 WARNING: Possible Linux.Xor.DDoS installed:
-/tmp/ansible/ansible-tmp-1776002539.1001015-218750-67929581069096/AnsiballZ_command.py
+/tmp/ansible/ansible-tmp-1776004629.7721324-294096-60629469580323/AnsiballZ_command.py
 
 Searching for Linux.Proxy.1.0...                            not found
 Searching for CrossRAT...                                   not found

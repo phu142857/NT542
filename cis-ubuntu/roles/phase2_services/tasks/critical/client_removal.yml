@@ -1,5 +1,24 @@
 ---
-# Remove unnecessary client packages
+# Remove unnecessary client packages and install security tools
+
+- name: Ensure unnecessary client packages are not installed
+  apt:
+    name:
+      - nis
+      - rsh-client
+      - talk
+      - telnet
+      - ldap-utils
+      - ftp
+    state: absent
+  ignore_errors: yes
+
+- name: Install security packages for Lynis improvements
+  apt:
+    name:
+      - libpam-tmpdir
+    state: present
+  ignore_errors: yes
 
 - name: Ensure NIS Client is not installed
   package:

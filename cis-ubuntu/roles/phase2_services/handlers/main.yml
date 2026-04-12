@@ -2,13 +2,16 @@
 # Handlers for Phase 2 Services
 
 - name: restart postfix
-  listen: "restart postfix"
   service:
     name: postfix
     state: restarted
 
 - name: restart exim4
-  listen: "restart exim4"
   service:
     name: exim4
+    state: restarted
+
+- name: restart fail2ban
+  service:
+    name: fail2ban
     state: restarted

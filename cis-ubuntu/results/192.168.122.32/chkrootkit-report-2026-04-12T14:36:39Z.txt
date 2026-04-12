@@ -72,6 +72,19 @@ Searching for suspicious files and dirs, it may take a while... The following su
 /usr/lib/ruby/vendor_ruby/rubygems/ssl_certs/.document
 /usr/lib/ruby/vendor_ruby/rubygems/optparse/.document
 /usr/lib/modules/5.15.0-174-generic/vdso/.build-id
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/file/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/basic/authz_owner/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_anon/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/noentry/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_wrongrelm/.htaccess
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htpasswd
+/usr/lib/python3/dist-packages/fail2ban/tests/files/config/apache-auth/digest_time/.htaccess
 
 Searching for LPD Worm files and dirs...                    nothing found
 Searching for Ramen Worm files and dirs...                  nothing found
@@ -113,7 +126,7 @@ Searching for Mumblehard Linux ...                          nothing found
 Searching for Backdoor.Linux.Mokes.a ...                    nothing found
 Searching for Malicious TinyDNS ...                         nothing found
 Searching for Linux.Xor.DDoS ...                            INFECTED: Possible Malicious Linux.Xor.DDoS installed
-/tmp/ansible/ansible-tmp-1776002539.1077724-218751-221714278791982/AnsiballZ_command.py
+/tmp/ansible/ansible-tmp-1776004629.7814374-294097-176279879993226/AnsiballZ_command.py
 Searching for Linux.Proxy.1.0 ...                           nothing found
 Searching for CrossRAT ...                                  nothing found
 Searching for Hidden Cobra ...                              nothing found
