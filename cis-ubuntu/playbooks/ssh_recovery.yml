@@ -1,0 +1,22 @@
+---
+- name: SSH Recovery Playbook
+  hosts: ubuntu
+  become: yes
+  tasks:
+    - name: Restore s1 user shell to bash
+      user:
+        name: s1
+        shell: /bin/bash
+        state: present
+
+    - name: Unlock s1 user account
+      command: usermod -U s1
+      ignore_errors: yes
+
+    - name: Display s1 user info
+      command: getent passwd s1
+      register: s1_info
+
+    - name: Show s1 user status
+      debug:
+        msg: "{{ s1_info.stdout }}"

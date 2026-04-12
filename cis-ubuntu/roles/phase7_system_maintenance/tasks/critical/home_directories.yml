@@ -1,0 +1,48 @@
+---
+# Configure local interactive user home directories
+
+- name: Find local interactive users
+  shell: |
+    awk -F: '($3 >= 1000 && $3 != 65534) {print $1}' /etc/passwd
+  register: interactive_users
+  changed_when: false
+
+- name: Ensure local interactive user home directories are configured
+  shell: |
+    for user in {{ interactive_users.stdout_lines }}; do
+      home_dir=$(getent passwd "$user" | cut -d: -f6)
+      if [ -n "$home_dir" ] && [ "$home_dir" != "/" ]; then
+        # Ensure home directory exists
+        if [ ! -d "$home_dir" ]; then
+          mkdir -p "$home_dir"
+          chown "$user":"$(id -gn "$user")" "$home_dir"
+          chmod 0750 "$home_dir"
+        fi
+        
+        # Ensure proper permissions
+        chown "$user":"$(id -gn "$user")" "$home_dir"
+        chmod 0750 "$home_dir"
+      fi
+    done
+  when: interactive_users.stdout_lines is defined
+
+- name: Ensure local interactive user dot files access is configured
+  shell: |
+    for user in {{ interactive_users.stdout_lines }}; do
+      home_dir=$(getent passwd "$user" | cut -d: -f6)
+      if [ -n "$home_dir" ] && [ -d "$home_dir" ]; then
+        # Find dot files and ensure proper permissions
+        find "$home_dir" -name ".*" -type f -exec chmod 0640 {} \; 2>/dev/null || true
+        find "$home_dir" -name ".*" -type d -exec chmod 0750 {} \; 2>/dev/null || true
+        
+        # Ensure dot files are owned by the user
+        find "$home_dir" -name ".*" -exec chown "$user":"$(id -gn "$user")" {} \; 2>/dev/null || true
+      fi
+    done
+  when: interactive_users.stdout_lines is defined
+  changed_when: false
+
+- name: Display home directory configuration summary
+  debug:
+    msg: "Home directories configured for {{ interactive_users.stdout_lines | length }} interactive users"
+  when: interactive_users.stdout_lines is defined

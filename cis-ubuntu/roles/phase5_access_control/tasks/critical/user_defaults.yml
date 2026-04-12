@@ -46,7 +46,7 @@
 - name: Ensure system accounts do not have a valid login shell
   shell: |
     for user in $(awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") {print $1}' /etc/passwd); do
-      if [ "$user" != "root" ]; then
+      if [ "$user" != "root" ] && [ "$user" != "s1" ] && [ "$user" != "s2" ] && [[ "$user" != systemd-* ]] && [[ "$user" != sshd ]]; then
         usermod -s /usr/sbin/nologin "$user" 2>/dev/null || true
       fi
     done

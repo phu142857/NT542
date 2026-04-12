@@ -1,0 +1,34 @@
+---
+# Secure world writable files and directories
+
+- name: Find world writable files
+  shell: |
+    find / -type f -perm -002 -not -path "/proc/*" -not -path "/sys/*" -not -path "/dev/*" 2>/dev/null || true
+  register: world_writable_files
+  changed_when: false
+
+- name: Display world writable files
+  debug:
+    msg: "World writable files: {{ world_writable_files.stdout_lines }}"
+  when: world_writable_files.stdout_lines is defined
+
+- name: Find world writable directories
+  shell: |
+    find / -type d -perm -002 -not -path "/proc/*" -not -path "/sys/*" -not -path "/dev/*" 2>/dev/null || true
+  register: world_writable_dirs
+  changed_when: false
+
+- name: Display world writable directories
+  debug:
+    msg: "World writable directories: {{ world_writable_dirs.stdout_lines }}"
+  when: world_writable_dirs.stdout_lines is defined
+
+- name: Remove world writable permissions from critical system files
+  shell: |
+    # Remove world writable permissions from critical files
+    for file in /etc/passwd /etc/shadow /etc/group /etc/gshadow; do
+      if [ -f "$file" ]; then
+        chmod o-w "$file" 2>/dev/null || true
+      fi
+    done
+  changed_when: false

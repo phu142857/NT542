@@ -6,9 +6,21 @@
   include_tasks: file_permissions.yml
   tags: file_permissions
 
-- name: Perform system integrity checks
-  include_tasks: system_integrity.yml
-  tags: system_integrity
+- name: Secure world writable files and directories
+  include_tasks: world_writable_files.yml
+  tags: world_writable
+
+- name: Find and fix files without owner or group
+  include_tasks: ownerless_files.yml
+  tags: ownerless
+
+- name: Ensure user and group integrity
+  include_tasks: user_group_integrity.yml
+  tags: user_group_integrity
+
+- name: Configure local interactive user home directories
+  include_tasks: home_directories.yml
+  tags: home_directories
 
 - name: Review SUID and SGID files
   include_tasks: suid_sgid_review.yml

@@ -1,0 +1,33 @@
+---
+# Find and fix files without owner or group
+
+- name: Find files without an owner
+  shell: |
+    find / -nouser -not -path "/proc/*" -not -path "/sys/*" -not -path "/dev/*" 2>/dev/null || true
+  register: ownerless_files
+  changed_when: false
+
+- name: Display files without an owner
+  debug:
+    msg: "Files without owner: {{ ownerless_files.stdout_lines }}"
+  when: ownerless_files.stdout_lines is defined
+
+- name: Find files without a group
+  shell: |
+    find / -nogroup -not -path "/proc/*" -not -path "/sys/*" -not -path "/dev/*" 2>/dev/null || true
+  register: groupless_files
+  changed_when: false
+
+- name: Display files without a group
+  debug:
+    msg: "Files without group: {{ groupless_files.stdout_lines }}"
+  when: groupless_files.stdout_lines is defined
+
+- name: Assign owner and group to ownerless files in critical directories
+  shell: |
+    # Fix ownerless files in /etc, /var, /usr
+    for dir in /etc /var /usr; do
+      find "$dir" -nouser -exec chown root:root {} \; 2>/dev/null || true
+      find "$dir" -nogroup -exec chown root:root {} \; 2>/dev/null || true
+    done
+  changed_when: false

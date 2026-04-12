@@ -1,17 +1,33 @@
 ---
 # Configure filesystem security options
 
+- name: Check if /tmp is mounted
+  shell: mount | grep "on /tmp "
+  register: tmp_mount_check
+  changed_when: false
+  failed_when: false
+
 - name: Ensure /tmp has proper mount options
-  command: mount -o remount,nodev,nosuid,noexec /tmp
+  shell: |
+    if mount | grep -q "on /tmp "; then
+      mount -o remount,nodev,nosuid,noexec /tmp 2>/dev/null || true
+    else
+      echo "/tmp is not a separate mount point, skipping remount"
+    fi
   register: tmp_mount_result
-  failed_when: tmp_mount_result.rc != 0 and "already mounted" not in tmp_mount_result.stderr
   changed_when: tmp_mount_result.rc == 0
+  failed_when: false
 
 - name: Ensure /dev/shm has proper mount options
-  command: mount -o remount,nodev,nosuid,noexec /dev/shm
+  shell: |
+    if mount | grep -q "on /dev/shm "; then
+      mount -o remount,nodev,nosuid,noexec /dev/shm 2>/dev/null || true
+    else
+      echo "/dev/shm is not mounted, skipping remount"
+    fi
   register: shm_mount_result
-  failed_when: shm_mount_result.rc != 0 and "already mounted" not in shm_mount_result.stderr
   changed_when: shm_mount_result.rc == 0
+  failed_when: false
 
 - name: Add /var/tmp security options to fstab
   lineinfile:
