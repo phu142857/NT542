@@ -43,4 +43,12 @@
     - name: Run Phase 7 - System Maintenance
       include_tasks: ../roles/phase7_system_maintenance/tasks/main.yml
       tags: critical,important
+
+  handlers:
+    - name: Import phase1 handlers
+      include_tasks: ../roles/phase1_initial_setup/handlers/main.yml
+    - name: Import phase2 handlers  
+      include_tasks: ../roles/phase2_services/handlers/main.yml
+    - name: Import phase6 handlers
+      include_tasks: ../roles/phase6_logging_auditing/handlers/main.yml
     

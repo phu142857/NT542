@@ -109,6 +109,7 @@ The playbook will:
 - Create seed ISOs
 - Provision VMs with virt-install
 - Display VM IP addresses
+- **Automatically add VM IPs to cis-ubuntu inventory**
 
 ### 4. SSH into VMs
 
@@ -161,6 +162,31 @@ The project automatically injects your SSH public key (`~/.ssh/id_rsa.pub`) into
 
 1. Edit `ansible/group_vars/all.yml`
 2. Change the `ssh_public_key` value
+
+## Automatic Inventory Integration
+
+The playbook automatically adds newly created VMs to the cis-ubuntu inventory file:
+
+- **Target file**: `../cis-ubuntu/inventory/hosts.ini`
+- **Format**: `<IP> ansible_user=<username> ansible_ssh_private_key_file=../NT542`
+- **Duplicate prevention**: Checks if IP already exists before adding
+- **Real-time updates**: IPs are added as soon as VMs get network connectivity
+
+### Manual Inventory Management
+
+If you need to manually manage the inventory:
+
+```bash
+# View current inventory
+cat ../cis-ubuntu/inventory/hosts.ini
+
+# Remove a VM from inventory
+sed -i '/<IP>/d' ../cis-ubuntu/inventory/hosts.ini
+
+# Test Ansible connectivity
+cd ../cis-ubuntu
+ansible -i inventory/hosts.ini all -m ping
+```
 
 ## Customization
 

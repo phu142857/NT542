@@ -65,15 +65,62 @@
   until: vm_state.stdout == "running"
   when: vm_check.rc != 0
 
+- name: Wait for VM to fully boot (2 minutes)
+  pause:
+    minutes: 2
+  when: vm_check.rc != 0
+
 - name: Get VM IP address
   command: virsh --connect qemu:///system domifaddr {{ vm_name }}
   register: vm_ip
-  retries: 60
+  retries: 90
   delay: 5
-  until: vm_ip.stdout.find("192.168.") != -1
+  until: 
+    - vm_ip.stdout_lines is defined 
+    - vm_ip.stdout_lines | length > 2
+    - vm_ip.stdout_lines[2] is defined
+    - vm_ip.stdout_lines[2].find("192.168.") != -1
   changed_when: false
+
+- name: Extract VM IP address
+  set_fact:
+    vm_ip_address: "{{ vm_ip.stdout_lines[2] | regex_replace('^.*\\s+([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}).*', '\\1') | regex_replace('/24', '') }}"
+  when: vm_ip.stdout_lines | length > 2
 
 - name: Display VM IP address
   debug:
-    msg: "VM {{ vm_name }} IP: {{ vm_ip.stdout_lines[1] | regex_replace('.*([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}).*', '\\1') }}"
-  when: vm_ip.stdout_lines | length > 1
+    msg: "VM {{ vm_name }} IP: {{ vm_ip_address }}"
+  when: vm_ip_address is defined
+
+- name: Check if IP already exists in inventory
+  command: grep -q "{{ vm_ip_address }}" "{{ vm_base_path }}/../cis-ubuntu/inventory/hosts.ini"
+  register: ip_exists
+  failed_when: false
+  changed_when: false
+  when: vm_ip_address is defined
+  delegate_to: localhost
+
+- name: Add VM to cis-ubuntu inventory
+  lineinfile:
+    path: "{{ vm_base_path }}/../cis-ubuntu/inventory/hosts.ini"
+    line: "{{ vm_ip_address }} ansible_user={{ vm_user }} ansible_ssh_private_key_file=/home/teifu142/ATE/UIT/NT542/NT542"
+    insertafter: '\\[ubuntu_servers\\]'
+    state: present
+  when: 
+    - vm_ip_address is defined
+    - ip_exists.rc != 0
+  delegate_to: localhost
+
+- name: Notify about IP addition
+  debug:
+    msg: "Added {{ vm_name }} ({{ vm_ip_address }}) to cis-ubuntu inventory"
+  when: 
+    - vm_ip_address is defined
+    - ip_exists.rc != 0
+
+- name: Notify about IP already exists
+  debug:
+    msg: "VM {{ vm_name }} IP {{ vm_ip_address }} already exists in inventory"
+  when: 
+    - vm_ip_address is defined
+    - ip_exists.rc == 0
