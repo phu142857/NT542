@@ -1,0 +1,21 @@
+---
+# Global variables for VM provisioning
+vm_base_path: "/home/teifu142/ATE/UIT/NT542/auto-vm"
+images_base_path: "{{ vm_base_path }}/images/base"
+images_disk_path: "{{ vm_base_path }}/images/disks"
+cloud_init_seed_path: "{{ vm_base_path }}/cloud-init/seed-iso"
+
+# VM configuration defaults
+vm_memory_mb: 8192
+vm_vcpus: 2
+vm_network: "default"
+vm_disk_size_gb: 50
+
+# SSH configuration
+ssh_password: "Phuqwaszx142@"
+ssh_public_key: "{{ lookup('file', '/home/teifu142/ATE/UIT/NT542/NT542.pub') }}"
+
+# Base images
+base_images:
+  u22: "ubuntu-22.04.qcow2"
+  u24: "ubuntu-24.04.qcow2"

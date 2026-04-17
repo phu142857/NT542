@@ -1,0 +1,82 @@
+### Manual
+
+| Tên Khuyến nghị                            |
+| :----------------------------------------- |
+| Ensure password complexity is configured   |
+| Ensure minimum password days is configured |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                                            |
+| :------------------------------------------------------------------------- |
+| Ensure permissions on /etc/ssh/sshd_config are configured                  |
+| Ensure permissions on SSH private host key files are configured            |
+| Ensure permissions on SSH public host key files are configured             |
+| Ensure sshd access is configured                                           |
+| Ensure sshd Banner is configured                                           |
+| Ensure sshd Ciphers are configured                                         |
+| Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured     |
+| Ensure sshd DisableForwarding is enabled                                   |
+| Ensure sshd GSSAPIAuthentication is disabled                               |
+| Ensure sshd HostbasedAuthentication is disabled                            |
+| Ensure sshd IgnoreRhosts is enabled                                        |
+| Ensure sshd KexAlgorithms is configured                                    |
+| Ensure sshd LoginGraceTime is configured                                   |
+| Ensure sshd LogLevel is configured                                         |
+| Ensure sshd MACs are configured                                            |
+| Ensure sshd MaxAuthTries is configured                                     |
+| Ensure sshd MaxSessions is configured                                      |
+| Ensure sshd MaxStartups is configured                                      |
+| Ensure sshd PermitEmptyPasswords is disabled                               |
+| Ensure sshd PermitRootLogin is disabled                                    |
+| Ensure sshd PermitUserEnvironment is disabled                              |
+| Ensure sshd UsePAM is enabled                                              |
+| Ensure sudo is installed                                                   |
+| Ensure sudo commands use pty                                               |
+| Ensure sudo log file exists                                                |
+| Ensure users must provide password for privilege escalation                |
+| Ensure re-authentication for privilege escalation is not disabled globally |
+| Ensure sudo authentication timeout is configured correctly                 |
+| Ensure access to the su command is restricted                              |
+| Ensure latest version of pam is installed                                  |
+| Ensure libpam-modules is installed                                         |
+| Ensure libpam-pwquality is installed                                       |
+| Ensure pam_unix module is enabled                                          |
+| Ensure pam_faillock module is enabled                                      |
+| Ensure pam_pwquality module is enabled                                     |
+| Ensure pam_pwhistory module is enabled                                     |
+| Ensure password failed attempts lockout is configured                      |
+| Ensure password unlock time is configured                                  |
+| Ensure password failed attempts lockout includes root account              |
+| Ensure password number of changed characters is configured                 |
+| Ensure minimum password length is configured                               |
+| Ensure password same consecutive characters is configured                  |
+| Ensure password maximum sequential characters is configured                |
+| Ensure password dictionary check is enabled                                |
+| Ensure password quality checking is enforced                               |
+| Ensure password quality is enforced for the root user                      |
+| Ensure password history remember is configured                             |
+| Ensure password history is enforced for the root user                      |
+| Ensure pam_pwhistory includes use_authtok                                  |
+| Ensure pam_unix does not include nullok                                    |
+| Ensure pam_unix does not include remember                                  |
+| Ensure pam_unix includes a strong password hashing algorithm               |
+| Ensure pam_unix includes use_authtok                                       |
+| Ensure password expiration is configured                                   |
+| Ensure password expiration warning days is configured                      |
+| Ensure strong password hashing algorithm is configured                     |
+| Ensure inactive password lock is configured                                |
+| Ensure all users last password change date is in the past                  |
+| Ensure root is the only UID 0 account                                      |
+| Ensure root is the only GID 0 account                                      |
+| Ensure group root is the only GID 0 group                                  |
+| Ensure root account access is controlled                                   |
+| Ensure root path integrity                                                 |
+| Ensure root user umask is configured                                       |
+| Ensure system accounts do not have a valid login shell                     |
+| Ensure accounts without a valid login shell are locked                     |
+| Ensure nologin is not listed in /etc/shells                                |
+| Ensure default user shell timeout is configured                            |
+| Ensure default user umask is configured                                    |

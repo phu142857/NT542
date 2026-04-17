@@ -1,0 +1,10 @@
+# VM disk images
+*.qcow2
+auto-vm/images/disks/
+auto-vm/cloud-init/seed-iso/*.iso
+auto-vm/cloud-init/seed-iso/*-user-data
+auto-vm/cloud-init/seed-iso/*-meta-data
+
+# Ansible
+*.retry
+.ansible/

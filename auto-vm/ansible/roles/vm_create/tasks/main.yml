@@ -1,0 +1,79 @@
+---
+- name: Ensure required directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ images_disk_path }}"
+    - "{{ cloud_init_seed_path }}"
+
+- name: Create VM disk using backing file
+  command: >
+    qemu-img create -f qcow2
+    -F qcow2
+    -b "{{ images_base_path }}/{{ base_images[vm_name] }}"
+    "{{ images_disk_path }}/{{ vm_name }}.qcow2"
+    {{ vm_disk_size_gb }}G
+  args:
+    creates: "{{ images_disk_path }}/{{ vm_name }}.qcow2"
+
+- name: Generate cloud-init user-data
+  template:
+    src: ../templates/cloud-init/user-data.j2
+    dest: "{{ cloud_init_seed_path }}/{{ vm_name }}-user-data"
+    mode: '0644'
+
+- name: Generate cloud-init meta-data
+  template:
+    src: ../templates/cloud-init/meta-data.j2
+    dest: "{{ cloud_init_seed_path }}/{{ vm_name }}-meta-data"
+    mode: '0644'
+
+- name: Generate seed ISO
+  command: >
+    {{ vm_base_path }}/scripts/gen-seed.sh
+    {{ cloud_init_seed_path }}/{{ vm_name }}
+  args:
+    creates: "{{ cloud_init_seed_path }}/{{ vm_name }}.iso"
+
+- name: Check if VM exists
+  command: virsh --connect qemu:///system dominfo {{ vm_name }}
+  register: vm_check
+  failed_when: false
+  changed_when: false
+
+- name: Create VM with virt-install
+  command: >
+    virt-install --connect qemu:///system --name {{ vm_name }}
+    --memory {{ vm_memory_mb }}
+    --vcpus {{ vm_vcpus }}
+    --disk path={{ images_disk_path }}/{{ vm_name }}.qcow2,format=qcow2,bus=virtio
+    --disk path={{ cloud_init_seed_path }}/{{ vm_name }}.iso,device=cdrom
+    --network network={{ vm_network }}
+    --osinfo ubuntu{{ '22.04' if vm_name == 'u22' else '24.04' }}
+    --graphics none
+    --import
+    --noautoconsole
+  when: vm_check.rc != 0
+
+- name: Wait for VM to be running
+  command: virsh --connect qemu:///system domstate {{ vm_name }}
+  register: vm_state
+  retries: 30
+  delay: 2
+  until: vm_state.stdout == "running"
+  when: vm_check.rc != 0
+
+- name: Get VM IP address
+  command: virsh --connect qemu:///system domifaddr {{ vm_name }}
+  register: vm_ip
+  retries: 60
+  delay: 5
+  until: vm_ip.stdout.find("192.168.") != -1
+  changed_when: false
+
+- name: Display VM IP address
+  debug:
+    msg: "VM {{ vm_name }} IP: {{ vm_ip.stdout_lines[1] | regex_replace('.*([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}).*', '\\1') }}"
+  when: vm_ip.stdout_lines | length > 1

@@ -1,0 +1,7 @@
+---
+# Important Security Tasks - Phase 4 Firewall
+# Advanced firewall configurations
+
+- name: Configure advanced firewall rules
+  include_tasks: firewall_advanced.yml
+  tags: firewall_advanced

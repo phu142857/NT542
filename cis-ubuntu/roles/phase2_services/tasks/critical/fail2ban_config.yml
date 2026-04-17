@@ -1,0 +1,40 @@
+---
+# Configure fail2ban for intrusion prevention
+
+- name: Install fail2ban for intrusion prevention
+  apt:
+    name: fail2ban
+    state: present
+  ignore_errors: yes
+
+- name: Ensure fail2ban is enabled and running
+  service:
+    name: fail2ban
+    state: started
+    enabled: yes
+  ignore_errors: yes
+
+- name: Configure fail2ban basic settings
+  copy:
+    content: |
+      [DEFAULT]
+      bantime = 3600
+      findtime = 600
+      maxretry = 3
+      
+      [sshd]
+      enabled = true
+      port = ssh
+      logpath = /var/log/auth.log
+      maxretry = 3
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: '0644'
+  ignore_errors: yes
+
+- name: Restart fail2ban to apply configuration
+  service:
+    name: fail2ban
+    state: restarted
+  ignore_errors: yes

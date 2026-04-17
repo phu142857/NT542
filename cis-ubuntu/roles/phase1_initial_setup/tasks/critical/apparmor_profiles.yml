@@ -1,0 +1,38 @@
+---
+# Ensure AppArmor profiles are in enforce or complain mode
+
+- name: Check AppArmor profile status
+  shell: |
+    apparmor_status --json
+  register: apparmor_status
+  changed_when: false
+  ignore_errors: yes
+
+- name: Ensure all AppArmor Profiles are in enforce or complain mode
+  shell: |
+    for profile in $(apparmor_status | grep "profiles are in enforce mode" -A 100 | grep -v "profiles are" | grep -v "profiles are" | awk '{print $1}'); do
+      if [ "$profile" != "" ]; then
+        aa-enforce "$profile" 2>/dev/null || aa-complain "$profile" 2>/dev/null || true
+      fi
+    done
+  register: apparmor_enforce
+  changed_when: false
+  ignore_errors: yes
+
+- name: Ensure all AppArmor Profiles are enforcing
+  shell: |
+    for profile in $(apparmor_status | grep "profiles are in complain mode" -A 100 | grep -v "profiles are" | awk '{print $1}'); do
+      if [ "$profile" != "" ]; then
+        aa-enforce "$profile" 2>/dev/null || true
+      fi
+    done
+  register: apparmor_enforcing
+  changed_when: false
+  ignore_errors: yes
+
+- name: Display AppArmor profile status
+  debug:
+    msg: |
+      AppArmor Profiles Status:
+      {{ apparmor_status.stdout }}
+  when: apparmor_status.stdout is defined

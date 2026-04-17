@@ -1,0 +1,49 @@
+---
+# Disable additional network-related kernel modules
+
+- name: Ensure dccp kernel module is not available
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install dccp /bin/true"
+    state: present
+
+- name: Ensure tipc kernel module is not available
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install tipc /bin/true"
+    state: present
+
+- name: Ensure rds kernel module is not available
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install rds /bin/true"
+    state: present
+
+- name: Ensure sctp kernel module is not available
+  lineinfile:
+    path: /etc/modprobe.d/cis.conf
+    line: "install sctp /bin/true"
+    state: present
+
+- name: Blacklist additional network kernel modules
+  lineinfile:
+    path: /etc/modprobe.d/cis-blacklist.conf
+    line: "blacklist {{ item }}"
+    state: present
+  loop:
+    - dccp
+    - tipc
+    - rds
+    - sctp
+
+- name: Remove currently loaded additional network kernel modules
+  modprobe:
+    name: "{{ item }}"
+    state: absent
+  ignore_errors: yes
+  loop:
+    - dccp
+    - tipc
+    - rds
+    - sctp
+  ignore_errors: yes

@@ -1,0 +1,50 @@
+---
+# Ensure message access server services are not in use
+
+- name: Check and disable dovecot service
+  systemd:
+    name: dovecot
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['dovecot'] is defined
+  ignore_errors: yes
+
+- name: Check and disable dovecot imap service
+  systemd:
+    name: dovecot-imap
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['dovecot-imap'] is defined
+  ignore_errors: yes
+
+- name: Check and disable dovecot pop3 service
+  systemd:
+    name: dovecot-pop3
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['dovecot-pop3'] is defined
+  ignore_errors: yes
+
+- name: Check and disable cyrus-imap service
+  systemd:
+    name: cyrus-imap
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['cyrus-imap'] is defined
+  ignore_errors: yes
+
+- name: Check and disable courier-imap service
+  systemd:
+    name: courier-imap
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['courier-imap'] is defined
+  ignore_errors: yes
+
+- name: Check and disable courier-pop service
+  systemd:
+    name: courier-pop
+    state: stopped
+    enabled: no
+  when: ansible_facts.services['courier-pop'] is defined
+  ignore_errors: yes

@@ -1,0 +1,11 @@
+---
+# Important Security Tasks - Phase 5 Access Control
+# Password quality and user defaults
+
+- name: Configure password quality requirements
+  include_tasks: password_quality.yml
+  tags: password
+
+- name: Configure user default settings
+  include_tasks: user_defaults.yml
+  tags: users

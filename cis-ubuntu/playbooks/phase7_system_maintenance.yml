@@ -1,0 +1,11 @@
+---
+- name: Phase 7 - System Maintenance
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  roles:
+    - ../roles/phase7_system_maintenance

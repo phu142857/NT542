@@ -1,0 +1,55 @@
+---
+# Configure Logging System (journald + rsyslog)
+
+- name: Ensure journald service is enabled and active
+  service:
+    name: systemd-journald
+    state: started
+    enabled: yes
+
+- name: Ensure rsyslog is installed
+  package:
+    name: rsyslog
+    state: present
+
+- name: Ensure rsyslog service is enabled and active
+  service:
+    name: rsyslog
+    state: started
+    enabled: yes
+
+- name: Ensure journald ForwardToSyslog is disabled
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?ForwardToSyslog'
+    line: 'ForwardToSyslog=no'
+    state: present
+
+- name: Ensure journald Compress is configured
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?Compress'
+    line: 'Compress=yes'
+    state: present
+
+- name: Ensure journald Storage is configured
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?Storage'
+    line: 'Storage=persistent'
+    state: present
+
+- name: Ensure rsyslog log file creation mode is configured
+  lineinfile:
+    path: /etc/rsyslog.d/50-default.conf
+    regexp: '^\$FileCreateMode'
+    line: '$FileCreateMode 0640'
+    state: present
+
+- name: Ensure access to all logfiles has been configured
+  file:
+    path: /var/log
+    mode: '0755'
+    owner: root
+    group: root
+    recurse: yes

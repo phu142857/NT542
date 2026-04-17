@@ -1,0 +1,68 @@
+---
+# Configure iptables firewall (Legacy option)
+
+- name: Ensure iptables packages are installed
+  package:
+    name:
+      - iptables
+      - iptables-persistent
+    state: present
+
+- name: Ensure nftables is not in use with iptables
+  package:
+    name: nftables
+    state: absent
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure ufw is not in use with iptables
+  package:
+    name: ufw
+    state: absent
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure iptables default deny firewall policy
+  iptables:
+    chain: INPUT
+    policy: DROP
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure ip6tables default deny firewall policy
+  iptables:
+    chain: INPUT
+    ip_version: ipv6
+    policy: DROP
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure iptables loopback traffic is configured
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure ip6tables loopback traffic is configured
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    ip_version: ipv6
+    jump: ACCEPT
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure iptables firewall rules exist for all open ports
+  iptables:
+    chain: INPUT
+    protocol: "{{ item.proto | default('tcp') }}"
+    destination_port: "{{ item.port }}"
+    jump: ACCEPT
+  loop: "{{ cis_allowed_ports | default([]) }}"
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure ip6tables firewall rules exist for all open ports
+  iptables:
+    chain: INPUT
+    protocol: "{{ item.proto | default('tcp') }}"
+    destination_port: "{{ item.port }}"
+    jump: ACCEPT
+    ip_version: ipv6
+  loop: "{{ cis_allowed_ports | default([]) }}"
+  when: cis_firewall_type == "iptables"

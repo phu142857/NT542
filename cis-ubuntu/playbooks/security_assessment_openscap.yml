@@ -1,0 +1,95 @@
+---
+- name: Security Assessment - Ubuntu Tools
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+    
+  tasks:
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        mode: '0755'
+        
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        
+    - name: Install security assessment tools
+      apt:
+        name:
+          - lynis
+          - chkrootkit
+          - rkhunter
+          - wget
+          - unzip
+        state: present
+        
+    - name: Run Lynis security scan
+      shell: |
+        lynis audit system --quick --report-file /tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat
+      register: lynis_scan
+      failed_when: false
+        
+    - name: Debug Lynis output
+      debug:
+        var: lynis_scan.stdout_lines
+      when: lynis_scan.stdout_lines is defined
+        
+    - name: Run chkrootkit scan
+      shell: |
+        chkrootkit > /tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt 2>&1
+      register: chkrootkit_scan
+      failed_when: false
+        
+    - name: Run rkhunter scan
+      shell: |
+        rkhunter --check --sk --reportfile /tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt
+      register: rkhunter_scan
+      failed_when: false
+        
+    - name: Ensure local results directory exists for host
+      file:
+        path: "{{ results_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: false
+        
+    - name: Fetch Lynis report to local
+      fetch:
+        src: "/tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        flat: yes
+      failed_when: false
+        
+    - name: Fetch chkrootkit report to local
+      fetch:
+        src: "/tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
+        flat: yes
+      failed_when: false
+        
+    - name: Fetch rkhunter report to local
+      fetch:
+        src: "/tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"
+        flat: yes
+      failed_when: false
+      
+    - name: Display security scan status
+      debug:
+        msg: "Security scans completed. Results saved to {{ results_dir }}/"
+      
+    - name: Clean up temporary files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        - "/tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
+        - "/tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"

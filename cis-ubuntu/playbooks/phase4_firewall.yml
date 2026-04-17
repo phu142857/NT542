@@ -1,0 +1,11 @@
+---
+- name: Phase 4 - Host Based Firewall
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  roles:
+    - ../roles/phase4_firewall

@@ -1,0 +1,75 @@
+---
+- name: Security Assessment - Lynis
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+    lynis_report_dir: "/var/log"
+    
+  tasks:
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        mode: '0755'
+      
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        
+    - name: Install Lynis
+      apt:
+        name: lynis
+        state: present
+        
+    - name: Run Lynis system audit (quick mode)
+      shell: lynis audit system --quick
+      register: lynis_audit
+      failed_when: false
+      
+    - name: Extract hardening index from Lynis report
+      shell: grep "hardening_index" {{ lynis_report_dir }}/lynis-report.dat
+      register: hardening_index
+      failed_when: false
+      
+    - name: Copy Lynis report to results directory
+      copy:
+        src: "{{ lynis_report_dir }}/lynis-report.dat"
+        dest: "{{ results_dir }}/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        remote_src: yes
+        
+    - name: Copy Lynis log to results directory
+      copy:
+        src: "{{ lynis_report_dir }}/lynis.log"
+        dest: "{{ results_dir }}/lynis-log-{{ ansible_date_time.iso8601 }}.log"
+        remote_src: yes
+      failed_when: false
+        
+    - name: Ensure local results directory exists for host
+      file:
+        path: "{{ results_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: false
+        
+    - name: Fetch Lynis report to local results
+      fetch:
+        src: "{{ results_dir }}/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        flat: yes
+        
+    - name: Fetch Lynis log to local results
+      fetch:
+        src: "{{ results_dir }}/lynis-log-{{ ansible_date_time.iso8601 }}.log"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/lynis-log-{{ ansible_date_time.iso8601 }}.log"
+        flat: yes
+      failed_when: false
+        
+    - name: Display hardening index
+      debug:
+        msg: "Hardening Index: {{ hardening_index.stdout_lines[0] | default('Not found') }}"
+      when: hardening_index.stdout_lines is defined

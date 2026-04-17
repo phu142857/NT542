@@ -1,0 +1,66 @@
+---
+# Configure UFW outbound connections
+
+- name: Ensure ufw outbound connections are configured
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: tcp
+    port: "{{ item }}"
+  loop: "{{ cis_allowed_outbound_ports | default(['53', '80', '443', '123']) }}"
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound DNS is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: udp
+    port: 53
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound NTP is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: udp
+    port: 123
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound HTTP is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: tcp
+    port: 80
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound HTTPS is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: tcp
+    port: 443
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound DHCP is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: udp
+    port: 67
+  when: cis_firewall_type == "ufw"
+
+- name: Ensure ufw outbound DHCPv6 is allowed
+  ufw:
+    rule: allow
+    direction: out
+    to_ip: 0.0.0.0/0
+    proto: udp
+    port: 547
+  when: cis_firewall_type == "ufw"

@@ -1,0 +1,46 @@
+---
+# Remove unnecessary client applications
+
+- name: Ensure NIS client is not installed
+  package:
+    name:
+      - nis
+      - ypbind
+    state: absent
+
+- name: Ensure rsh client is not installed
+  package:
+    name:
+      - rsh-client
+      - rsh-redone-client
+    state: absent
+
+- name: Ensure talk client is not installed
+  package:
+    name:
+      - talk
+      - talkd
+    state: absent
+
+- name: Ensure telnet client is not installed
+  package:
+    name:
+      - telnet
+      - telnetd
+    state: absent
+
+- name: Ensure LDAP client is not installed
+  package:
+    name:
+      - ldap-utils
+      - libldap-2.5-0
+    state: absent
+  when: cis_remove_ldap_client | default(false) | bool
+
+- name: Ensure FTP client is not installed
+  package:
+    name:
+      - ftp
+      - lftp
+    state: absent
+  when: cis_remove_ftp_client | default(false) | bool

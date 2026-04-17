@@ -1,0 +1,41 @@
+---
+# Configure login banners and warning messages
+
+- name: Create login warning banner
+  copy:
+    content: |
+      Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/issue.net
+    mode: '0644'
+
+- name: Configure local login banner
+  copy:
+    content: |
+      Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/issue
+    mode: '0644'
+
+- name: Configure message of the day
+  copy:
+    content: |
+      Authorized uses only. All activity may be monitored and reported.
+    dest: /etc/motd
+    mode: '0644'
+
+- name: Configure SSH to display banner
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^Banner'
+    line: 'Banner /etc/issue.net'
+    state: present
+
+- name: Set proper permissions on login banners
+  file:
+    path: "{{ item }}"
+    mode: '0644'
+    owner: root
+    group: root
+  loop:
+    - /etc/issue
+    - /etc/issue.net
+    - /etc/motd

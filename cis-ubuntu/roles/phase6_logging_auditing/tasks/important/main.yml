@@ -1,0 +1,11 @@
+---
+# Important Security Tasks - Phase 6 Logging and Auditing
+# Advanced logging and comprehensive audit rules
+
+- name: Configure advanced logging
+  include_tasks: advanced_logging.yml
+  tags: advanced_logging
+
+- name: Configure comprehensive audit rules
+  include_tasks: comprehensive_audit.yml
+  tags: comprehensive_audit

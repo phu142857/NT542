@@ -1,0 +1,72 @@
+---
+# Configure critical system file permissions
+
+- name: Ensure permissions on /etc/passwd are configured
+  file:
+    path: /etc/passwd
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/passwd- are configured
+  file:
+    path: /etc/passwd-
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/group are configured
+  file:
+    path: /etc/group
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/group- are configured
+  file:
+    path: /etc/group-
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/shadow are configured
+  file:
+    path: /etc/shadow
+    mode: '0000'
+    owner: root
+    group: shadow
+
+- name: Ensure permissions on /etc/shadow- are configured
+  file:
+    path: /etc/shadow-
+    mode: '0000'
+    owner: root
+    group: shadow
+
+- name: Ensure permissions on /etc/gshadow are configured
+  file:
+    path: /etc/gshadow
+    mode: '0000'
+    owner: root
+    group: shadow
+
+- name: Ensure permissions on /etc/gshadow- are configured
+  file:
+    path: /etc/gshadow-
+    mode: '0000'
+    owner: root
+    group: shadow
+
+- name: Ensure permissions on /etc/shells are configured
+  file:
+    path: /etc/shells
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure permissions on /etc/security/opasswd are configured
+  file:
+    path: /etc/security/opasswd
+    mode: '0600'
+    owner: root
+    group: root

@@ -1,0 +1,21 @@
+---
+- name: Create KVM Virtual Machines
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars_files:
+    - ../../vars/vm-list.yml
+    - ../group_vars/all.yml
+  
+  tasks:
+    - name: Create VMs
+      include_tasks: ../roles/vm_create/tasks/main.yml
+      vars:
+        vm_name: "{{ item.name }}"
+        vm_user: "{{ item.user }}"
+        vm_memory_mb: "{{ item.memory | default(2048) }}"
+        vm_vcpus: "{{ item.vcpus | default(2) }}"
+        vm_disk_size_gb: "{{ item.disk_size | default(20) }}"
+      loop: "{{ vms }}"
+      when: item.state | default('present') == 'present'

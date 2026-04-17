@@ -1,0 +1,16 @@
+---
+# VM configuration list
+vms:
+  - name: u22
+    user: s1
+    memory: 2048
+    vcpus: 2
+    disk_size: 20
+    state: present
+    
+  - name: u24
+    user: s2
+    memory: 2048
+    vcpus: 2
+    disk_size: 20
+    state: present

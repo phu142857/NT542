@@ -1,0 +1,52 @@
+---
+# Ensure bootloader security is configured
+
+- name: Ensure bootloader password is set
+  lineinfile:
+    path: /etc/grub.d/40_custom
+    line: "set superusers=\"root\""
+    state: present
+    create: yes
+  when: cis_set_grub_password | default(false) | bool
+  notify: update grub
+
+- name: Ensure bootloader password is configured
+  lineinfile:
+    path: /etc/grub.d/40_custom
+    line: "password_pbkdf2 root {{ grub_password }}"
+    state: present
+    create: yes
+  when: cis_set_grub_password | default(false) | bool and grub_password is defined
+  notify: update grub
+
+- name: Ensure access to bootloader config is configured
+  file:
+    path: /boot/grub/grub.cfg
+    mode: '0400'
+    owner: root
+    group: root
+
+- name: Ensure access to GRUB directory is configured
+  file:
+    path: /boot/grub
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: Ensure AppArmor is enabled in bootloader configuration
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash apparmor=1 security=apparmor"'
+    state: present
+  notify: update grub
+
+- name: handlers file for grub
+  lineinfile:
+    path: /home/teifu142/ATE/UIT/NT542/cis-ubuntu/roles/phase1_initial_setup/handlers/main.yml
+    line: |
+      - name: update grub
+        listen: "update grub"
+        command: update-grub
+    state: present
+    create: yes

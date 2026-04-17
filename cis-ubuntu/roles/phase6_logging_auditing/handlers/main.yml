@@ -1,0 +1,17 @@
+---
+# Handlers for Phase 6 Logging and Auditing
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: reload rsyslog
+  service:
+    name: rsyslog
+    state: reloaded
+
+- name: restart auditd
+  service:
+    name: auditd
+    state: restarted

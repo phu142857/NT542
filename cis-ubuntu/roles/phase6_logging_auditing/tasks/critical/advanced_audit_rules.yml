@@ -1,0 +1,85 @@
+---
+# Configure advanced audit rules
+
+- name: Ensure events that modify the system's Mandatory Access Controls are collected
+  lineinfile:
+    path: /etc/audit/rules.d/mandatory-access.rules
+    line: "-a always,exit -F arch=b64 -S chmod -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify user/group information are collected with proper permissions
+  lineinfile:
+    path: /etc/audit/rules.d/user-group.rules
+    line: "-a always,exit -F arch=b64 -S chmod -S chown -S chgrp -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify discretionary access control permission modification events are collected
+  lineinfile:
+    path: /etc/audit/rules.d/dac-modification.rules
+    line: "-a always,exit -F arch=b64 -S chmod -S setfacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the chcon command are collected
+  lineinfile:
+    path: /etc/audit/rules.d/chcon.rules
+    line: "-a always,exit -F arch=b64 -S chcon -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the setfacl command are collected
+  lineinfile:
+    path: /etc/audit/rules.d/setfacl.rules
+    line: "-a always,exit -F arch=b64 -S setfacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the chacl command are collected
+  lineinfile:
+    path: /etc/audit/rules.d/chacl.rules
+    line: "-a always,exit -F arch=b64 -S chacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify user/group information are collected with proper permissions (second rule)
+  lineinfile:
+    path: /etc/audit/rules.d/user-group.rules
+    line: "-a always,exit -F arch=b64 -S chmod -S chown -S chgrp -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify discretionary access control permission modification events are collected (second rule)
+  lineinfile:
+    path: /etc/audit/rules.d/dac-modification.rules
+    line: "-a always,exit -F arch=b64 -S setfacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the chcon command are collected (second rule)
+  lineinfile:
+    path: /etc/audit/rules.d/chcon.rules
+    line: "-a always,exit -F arch=b64 -S chcon -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the setfacl command are collected (second rule)
+  lineinfile:
+    path: /etc/audit/rules.d/setfacl.rules
+    line: "-a always,exit -F arch=b64 -S setfacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Ensure events that modify successful and unsuccessful attempts to use the chacl command are collected (second rule)
+  lineinfile:
+    path: /etc/audit/rules.d/chacl.rules
+    line: "-a always,exit -F arch=b64 -S chacl -F auid>=0 -F auid!=4294967295 -F key=mac"
+    state: present
+    create: yes
+
+- name: Restart auditd service to load new rules
+  service:
+    name: auditd
+    state: restarted
+    enabled: yes

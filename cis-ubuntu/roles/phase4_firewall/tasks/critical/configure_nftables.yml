@@ -1,0 +1,48 @@
+---
+# Configure nftables firewall (Modern alternative)
+
+- name: Ensure nftables is installed
+  package:
+    name: nftables
+    state: present
+
+- name: Ensure ufw is uninstalled with nftables
+  package:
+    name: ufw
+    state: absent
+  when: cis_firewall_type == "nftables"
+
+- name: Ensure a nftables table exists
+  shell: |
+    nft add table inet filter
+  when: cis_firewall_type == "nftables"
+  changed_when: false
+
+- name: Ensure nftables base chains exist
+  shell: |
+    nft add chain inet filter input { type filter hook input priority 0 \; }
+    nft add chain inet filter forward { type filter hook forward priority 0 \; }
+    nft add chain inet filter output { type filter hook output priority 0 \; }
+  when: cis_firewall_type == "nftables"
+  changed_when: false
+
+- name: Ensure nftables loopback traffic is configured
+  shell: |
+    nft add rule inet filter input iif lo accept
+    nft add rule inet filter output oif lo accept
+  when: cis_firewall_type == "nftables"
+  changed_when: false
+
+- name: Ensure nftables default deny firewall policy
+  shell: |
+    nft add rule inet filter input drop
+    nft add rule inet filter forward drop
+  when: cis_firewall_type == "nftables"
+  changed_when: false
+
+- name: Ensure nftables service is enabled
+  service:
+    name: nftables
+    state: started
+    enabled: yes
+  when: cis_firewall_type == "nftables"

@@ -1,0 +1,37 @@
+---
+# Ensure IPv6 status is identified
+
+- name: Check IPv6 support
+  command: sysctl -a | grep ipv6
+  register: ipv6_status
+  changed_when: false
+
+- name: Display IPv6 configuration
+  debug:
+    msg: |
+      IPv6 Kernel Configuration:
+      {{ ipv6_status.stdout_lines }}
+
+- name: Check if IPv6 is enabled
+  command: cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+  register: ipv6_disabled
+  changed_when: false
+
+- name: Display IPv6 disabled status
+  debug:
+    msg: "IPv6 disabled status: {{ ipv6_disabled.stdout }}"
+  when: ipv6_disabled.stdout is defined
+
+- name: Check IPv6 network interfaces
+  command: ip -6 addr show
+  register: ipv6_interfaces
+  changed_when: false
+  ignore_errors: yes
+
+- name: Display IPv6 interfaces
+  debug:
+    msg: |
+      IPv6 Network Interfaces:
+      {{ ipv6_interfaces.stdout_lines }}
+  when: ipv6_interfaces.stdout_lines is defined
+  ignore_errors: yes

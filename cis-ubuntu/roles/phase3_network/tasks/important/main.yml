@@ -1,0 +1,7 @@
+---
+# Important Security Tasks - Phase 3 Network
+# Network monitoring and IPv6 configuration
+
+- name: Configure network monitoring
+  include_tasks: network_monitoring.yml
+  tags: network_monitoring

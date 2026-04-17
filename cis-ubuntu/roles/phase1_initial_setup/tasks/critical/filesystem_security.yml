@@ -1,0 +1,44 @@
+---
+# Configure filesystem security options
+
+- name: Check if /tmp is mounted
+  shell: mount | grep "on /tmp "
+  register: tmp_mount_check
+  changed_when: false
+  failed_when: false
+
+- name: Ensure /tmp has proper mount options
+  shell: |
+    if mount | grep -q "on /tmp "; then
+      mount -o remount,nodev,nosuid,noexec /tmp 2>/dev/null || true
+    else
+      echo "/tmp is not a separate mount point, skipping remount"
+    fi
+  register: tmp_mount_result
+  changed_when: tmp_mount_result.rc == 0
+  failed_when: false
+
+- name: Ensure /dev/shm has proper mount options
+  shell: |
+    if mount | grep -q "on /dev/shm "; then
+      mount -o remount,nodev,nosuid,noexec /dev/shm 2>/dev/null || true
+    else
+      echo "/dev/shm is not mounted, skipping remount"
+    fi
+  register: shm_mount_result
+  changed_when: shm_mount_result.rc == 0
+  failed_when: false
+
+- name: Add /var/tmp security options to fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^.*/var/tmp.*'
+    line: "tmpfs /var/tmp tmpfs defaults,nodev,nosuid,noexec 0 0"
+    state: present
+    create: yes
+
+- name: Mount /var/tmp with security options
+  command: mount -t tmpfs -o nodev,nosuid,noexec tmpfs /var/tmp
+  register: var_tmp_mount_result
+  failed_when: var_tmp_mount_result.rc != 0 and "already mounted" not in var_tmp_mount_result.stderr
+  changed_when: var_tmp_mount_result.rc == 0

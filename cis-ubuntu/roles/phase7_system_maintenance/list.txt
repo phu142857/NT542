@@ -1,0 +1,34 @@
+### Manual
+
+| Tên Khuyến nghị                         |
+| :-------------------------------------- |
+| Ensure SUID and SGID files are reviewed |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                                   |
+| :---------------------------------------------------------------- |
+| Ensure permissions on /etc/passwd are configured                  |
+| Ensure permissions on /etc/passwd- are configured                 |
+| Ensure permissions on /etc/group are configured                   |
+| Ensure permissions on /etc/group- are configured                  |
+| Ensure permissions on /etc/shadow are configured                  |
+| Ensure permissions on /etc/shadow- are configured                 |
+| Ensure permissions on /etc/gshadow are configured                 |
+| Ensure permissions on /etc/gshadow- are configured                |
+| Ensure permissions on /etc/shells are configured                  |
+| Ensure permissions on /etc/security/opasswd are configured        |
+| Ensure world writable files and directories are secured           |
+| Ensure no files or directories without an owner and a group exist |
+| Ensure accounts in /etc/passwd use shadowed passwords             |
+| Ensure /etc/shadow password fields are not empty                  |
+| Ensure all groups in /etc/passwd exist in /etc/group              |
+| Ensure shadow group is empty                                      |
+| Ensure no duplicate UIDs exist                                    |
+| Ensure no duplicate GIDs exist                                    |
+| Ensure no duplicate user names exist                              |
+| Ensure no duplicate group names exist                             |
+| Ensure local interactive user home directories are configured     |
+| Ensure local interactive user dot files access is configured      |

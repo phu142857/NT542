@@ -1,0 +1,54 @@
+### Manual
+
+| Tên Khuyến nghị                                                    |
+| :----------------------------------------------------------------- |
+| Ensure only approved services are listening on a network interface |
+
+---
+
+### Automated
+
+| Tên Khuyến nghị                                                |
+| :------------------------------------------------------------- |
+| Ensure autofs services are not in use                          |
+| Ensure avahi daemon services are not in use                    |
+| Ensure dhcp server services are not in use                     |
+| Ensure dns server services are not in use                      |
+| Ensure dnsmasq services are not in use                         |
+| Ensure ftp server services are not in use                      |
+| Ensure ldap server services are not in use                     |
+| Ensure message access server services are not in use           |
+| Ensure network file system services are not in use             |
+| Ensure nis server services are not in use                      |
+| Ensure print server services are not in use                    |
+| Ensure rpcbind services are not in use                         |
+| Ensure rsync services are not in use                           |
+| Ensure samba file server services are not in use               |
+| Ensure snmp services are not in use                            |
+| Ensure tftp server services are not in use                     |
+| Ensure web proxy server services are not in use                |
+| Ensure web server services are not in use                      |
+| Ensure xinetd services are not in use                          |
+| Ensure X window server services are not in use                 |
+| Ensure mail transfer agent is configured for local-only mode   |
+| Ensure NIS Client is not installed                             |
+| Ensure rsh client is not installed                             |
+| Ensure talk client is not installed                            |
+| Ensure telnet client is not installed                          |
+| Ensure ldap client is not installed                            |
+| Ensure ftp client is not installed                             |
+| Ensure a single time synchronization daemon is in use          |
+| Ensure systemd-timesyncd configured with authorized timeserver |
+| Ensure systemd-timesyncd is enabled and running                |
+| Ensure chrony is configured with authorized timeserver         |
+| Ensure chrony is running as user _chrony                       |
+| Ensure chrony is enabled and running                           |
+| Ensure cron daemon is enabled and active                       |
+| Ensure permissions on /etc/crontab are configured              |
+| Ensure permissions on /etc/cron.hourly are configured          |
+| Ensure permissions on /etc/cron.daily are configured           |
+| Ensure permissions on /etc/cron.weekly are configured          |
+| Ensure permissions on /etc/cron.monthly are configured         |
+| Ensure permissions on /etc/cron.d are configured               |
+| Ensure crontab is restricted to authorized users               |
+| Ensure at is restricted to authorized users                    |

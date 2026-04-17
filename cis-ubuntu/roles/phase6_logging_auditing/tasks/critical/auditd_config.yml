@@ -1,0 +1,64 @@
+---
+# Configure auditd service
+
+- name: Ensure auditd packages are installed
+  package:
+    name:
+      - auditd
+      - audispd-plugins
+    state: present
+
+- name: Ensure auditd service is enabled and active
+  service:
+    name: auditd
+    state: started
+    enabled: yes
+
+- name: Ensure auditing for processes that start prior to auditd is enabled
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash audit=1"'
+    state: present
+
+- name: Ensure audit_backlog_limit is sufficient
+  lineinfile:
+    path: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash audit=1 audit_backlog_limit=8192"'
+    state: present
+
+- name: Ensure audit log storage size is configured
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^max_log_file'
+    line: 'max_log_file = 8'
+    state: present
+
+- name: Ensure audit logs are not automatically deleted
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^max_log_file_action'
+    line: 'max_log_file_action = suspend'
+    state: present
+
+- name: Ensure system is disabled when audit logs are full
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^space_left_action'
+    line: 'space_left_action = single'
+    state: present
+
+- name: Ensure system warns when audit logs are low on space
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^admin_space_left_action'
+    line: 'admin_space_left_action = suspend'
+    state: present
+
+- name: Ensure the audit configuration is immutable
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^admin_space_left_action'
+    line: 'admin_space_left_action = suspend'
+    state: present

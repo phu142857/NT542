@@ -1,0 +1,40 @@
+---
+# System hardening configurations
+
+- name: Enable address space layout randomization
+  sysctl:
+    name: kernel.randomize_va_space
+    value: '2'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis.conf
+
+- name: Restrict ptrace scope
+  sysctl:
+    name: kernel.yama.ptrace_scope
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis.conf
+
+- name: Restrict core dumps
+  lineinfile:
+    path: /etc/security/limits.conf
+    line: "* hard core 0"
+    state: present
+
+- name: Disable core dumps via sysctl
+  sysctl:
+    name: kernel.core_pattern
+    value: '|/bin/false'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis.conf
+
+- name: Ensure prelink is not installed
+  package:
+    name: prelink
+    state: absent
+
+- name: Disable Automatic Error Reporting
+  package:
+    name: apport
+    state: absent
+  when: ansible_distribution == "Ubuntu"

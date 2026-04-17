@@ -1,0 +1,40 @@
+---
+# Advanced firewall configurations
+
+- name: Ensure ufw outbound connections are configured
+  ufw:
+    rule: allow
+    direction: out
+    to: "{{ item.dest }}"
+    port: "{{ item.port | default('any') }}"
+    proto: "{{ item.proto | default('any') }}"
+  loop: "{{ cis_outbound_rules | default([]) }}"
+  when: cis_firewall_type == "ufw" or cis_firewall_type is not defined
+
+- name: Ensure nftables outbound and established connections are configured
+  shell: |
+    nft add rule inet filter input ct state established,related accept
+    nft add rule inet filter output ct state established,related accept
+  when: cis_firewall_type == "nftables"
+  changed_when: false
+
+- name: Ensure iptables outbound and established connections are configured
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure ip6tables outbound and established connections are configured
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    ip_version: ipv6
+    jump: ACCEPT
+  when: cis_firewall_type == "iptables"
+
+- name: Ensure nftables rules are permanent
+  shell: |
+    nft list ruleset > /etc/nftables.conf
+  when: cis_firewall_type == "nftables"
+  changed_when: false

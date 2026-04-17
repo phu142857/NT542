@@ -1,0 +1,29 @@
+---
+# Ensure prelink is not installed
+
+- name: Ensure prelink is not installed
+  package:
+    name: prelink
+    state: absent
+
+- name: Check if prelink configuration exists
+  stat:
+    path: /etc/prelink.conf
+  register: prelink_conf
+
+- name: Remove prelink configuration if exists
+  file:
+    path: /etc/prelink.conf
+    state: absent
+  when: prelink_conf.stat.exists
+
+- name: Check if prelink cron job exists
+  stat:
+    path: /etc/cron.daily/prelink
+  register: prelink_cron
+
+- name: Remove prelink cron job if exists
+  file:
+    path: /etc/cron.daily/prelink
+    state: absent
+  when: prelink_cron.stat.exists

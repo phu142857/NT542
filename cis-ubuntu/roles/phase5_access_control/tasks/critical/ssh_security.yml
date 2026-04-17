@@ -1,0 +1,187 @@
+---
+# Configure SSH security
+
+- name: Ensure permissions on /etc/ssh/sshd_config are configured
+  file:
+    path: /etc/ssh/sshd_config
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Ensure SSH private host key files are configured
+  file:
+    path: "{{ item }}"
+    mode: '0600'
+    owner: root
+    group: root
+  loop:
+    - /etc/ssh/ssh_host_rsa_key
+    - /etc/ssh/ssh_host_ecdsa_key
+    - /etc/ssh/ssh_host_ed25519_key
+
+- name: Ensure SSH public host key files are configured
+  file:
+    path: "{{ item }}"
+    mode: '0644'
+    owner: root
+    group: root
+  loop:
+    - /etc/ssh/ssh_host_rsa_key.pub
+    - /etc/ssh/ssh_host_ecdsa_key.pub
+    - /etc/ssh/ssh_host_ed25519_key.pub
+
+- name: Ensure sshd access is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?AllowTcpForwarding'
+    line: 'AllowTcpForwarding no'
+    state: present
+
+- name: Ensure sshd Banner is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?Banner'
+    line: 'Banner /etc/ssh/banner'
+    state: present
+
+- name: Create SSH banner file
+  copy:
+    content: |
+      Authorized access only. All activities may be monitored.
+      Unauthorized access is prohibited and will be prosecuted.
+    dest: /etc/ssh/banner
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure sshd Ciphers are configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?Ciphers'
+    line: 'Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr'
+    state: present
+
+- name: Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?ClientAliveInterval'
+    line: 'ClientAliveInterval 300'
+    state: present
+
+- name: Ensure sshd ClientAliveCountMax is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?ClientAliveCountMax'
+    line: 'ClientAliveCountMax 0'
+    state: present
+
+- name: Ensure sshd DisableForwarding is enabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?DisableForwarding'
+    line: 'DisableForwarding yes'
+    state: present
+
+- name: Ensure sshd GSSAPIAuthentication is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?GSSAPIAuthentication'
+    line: 'GSSAPIAuthentication no'
+    state: present
+
+- name: Ensure sshd HostbasedAuthentication is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?HostbasedAuthentication'
+    line: 'HostbasedAuthentication no'
+    state: present
+
+- name: Ensure sshd IgnoreRhosts is enabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?IgnoreRhosts'
+    line: 'IgnoreRhosts yes'
+    state: present
+
+- name: Ensure sshd KexAlgorithms are configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?KexAlgorithms'
+    line: 'KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256,diffie-hellman-group-exchange-sha256'
+    state: present
+
+- name: Ensure sshd LoginGraceTime is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?LoginGraceTime'
+    line: 'LoginGraceTime 60'
+    state: present
+
+- name: Ensure sshd LogLevel is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?LogLevel'
+    line: 'LogLevel VERBOSE'
+    state: present
+
+- name: Ensure sshd MACs are configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MACs'
+    line: 'MACs hmac-sha2-256,hmac-sha2-512,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com'
+    state: present
+
+- name: Ensure sshd MaxAuthTries is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MaxAuthTries'
+    line: 'MaxAuthTries 3'
+    state: present
+
+- name: Ensure sshd MaxSessions is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MaxSessions'
+    line: 'MaxSessions 3'
+    state: present
+
+- name: Ensure sshd MaxStartups is configured
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?MaxStartups'
+    line: 'MaxStartups 3'
+    state: present
+
+- name: Ensure sshd PermitEmptyPasswords is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitEmptyPasswords'
+    line: 'PermitEmptyPasswords no'
+    state: present
+
+- name: Ensure sshd PermitRootLogin is disabled (except for recovery)
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+    state: present
+
+- name: Ensure sshd PermitUserEnvironment is disabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitUserEnvironment'
+    line: 'PermitUserEnvironment no'
+    state: present
+
+- name: Ensure sshd UsePAM is enabled
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?UsePAM'
+    line: 'UsePAM yes'
+    state: present
+
+- name: Restart SSH service
+  service:
+    name: ssh
+    state: restarted
+    enabled: yes

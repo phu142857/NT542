@@ -1,0 +1,11 @@
+---
+# Important Security Tasks - Phase 7 System Maintenance
+# User validation and home directory configuration
+
+- name: Validate user accounts
+  include_tasks: user_validation.yml
+  tags: user_validation
+
+- name: Configure user home directories
+  include_tasks: home_directories.yml
+  tags: home_directories

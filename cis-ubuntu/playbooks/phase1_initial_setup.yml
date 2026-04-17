@@ -1,0 +1,11 @@
+---
+- name: Phase 1 - Initial Setup
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+  
+  roles:
+    - ../roles/phase1_initial_setup

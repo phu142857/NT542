@@ -1,0 +1,17 @@
+---
+# Package cleanup for Lynis improvements
+
+- name: Purge old/removed packages
+  shell: |
+    for pkg in $(dpkg -l | grep '^rc' | awk '{print $2}' | head -10); do
+      apt-get purge -y "$pkg" 2>/dev/null || true
+    done
+  ignore_errors: yes
+  timeout: 60
+
+- name: Clean package cache
+  shell: |
+    apt-get clean
+    apt-get autoremove -y
+  ignore_errors: yes
+  timeout: 30
