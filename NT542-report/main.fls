@@ -503,6 +503,7 @@ INPUT /usr/share/texmf-dist/tex/latex/vntex/t5cmtt.fd
 INPUT /usr/share/texmf-dist/tex/latex/vntex/t5cmtt.fd
 INPUT /usr/share/texmf-dist/fonts/tfm/vntex/vnr/vntt12.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/vntex/urwvn/utmr8v.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/vntex/urwvn/utmri8v.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/vntex/urwvn/utmr8v.tfm
 INPUT ./chapters/main/chapter-3.tex
 INPUT ./chapters/main/chapter-3.tex
@@ -525,4 +526,5 @@ OUTPUT main.run.xml
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb
+INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb

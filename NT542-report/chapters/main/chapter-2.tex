@@ -130,56 +130,20 @@ Hệ thống được triển khai theo mô hình Controller--Workers, trong đ�
 \vspace{5pt}
 \noindent Mô hình này cho phép thực hiện quản lý tập trung, đảm bảo tính nhất quán và giảm thiểu sai sót trong quá trình cấu hình hệ thống.
 
-\subsection{Quy trình triển khai}
+\subsection{Quy trình triển khai tự động}
 
-\noindent Quy trình triển khai hệ thống được thực hiện theo hướng tự động hóa thông qua Ansible, bao gồm các bước chính sau:
-
-\vspace{5pt}
-\noindent \textbf{1. Chuẩn bị môi trường}
-\begin{itemize}
-\item Máy Controller được cài đặt Ansible và các công cụ cần thiết
-\item Các Worker Nodes được cài đặt SSH server và Python để hỗ trợ thực thi từ xa
-\end{itemize}
-
-\noindent \textbf{2. Thiết lập kết nối SSH}
-\begin{itemize}
-\item Cơ chế xác thực bằng SSH key được sử dụng để đảm bảo kết nối an toàn
-\item Không cần nhập mật khẩu giữa Controller và các Worker
-\end{itemize}
-
-\noindent \textbf{3. Cấu hình Inventory}
-\begin{itemize}
-\item Danh sách các Worker Nodes được khai báo trong file inventory
-\item Bao gồm địa chỉ IP, user và thông tin xác thực
-\end{itemize}
-
-\noindent \textbf{4. Triển khai cấu hình tự động}
-\begin{itemize}
-\item Các playbook Ansible được sử dụng để thực hiện cấu hình hệ thống
-\item Áp dụng tiêu chuẩn CIS Benchmark trên toàn bộ các Worker
-\end{itemize}
-
-\noindent \textbf{5. Kiểm tra và đánh giá}
-\begin{itemize}
-\item Sau khi triển khai, hệ thống được kiểm tra lại thông qua các công cụ audit
-\item Đánh giá mức độ tuân thủ bảo mật
-\end{itemize}
-
-\noindent \textbf{6. Bảo trì hệ thống}
-\begin{itemize}
-\item Hệ thống được duy trì thông qua việc audit định kỳ
-\item Cập nhật playbook và giám sát log để phát hiện sớm các vấn đề
-\end{itemize}
+\noindent Hệ thống được triển khai theo hướng tự động hóa hoàn toàn thông qua Ansible, đảm bảo tính nhất quán và khả năng tái sử dụng. Quy trình tập trung vào việc định nghĩa cấu hình dưới dạng code, cho phép quản lý tập trung và giảm thiểu sai sót thủ công.
 
 \vspace{5pt}
-\noindent Quy trình này giúp đảm bảo việc triển khai hệ thống diễn ra nhất quán, có thể lặp lại và dễ dàng mở rộng.
+\noindent Mô hình này hỗ trợ việc triển khai trên nhiều hệ thống đồng thời, với khả năng mở rộng và bảo trì dễ dàng thông qua cơ chế kiểm soát phiên bản.
 
 \subsection{Mô hình triển khai Automated Security Hardening System}
 
-\noindent Dựa trên mô hình Controller--Workers, hệ thống Automated Security Hardening System được mở rộng thành kiến trúc tích hợp gồm ba thành phần chính:
-
+\noindent Dựa trên kiến trúc Controller--Workers, hệ thống Automated Security Hardening được thiết kế thành một quy trình tích hợp khép kín gồm ba thành phần cốt lõi: \textit{Auto-VM}, \textit{CIS-Ubuntu} và \textit{Report Module}. 
 
 \vspace{5pt}
+\noindent Mô hình này tự động hóa toàn bộ vòng đời bảo mật từ khâu khởi tạo môi trường, áp dụng cấu hình tiêu chuẩn đến đánh giá và tối ưu hóa hệ thống.
+
 \vspace{10pt}
 \begin{figure}[htbp]
 \centering
@@ -198,12 +162,9 @@ Hệ thống được triển khai theo mô hình Controller--Workers, trong đ�
     arrow/.style={->, very thick, line width=0.8pt},
     feedback/.style={->, very thick, dashed, bend right=45, line width=0.8pt}
 ]
-
 % Nodes
 \node (auto_vm) [auto_vm] {Auto-VM\\Tự động tạo\\máy ảo};
-
 \node (cis_ubuntu) [cis_ubuntu, right=of auto_vm] {CIS-Ubuntu\\Hardening\\bảo mật};
-
 \node (report) [report, right=of cis_ubuntu] {Đánh giá và\\báo cáo};
 
 % Main workflow arrows
@@ -217,83 +178,32 @@ Hệ thống được triển khai theo mô hình Controller--Workers, trong đ�
 \node[below=0.3cm of auto_vm, text width=3.5cm, text centered, font=\tiny] {KVM/QEMU, Ansible, Cloud-init};
 \node[below=0.3cm of cis_ubuntu, text width=3.5cm, text centered, font=\tiny] {CIS Ubuntu 24.04 LTS Benchmark};
 \node[below=0.3cm of report, text width=3.5cm, text centered, font=\tiny] {Lynis, OpenSCAP};
-
 \end{tikzpicture}
 \caption{Mô hình triển khai Automated Security Hardening System với chu trình khép kín}
 \label{fig:automated_security_model}
 \end{figure}
 
 \vspace{5pt}
-\noindent \textbf{1. Auto-VM -- Tạo máy ảo tự động}
-
-\noindent Thành phần này chịu trách nhiệm tự động hóa quá trình tạo và cấu hình máy ảo.
+\noindent \textbf{1. Auto-VM (Khởi tạo môi trường)}
+\vspace{5pt}
+\noindent Thành phần này chịu trách nhiệm cấp phát máy ảo tự động thông qua KVM/QEMU và Cloud-init. Các máy ảo được tạo ra với cấu hình cơ bản đồng nhất, sẵn sàng để tiếp nhận các thiết lập bảo mật chuyên sâu mà không cần can thiệp thủ công.
 
 \vspace{5pt}
-\noindent \textbf{Công nghệ:} KVM/QEMU, Ansible, Cloud-init
-
-\noindent \textbf{Chức năng:}
-\begin{itemize}
-\item Tạo VM từ Ubuntu cloud image
-\item Tự động cấu hình user, SSH key
-\item Gán IP và cập nhật vào inventory
-\end{itemize}
-
-\noindent Đầu ra là các máy ảo sẵn sàng cho việc triển khai tiếp theo.
+\noindent \textbf{2. CIS-Ubuntu (Hardening hệ thống)}
+\vspace{5pt}
+\noindent Đây là module thực thi chính, áp dụng các chính sách bảo mật dựa trên tiêu chuẩn \textit{CIS Ubuntu Linux Benchmark}. Quá trình hardening được tổ chức theo dạng modular, bao phủ toàn diện từ cấu hình dịch vụ, mạng, kiểm soát truy cập đến hệ thống ghi log, đảm bảo tính nhất quán trên toàn bộ các node.
 
 \vspace{5pt}
-\noindent \textbf{2. CIS-Ubuntu -- Hardening bảo mật}
-
-\noindent Thành phần này thực hiện triển khai tiêu chuẩn CIS Ubuntu 24.04 LTS Benchmark v1.0.0.
-
-\noindent Hệ thống được chia thành 7 giai đoạn:
-\begin{itemize}
-\item Initial Setup
-\item Services
-\item Network
-\item Firewall
-\item Access Control
-\item Logging
-\item Maintenance
-\end{itemize}
-
-\noindent Mỗi giai đoạn được triển khai dưới dạng Ansible roles, đảm bảo:
-\begin{itemize}
-\item Tính modular
-\item Khả năng tái sử dụng
-\item Idempotent (chạy lại không gây lỗi)
-\end{itemize}
+\noindent \textbf{3. Report Module (Đánh giá và phản hồi)}
+\vspace{5pt}
+\noindent Module này sử dụng các công cụ như Lynis và OpenSCAP để kiểm tra mức độ tuân thủ sau triển khai. Kết quả được tổng hợp thành báo cáo chi tiết, cung cấp dữ liệu phản hồi để liên tục tinh chỉnh và tối ưu hóa quy trình khởi tạo ban đầu.
 
 \vspace{5pt}
-\noindent \textbf{3. Báo cáo và đánh giá}
-
-\noindent Thành phần này thực hiện đánh giá mức độ bảo mật của hệ thống sau khi hardening.
-
-\noindent \textbf{Công cụ:} Lynis, OpenSCAP
-
-\noindent \textbf{Đầu ra:}
-\begin{itemize}
-\item Báo cáo HTML
-\item Điểm compliance
-\item Danh sách lỗ hổng và khuyến nghị
-\end{itemize}
-
+\noindent \textbf{Ưu điểm nổi bật}
 \vspace{5pt}
-\noindent \textbf{Quy trình hoạt động tổng thể}
-
-\noindent Hệ thống hoạt động theo chu trình khép kín:
-\begin{itemize}
-\item Tạo máy ảo bằng Auto-VM
-\item Triển khai hardening bằng CIS-Ubuntu
-\item Đánh giá bằng Lynis và OpenSCAP
-\item Phản hồi kết quả để cải tiến hệ thống
-\end{itemize}
-
-\vspace{5pt}
-\noindent \textbf{Ưu điểm của mô hình}
-\begin{itemize}
-\item Tự động hóa toàn bộ quy trình
-\item Đảm bảo tính nhất quán giữa các hệ thống
-\item Dễ dàng mở rộng quy mô
-\item Hỗ trợ kiểm soát phiên bản thông qua Git
-\item Tích hợp cơ chế phản hồi (feedback loop)
+\noindent \begin{itemize}
+\item \textbf{Tự động hóa hoàn toàn:} Loại bỏ sai sót chủ quan, rút ngắn thời gian triển khai.
+\item \textbf{Chu trình khép kín:} Cơ chế phản hồi giúp hệ thống liên tục được cập nhật và cải thiện.
+\item \textbf{Tính chuẩn hóa:} Đảm bảo mọi máy ảo đều tuân thủ nghiêm ngặt các tiêu chuẩn bảo mật quốc tế.
+\item \textbf{Khả năng mở rộng:} Kiến trúc linh hoạt, dễ dàng tái sử dụng cho nhiều quy mô môi trường khác nhau.
 \end{itemize}
