@@ -50,9 +50,12 @@ ansible-playbook playbooks/create-vm.yml --ask-become-pass
 Configure target systems:
 ```bash
 cd cis-ubuntu
-nano inventory/hosts.ini  # Add your target servers
+# Inventory is automatically populated by auto-vm
+# Or manually add servers to inventory/hosts.ini
 ansible-playbook -i inventory/hosts.ini playbooks/run_all_phases.yml --ask-become-pass
 ```
+
+**Note**: The auto-vm component automatically adds VM IPs to the cis-ubuntu inventory with proper format and duplicate prevention.
 
 ### 4. Security Assessment
 

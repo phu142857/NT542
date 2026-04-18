@@ -163,12 +163,28 @@ ansible-playbook -i inventory/hosts.ini playbooks/run_security_assessment.yml --
 - User/group integrity checks
 - Home directory security
 
-## Recovery Procedures
+## Safety and Recovery
 
+### SSH Recovery
 If SSH access is lost after hardening:
 ```bash
+cd cis-ubuntu
 ansible-playbook -i inventory/hosts.ini playbooks/ssh_recovery.yml --ask-become-pass
 ```
+
+### Backup and Rollback
+- Configuration files are automatically backed up
+- All changes are logged for audit purposes
+- Recovery playbooks available for critical services
+- **Handler Integration**: Fixed handler import issues for reliable service management
+
+## Recent Improvements
+
+### Fixed Issues
+- **Handler Import**: Resolved "handler not found" errors by properly importing handlers from all phases
+- **IP Extraction**: Enhanced regex pattern for accurate IP address extraction from VMs
+- **Inventory Management**: Automatic VM IP addition with duplicate prevention
+- **Service Reliability**: Improved service restart handlers for logging and auditing tasks
 
 ## Results and Reports
 

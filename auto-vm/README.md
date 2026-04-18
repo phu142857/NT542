@@ -165,12 +165,14 @@ The project automatically injects your SSH public key (`~/.ssh/id_rsa.pub`) into
 
 ## Automatic Inventory Integration
 
-The playbook automatically adds newly created VMs to the cis-ubuntu inventory file:
+The playbook automatically adds newly created VMs to cis-ubuntu inventory file:
 
 - **Target file**: `../cis-ubuntu/inventory/hosts.ini`
-- **Format**: `<IP> ansible_user=<username> ansible_ssh_private_key_file=../NT542`
+- **Format**: `<IP> ansible_user=<username> ansible_ssh_private_key_file=/home/teifu142/ATE/UIT/NT542/NT542`
 - **Duplicate prevention**: Checks if IP already exists before adding
 - **Real-time updates**: IPs are added as soon as VMs get network connectivity
+- **Enhanced IP extraction**: Fixed regex to properly extract complete IP addresses (192.168.x.x instead of 2.168.x.x)
+- **Improved timing**: Added 2-minute boot wait and extended retry logic for reliable IP detection
 
 ### Manual Inventory Management
 
