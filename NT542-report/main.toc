@@ -12,6 +12,8 @@
 \contentsline {subsection}{\numberline {2.2.1}Manual Configuration}{13}{subsection.2.2.1}%
 \contentsline {subsection}{\numberline {2.2.2}Automation bằng Ansible}{14}{subsection.2.2.2}%
 \contentsline {section}{\numberline {2.3}Mô hình triển khai}{14}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Quy trình triển khai}{15}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Mô hình triển khai Automated Security Hardening System}{16}{subsection.2.3.2}%
 \contentsline {chapter}{\chapternumberline {3}Triển khai}{18}{chapter.3}%
 \contentsline {chapter}{\chapternumberline {4}Tổng kết}{19}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Kết quả đạt được}{19}{section.4.1}%

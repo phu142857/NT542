@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.3.30)  4 APR 2026 19:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.4.7)  18 APR 2026 23:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1725,34 +1725,14 @@ Ch\uhorn \ohorn ng 2.
 LaTeX Font Info:    Trying to load font information for T5+cmtt on input line 46.
 (/usr/share/texmf-dist/tex/latex/vntex/t5cmtt.fd
 File: t5cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-)
-Overfull \hbox (8.09633pt too wide) in paragraph at lines 46--47
-[]\T5/ptm/b/n/12 Command Line Tools: \T5/cmtt/m/n/12 ansible-playbook\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 systemctl\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ufw\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 iptables\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 nftables\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 chmod\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 chown\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 mount\T5/ptm/m/n/12 ,
- []
-
-[13
+) [13
 
 ]
-Overfull \hbox (5.10327pt too wide) in paragraph at lines 48--49
-[]\T5/ptm/b/n/12 File c§u h¼nh: \T5/cmtt/m/n/12 /etc/sysctl.conf\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/fstab\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/ssh/sshd_config\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/network/interfaces\T5/ptm/m/n/12 ,
+Overfull \hbox (15.22519pt too wide) in paragraph at lines 49--51
+\T5/cmtt/m/n/12 /etc/network/interfaces\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/passwd\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 /etc/shadow\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible.cfg\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 inventory/hosts\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 playbooks/ 
  []
 
-
-Overfull \hbox (34.10582pt too wide) in paragraph at lines 64--65
-[]\T5/ptm/b/n/12 Ansible Com-mand Line Tools: \T5/cmtt/m/n/12 ansible-playbook\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-inventory\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-vault\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 ansible-galaxy\T5/ptm/m/n/12 ,
- []
-
-
-Overfull \hbox (42.99031pt too wide) in paragraph at lines 66--67
-[]\T5/ptm/b/n/12 Ansible Con-fig-u-ra-tion Files: \T5/cmtt/m/n/12 ansible.cfg\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 inventory/hosts\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 playbooks/*.yml\T5/ptm/m/n/12 , \T5/cmtt/m/n/12 roles/*/tasks/main.yml\T5/ptm/m/n/12 ,
- []
-
-[14]
-Overfull \hbox (22.3667pt too wide) in paragraph at lines 139--140
-[]\T5/ptm/m/n/12 C i ^^_°t SSH server: \T5/cmtt/m/n/12 sudo apt install openssh-server \T5/ptm/m/n/12 (Ubuntu/Debian) ho°c \T5/cmtt/m/n/12 sudo pacman -S openssh
- []
-
-[15] [16]) (./chapters/main/chapter-3.tex [17]
+[14] [15] [16]) (./chapters/main/chapter-3.tex [17]
 Ch\uhorn \ohorn ng 3.
 ) (./chapters/main/chapter-4.tex [18
 
@@ -1774,24 +1754,24 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: CB41FB5306601E3968503903839A3097;2446.
+(rerunfilecheck)             Checksum: 2B9356121423D30499B19E17556452BD;2985.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 39375 strings out of 468995
- 715148 string characters out of 5460435
- 1800178 words of memory out of 5000000
- 67523 multiletter control sequences out of 15000+600000
- 671329 words of font info for 103 fonts, out of 8000000 for 9000
+ 39410 strings out of 468995
+ 715886 string characters out of 5460436
+ 1800300 words of memory out of 5000000
+ 67563 multiletter control sequences out of 15000+600000
+ 671364 words of font info for 103 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  99i,11n,118p,1239b,1951s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb></usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb>
-Output written on main.pdf (21 pages, 129898 bytes).
+</usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb></usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb>
+Output written on main.pdf (21 pages, 110714 bytes).
 PDF statistics:
- 235 PDF objects out of 1000 (max. 8388607)
+ 233 PDF objects out of 1000 (max. 8388607)
  200 compressed objects within 2 object streams
- 49 named destinations out of 1000 (max. 500000)
- 149 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 45 named destinations out of 1000 (max. 500000)
+ 165 words of extra memory for PDF output out of 10000 (max. 10000000)
 

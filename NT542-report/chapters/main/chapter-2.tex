@@ -23,7 +23,7 @@
     \draw [arrow] (validate.east) -- (report.west);
     
     % Feedback loop connecting to top of nodes
-    \draw [arrow, dashed, bend right=60] (report.north) to node[above, text width=2cm, text centered] {Feedback Loop} (scan.north);
+    \draw [arrow, dashed, bend right=30] (report.north) to node[above, text width=2cm, text centered] {Feedback Loop} (scan.north);
 \end{tikzpicture}
 \caption{Quy trình 4 bước triển khai bảo mật hệ thống}
 \label{fig:security_process}
@@ -43,9 +43,11 @@
 \vspace{5pt}
 \noindent \textbf{Các công cụ sử dụng trong cấu hình thủ công:}
 \begin{itemize}
-\item \textbf{Command Line Tools:} \texttt{ansible-playbook}, \texttt{systemctl}, \texttt{ufw}, \texttt{iptables}, \texttt{nftables}, \texttt{chmod}, \texttt{chown}, \texttt{mount}, \texttt{netstat}, \texttt{lynis}, \texttt{aide}, \texttt{auditd}, \texttt{fail2ban}
+\item \textbf{Command Line Tools:} \texttt{ansible-playbook}, \texttt{systemctl}, \texttt{ufw}, \texttt{iptables}, \texttt{nftables},\\
+\texttt{chmod}, \texttt{chown}, \texttt{mount}, \texttt{netstat}, \texttt{lynis}, \texttt{aide}, \texttt{auditd}, \texttt{fail2ban}
 \item \textbf{Giao diện đồ họa (GUI):} AWX/Tower, Grafana, Webmin, Cockpit
-\item \textbf{File cấu hình:} \texttt{/etc/sysctl.conf}, \texttt{/etc/fstab}, \texttt{/etc/ssh/sshd\_config}, \texttt{/etc/network/interfaces}, \texttt{/etc/passwd}, \texttt{/etc/shadow}, \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/}
+\item \textbf{File cấu hình:} \texttt{/etc/sysctl.conf}, \texttt{/etc/fstab}, \texttt{/etc/ssh/sshd\_config},\\
+\texttt{/etc/network/interfaces}, \texttt{/etc/passwd}, \texttt{/etc/shadow}, \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/}
 \end{itemize}
 
 \vspace{5pt}
@@ -61,9 +63,11 @@
 \vspace{5pt}
 \noindent \textbf{Các công cụ sử dụng trong automation bằng Ansible:}
 \begin{itemize}
-\item \textbf{Ansible Command Line Tools:} \texttt{ansible-playbook}, \texttt{ansible-inventory}, \texttt{ansible-vault}, \texttt{ansible-galaxy}, \texttt{ansible-pull}
+\item \textbf{Ansible Command Line Tools:} \texttt{ansible-playbook}, \texttt{ansible-inventory},\\
+\texttt{ansible-vault}, \texttt{ansible-galaxy}, \texttt{ansible-pull}
 \item \textbf{Ansible GUI Tools:} AWX/Tower, Ansible Semaphore, Rundeck, Jenkins với Ansible plugin
-\item \textbf{Ansible Configuration Files:} \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/*.yml}, \texttt{roles/*/tasks/main.yml}, \texttt{group\_vars/*}, \texttt{host\_vars/*}, \texttt{vars/*}, \texttt{vault/*}
+\item \textbf{Ansible Configuration Files:} \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/*.yml},\\
+\texttt{roles/*/tasks/main.yml}, \texttt{group\_vars/*}, \texttt{host\_vars/*}, \texttt{vars/*}, \texttt{vault/*}
 \end{itemize}
 
 \vspace{5pt}
@@ -113,175 +117,183 @@
 \end{figure}
 
 \noindent
-\vspace{10pt}
-\textbf{Quy trình triển khai mô hình Controller--Workers}
-
-\noindent
-Quy trình triển khai hệ thống được thực hiện theo mô hình tập trung, trong đó
-máy Controller đóng vai trò điều phối và các Worker Nodes là các máy mục tiêu
-được cấu hình tự động thông qua Ansible. Các bước triển khai cụ thể như sau:
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 0: Chuẩn bị và cài đặt các thành phần cơ bản}
-
-Trước khi bắt đầu quy trình triển khai, cần chuẩn bị các thành phần cơ bản trên từng máy:
-
-\noindent\textit{Trên máy Controller:}
-\begin{itemize}
-\item Cài đặt Ansible: \texttt{sudo pacman -S ansible}
-\item Cài đặt SSH client: \texttt{sudo pacman -S openssh}
-\item Cài đặt Git (nếu cần): \texttt{sudo pacman -S git}
-\item Cấu hình file \texttt{ansible.cfg} và \texttt{inventory}
-\end{itemize}
-
-\noindent\textit{Trên các Worker Nodes:}
-\begin{itemize}
-\item Cài đặt SSH server: \texttt{sudo apt install openssh-server} (Ubuntu/Debian) hoặc \texttt{sudo pacman -S openssh} (Arch Linux)
-\item Cài đặt Python: \texttt{sudo apt install python3} (Ubuntu/Debian) hoặc \texttt{sudo pacman -S python} (Arch Linux)
-\item Khởi động SSH service: \texttt{sudo systemctl enable ssh \&\& sudo systemctl start ssh}
-\item Đảm bảo firewall cho phép kết nối SSH (port 22)
-\end{itemize}
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 1: Thiết lập môi trường Controller}
-
-\noindent
-Trong giai đoạn này, máy Controller được cài đặt Ansible và cấu hình cơ chế
-xác thực SSH key để kết nối đến các Worker Nodes một cách an toàn và không cần mật khẩu.
-
-\noindent
-\textit{Ví dụ: Tạo SSH key trên máy Controller}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-ssh-keygen -f ~NT542 \\
-\hline
-\end{tabular}
-\end{table}
-
-\noindent Sau đó khởi động SSH agent và thêm key:
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-eval "\$(ssh-agent -s)" \\
-ssh-add ~NT542 \\
-\hline
-\end{tabular}
-\end{table}
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 2: Chuẩn bị các Worker Nodes}
-
-\noindent
-Các máy Worker được cài đặt SSH server và đảm bảo có môi trường Python để
-Ansible có thể thực thi các module từ xa. Đồng thời, public key từ Controller
-được sao chép sang các Worker để thiết lập kết nối tin cậy.
-
-\noindent
-\textit{Ví dụ: Copy SSH key đến các Worker}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-ssh-copy-id -i ~NT542.pub server2@192.168.122.174 \\
-ssh-copy-id -i ~NT542.pub server3@192.168.122.112 \\
-\hline
-\end{tabular}
-\end{table}
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 3: Cấu hình Inventory và Variables}
-
-\noindent
-Hệ thống inventory được thiết lập để định danh các Worker Nodes và khai báo
-các thông tin kết nối như user và private key. Điều này giúp Controller có thể
-quản lý nhiều máy từ một cấu hình tập trung.
-
-\noindent
-\textit{Ví dụ: File inventory}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-[servers] \\
-192.168.122.174 ansible\_user=server2 ansible\_ssh\_private\_key\_file=~/Path/to/key \\
-192.168.122.112 ansible\_user=server3 ansible\_ssh\_private\_key\_file=~/Path/to/key \\
-\hline
-\end{tabular}
-\end{table}
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 4: Phát triển và thực thi Playbooks}
-
-\noindent
-Các playbook được xây dựng để tự động hóa việc cấu hình hệ thống theo tiêu chuẩn
-CIS Benchmark. Sau khi hoàn tất, có thể kiểm tra kết nối và thực thi playbook
-trên toàn bộ hệ thống.
-
-\noindent
-\textit{Ví dụ: Kiểm tra kết nối}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-ansible all -m ping \\
-\hline
-\end{tabular}
-\end{table}
-
-\textit{Ví dụ: Chạy playbook chính}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-ansible-playbook playbooks/site.yml --ask-become-pass \\
-\hline
-\end{tabular}
-\end{table}
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 5: Kiểm tra và đánh giá hệ thống}
-
-\noindent
-Sau khi triển khai, hệ thống có thể được kiểm tra lại thông qua các playbook audit
-để đánh giá mức độ tuân thủ với tiêu chuẩn bảo mật.
-
-\noindent
-\textit{Ví dụ: Chạy audit}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{0.95\textwidth}|}
-\hline
-ansible-playbook playbooks/audit.yml \\
-\hline
-\end{tabular}
-\end{table}
+Hệ thống được triển khai theo mô hình Controller--Workers, trong đó một máy trung tâm (Controller) chịu trách nhiệm điều phối và quản lý cấu hình, trong khi các máy Worker đóng vai trò là các node mục tiêu được cấu hình tự động.
 
 \vspace{5pt}
-\noindent
-Nhờ quy trình này, việc triển khai và kiểm soát cấu hình hệ thống được thực hiện
-một cách nhất quán, giảm thiểu sai sót thủ công và nâng cao mức độ bảo mật tổng thể.
-
-\noindent\vspace{5pt}
-\textbf{Giai đoạn 6: Tổng kết và bảo trì hệ thống}
-
-Sau khi triển khai hoàn tất, cần thực hiện các bước bảo trì và giám sát định kỳ:
-
-\noindent\textit{Các hoạt động bảo trì:}
+\noindent \textbf{Cụ thể trong đề tài:}
 \begin{itemize}
-\item Theo dõi log của Ansible để phát hiện lỗi hoặc cảnh báo
-\item Cập nhật các playbook khi có phiên bản CIS Benchmark mới
-\item Thực hiện audit định kỳ (hàng tháng/quý) để đảm bảo tuân thủ
-\item Sao lưu cấu hình và các playbook đã tùy chỉnh
-\item Đào tạo nhân viên về quy trình vận hành và xử lý sự cố
+\item \textbf{Controller:} Arch Linux (chạy Ansible)
+\item \textbf{Worker 1:} Ubuntu 22.04
+\item \textbf{Worker 2:} Ubuntu 24.04
 \end{itemize}
 
-\noindent\textit{Đánh giá hiệu quả:}
+\vspace{5pt}
+\noindent Mô hình này cho phép thực hiện quản lý tập trung, đảm bảo tính nhất quán và giảm thiểu sai sót trong quá trình cấu hình hệ thống.
+
+\subsection{Quy trình triển khai}
+
+\noindent Quy trình triển khai hệ thống được thực hiện theo hướng tự động hóa thông qua Ansible, bao gồm các bước chính sau:
+
+\vspace{5pt}
+\noindent \textbf{1. Chuẩn bị môi trường}
 \begin{itemize}
-\item Đo lường mức độ tuân thủ CIS Benchmark trước và sau triển khai
-\item Thời gian saved so với cấu hình thủ công
-\item Số lượng security incidents giảm sau khi áp dụng tiêu chuẩn
-\item Chi phí vận hành và bảo trì hệ thống
+\item Máy Controller được cài đặt Ansible và các công cụ cần thiết
+\item Các Worker Nodes được cài đặt SSH server và Python để hỗ trợ thực thi từ xa
+\end{itemize}
+
+\noindent \textbf{2. Thiết lập kết nối SSH}
+\begin{itemize}
+\item Cơ chế xác thực bằng SSH key được sử dụng để đảm bảo kết nối an toàn
+\item Không cần nhập mật khẩu giữa Controller và các Worker
+\end{itemize}
+
+\noindent \textbf{3. Cấu hình Inventory}
+\begin{itemize}
+\item Danh sách các Worker Nodes được khai báo trong file inventory
+\item Bao gồm địa chỉ IP, user và thông tin xác thực
+\end{itemize}
+
+\noindent \textbf{4. Triển khai cấu hình tự động}
+\begin{itemize}
+\item Các playbook Ansible được sử dụng để thực hiện cấu hình hệ thống
+\item Áp dụng tiêu chuẩn CIS Benchmark trên toàn bộ các Worker
+\end{itemize}
+
+\noindent \textbf{5. Kiểm tra và đánh giá}
+\begin{itemize}
+\item Sau khi triển khai, hệ thống được kiểm tra lại thông qua các công cụ audit
+\item Đánh giá mức độ tuân thủ bảo mật
+\end{itemize}
+
+\noindent \textbf{6. Bảo trì hệ thống}
+\begin{itemize}
+\item Hệ thống được duy trì thông qua việc audit định kỳ
+\item Cập nhật playbook và giám sát log để phát hiện sớm các vấn đề
+\end{itemize}
+
+\vspace{5pt}
+\noindent Quy trình này giúp đảm bảo việc triển khai hệ thống diễn ra nhất quán, có thể lặp lại và dễ dàng mở rộng.
+
+\subsection{Mô hình triển khai Automated Security Hardening System}
+
+\noindent Dựa trên mô hình Controller--Workers, hệ thống Automated Security Hardening System được mở rộng thành kiến trúc tích hợp gồm ba thành phần chính:
+
+
+\vspace{5pt}
+\vspace{10pt}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=5cm and 3cm,
+    every node/.style={font=\small},
+    component/.style={
+        rectangle, rounded corners,
+        minimum width=3.5cm, minimum height=2cm,
+        text centered, draw=black, 
+        align=center, line width=0.8pt
+    },
+    auto_vm/.style={component, fill=green!20},
+    cis_ubuntu/.style={component, fill=blue!20},
+    report/.style={component, fill=orange!20},
+    arrow/.style={->, very thick, line width=0.8pt},
+    feedback/.style={->, very thick, dashed, bend right=45, line width=0.8pt}
+]
+
+% Nodes
+\node (auto_vm) [auto_vm] {Auto-VM\\Tự động tạo\\máy ảo};
+
+\node (cis_ubuntu) [cis_ubuntu, right=of auto_vm] {CIS-Ubuntu\\Hardening\\bảo mật};
+
+\node (report) [report, right=of cis_ubuntu] {Đánh giá và\\báo cáo};
+
+% Main workflow arrows
+\draw [arrow] (auto_vm.east) -- node[above, text width=2cm, text centered] {VM sẵn sàng} (cis_ubuntu.west);
+\draw [arrow] (cis_ubuntu.east) -- node[above, text width=2cm, text centered] {Hệ thống hardening} (report.west);
+
+% Feedback loop
+\draw [feedback] (report.north) to node[below, text width=2.5cm, text centered] {Phản hồi cải tiến} (auto_vm.north);
+
+% Labels for technologies
+\node[below=0.3cm of auto_vm, text width=3.5cm, text centered, font=\tiny] {KVM/QEMU, Ansible, Cloud-init};
+\node[below=0.3cm of cis_ubuntu, text width=3.5cm, text centered, font=\tiny] {CIS Ubuntu 24.04 LTS Benchmark};
+\node[below=0.3cm of report, text width=3.5cm, text centered, font=\tiny] {Lynis, OpenSCAP};
+
+\end{tikzpicture}
+\caption{Mô hình triển khai Automated Security Hardening System với chu trình khép kín}
+\label{fig:automated_security_model}
+\end{figure}
+
+\vspace{5pt}
+\noindent \textbf{1. Auto-VM -- Tạo máy ảo tự động}
+
+\noindent Thành phần này chịu trách nhiệm tự động hóa quá trình tạo và cấu hình máy ảo.
+
+\vspace{5pt}
+\noindent \textbf{Công nghệ:} KVM/QEMU, Ansible, Cloud-init
+
+\noindent \textbf{Chức năng:}
+\begin{itemize}
+\item Tạo VM từ Ubuntu cloud image
+\item Tự động cấu hình user, SSH key
+\item Gán IP và cập nhật vào inventory
+\end{itemize}
+
+\noindent Đầu ra là các máy ảo sẵn sàng cho việc triển khai tiếp theo.
+
+\vspace{5pt}
+\noindent \textbf{2. CIS-Ubuntu -- Hardening bảo mật}
+
+\noindent Thành phần này thực hiện triển khai tiêu chuẩn CIS Ubuntu 24.04 LTS Benchmark v1.0.0.
+
+\noindent Hệ thống được chia thành 7 giai đoạn:
+\begin{itemize}
+\item Initial Setup
+\item Services
+\item Network
+\item Firewall
+\item Access Control
+\item Logging
+\item Maintenance
+\end{itemize}
+
+\noindent Mỗi giai đoạn được triển khai dưới dạng Ansible roles, đảm bảo:
+\begin{itemize}
+\item Tính modular
+\item Khả năng tái sử dụng
+\item Idempotent (chạy lại không gây lỗi)
+\end{itemize}
+
+\vspace{5pt}
+\noindent \textbf{3. Báo cáo và đánh giá}
+
+\noindent Thành phần này thực hiện đánh giá mức độ bảo mật của hệ thống sau khi hardening.
+
+\noindent \textbf{Công cụ:} Lynis, OpenSCAP
+
+\noindent \textbf{Đầu ra:}
+\begin{itemize}
+\item Báo cáo HTML
+\item Điểm compliance
+\item Danh sách lỗ hổng và khuyến nghị
+\end{itemize}
+
+\vspace{5pt}
+\noindent \textbf{Quy trình hoạt động tổng thể}
+
+\noindent Hệ thống hoạt động theo chu trình khép kín:
+\begin{itemize}
+\item Tạo máy ảo bằng Auto-VM
+\item Triển khai hardening bằng CIS-Ubuntu
+\item Đánh giá bằng Lynis và OpenSCAP
+\item Phản hồi kết quả để cải tiến hệ thống
+\end{itemize}
+
+\vspace{5pt}
+\noindent \textbf{Ưu điểm của mô hình}
+\begin{itemize}
+\item Tự động hóa toàn bộ quy trình
+\item Đảm bảo tính nhất quán giữa các hệ thống
+\item Dễ dàng mở rộng quy mô
+\item Hỗ trợ kiểm soát phiên bản thông qua Git
+\item Tích hợp cơ chế phản hồi (feedback loop)
 \end{itemize}
