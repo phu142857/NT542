@@ -41,13 +41,14 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^#?Banner'
-    line: 'Banner /etc/ssh/banner'
+    line: 'Banner /etc/issue.net'
     state: present
 
 - name: Create SSH banner file
   copy:
     content: |
-      Authorized access only. All activities may be monitored.
+      Authorized access only. 
+      This system is for authorized users only.
       Unauthorized access is prohibited and will be prosecuted.
     dest: /etc/ssh/banner
     mode: '0644'
@@ -58,7 +59,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^#?Ciphers'
-    line: 'Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr'
+    line: 'Ciphers aes256-ctr,aes192-ctr,aes128-ctr'
     state: present
 
 - name: Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured

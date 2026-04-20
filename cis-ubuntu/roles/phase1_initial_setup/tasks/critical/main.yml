@@ -26,6 +26,10 @@
   include_tasks: prelink_removal.yml
   tags: prelink
 
+- name: Configure system services and remove unnecessary packages
+  include_tasks: system_services.yml
+  tags: system_services
+
 - name: Apply system hardening
   include_tasks: system_hardening.yml
   tags: hardening

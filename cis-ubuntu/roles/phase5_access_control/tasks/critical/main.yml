@@ -22,6 +22,10 @@
   include_tasks: sudo_security.yml
   tags: sudo
 
+- name: Configure account lockout policies
+  include_tasks: account_lockout.yml
+  tags: account_lockout
+
 - name: Configure user defaults
   include_tasks: user_defaults.yml
   tags: user_defaults

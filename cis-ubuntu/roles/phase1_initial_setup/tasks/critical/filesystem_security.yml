@@ -1,6 +1,16 @@
 ---
 # Configure filesystem security options
 
+- name: Check if /tmp is separate partition
+  shell: |
+    if mount | grep -q "on /tmp "; then
+      echo "/tmp is mounted as separate partition"
+        mount | grep "on /tmp "
+      else
+        echo "/tmp is NOT a separate partition - RECOMMENDATION: Create separate partition"
+      fi
+  register: tmp_partition_check
+
 - name: Check if /tmp is mounted
   shell: mount | grep "on /tmp "
   register: tmp_mount_check
@@ -28,6 +38,67 @@
   register: shm_mount_result
   changed_when: shm_mount_result.rc == 0
   failed_when: false
+
+- name: Set secure permissions on /tmp
+  file:
+    path: /tmp
+    mode: '1777'
+    owner: root
+    group: root
+
+- name: Set secure permissions on /var/tmp
+  file:
+    path: /var/tmp
+    mode: '1777'
+    owner: root
+    group: root
+  when: ansible_facts['mounts'] | selectattr('mount', 'equalto', '/var/tmp') | list | length > 0
+
+- name: Ensure sticky bit is set on world-writable directories
+  shell: |
+    for dir in /tmp /var/tmp /usr/tmp; do
+      if [ -d "$dir" ]; then
+        chmod 1777 "$dir"
+        echo "Secured $dir with sticky bit"
+      fi
+    done
+  register: sticky_bit_set
+
+- name: Find and secure files without proper ownership
+  shell: |
+    echo "=== Files with improper ownership ===" > /tmp/files-ownership-report.txt
+    find / -type f \( ! -user root -a ! -user nobody \) -ls 2>/dev/null | head -20 >> /tmp/files-ownership-report.txt || echo "No improper ownership found" >> /tmp/files-ownership-report.txt
+    echo "" >> /tmp/files-ownership-report.txt
+    
+    echo "=== World-writable files ===" >> /tmp/files-ownership-report.txt
+    find / -type f -perm -002 2>/dev/null | head -20 >> /tmp/files-ownership-report.txt || echo "No world-writable files found" >> /tmp/files-ownership-report.txt
+    echo "" >> /tmp/files-ownership-report.txt
+    
+    echo "=== SUID/SGID files ===" >> /tmp/files-ownership-report.txt
+    find / -type f \( -perm -4000 -o -perm -2000 \) -exec ls -la {} \; 2>/dev/null | head -20 >> /tmp/files-ownership-report.txt || echo "No SUID/SGID files found" >> /tmp/files-ownership-report.txt
+  register: ownership_check
+
+- name: Create filesystem security report
+  shell: |
+    echo "=== Filesystem Security Hardening Report ===" > /tmp/filesystem-security-report.txt
+    echo "Generated: $(date)" >> /tmp/filesystem-security-report.txt
+    echo "" >> /tmp/filesystem-security-report.txt
+    
+    echo "=== Partition Information ===" >> /tmp/filesystem-security-report.txt
+    df -h >> /tmp/filesystem-security-report.txt
+    echo "" >> /tmp/filesystem-security-report.txt
+    
+    echo "=== Mount Options ===" >> /tmp/filesystem-security-report.txt
+    mount | grep -E "(nosuid|nodev|noexec|relatime)" >> /tmp/filesystem-security-report.txt || echo "No secure mount options found" >> /tmp/filesystem-security-report.txt
+    echo "" >> /tmp/filesystem-security-report.txt
+    
+    echo "=== /tmp Partition Status ===" >> /tmp/filesystem-security-report.txt
+    mount | grep "/tmp" >> /tmp/filesystem-security-report.txt || echo "/tmp not found as separate mount" >> /tmp/filesystem-security-report.txt
+    echo "" >> /tmp/filesystem-security-report.txt
+    
+    echo "=== Directory Permissions ===" >> /tmp/filesystem-security-report.txt
+    ls -ld /tmp /var/tmp /usr/tmp 2>/dev/null || echo "Some temp directories not found" >> /tmp/filesystem-security-report.txt
+  register: filesystem_report
 
 - name: Add /var/tmp security options to fstab
   lineinfile:

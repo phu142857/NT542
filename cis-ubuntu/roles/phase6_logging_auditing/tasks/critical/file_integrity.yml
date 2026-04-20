@@ -6,6 +6,22 @@
     name: aide
     state: present
 
+- name: Configure AIDE database directory
+  lineinfile:
+    path: /etc/aide/aide.conf
+    regexp: '^@@define DBDIR'
+    line: '@@define DBDIR /var/lib/aide'
+    state: present
+    create: yes
+
+- name: Configure AIDE database output
+  lineinfile:
+    path: /etc/aide/aide.conf
+    regexp: '^database_out=file:'
+    line: 'database_out=file:@@{DBDIR}/aide.db.new'
+    state: present
+    create: yes
+
 - name: Ensure AIDE configuration exists
   shell: |
     if [ ! -f /etc/aide/aide.conf ]; then

@@ -1,0 +1,56 @@
+---
+# Configure account lockout policies with faillock
+
+- name: Ensure faillock.conf is properly configured
+  copy:
+    content: |
+      # Directory where faillock files are stored
+      dir = /run/faillock
+      
+      # Number of failed attempts before lockout
+      deny = 4
+      
+      # Lockout duration in seconds (15 minutes)
+      unlock_time = 900
+      
+      # Even root users can be locked out
+      even_deny_root
+      
+      # Root unlock time
+      root_unlock_time = 900
+      
+      # Faillock audit logging
+      audit
+    dest: /etc/security/faillock.conf
+    mode: '0644'
+    owner: root
+    group: root
+    backup: yes
+    create: yes
+
+- name: Enable faillock in PAM authentication
+  lineinfile:
+    path: /etc/pam.d/common-auth
+    regexp: '^auth.*pam_faillock.so.*preauth'
+    line: 'auth [default=die] pam_faillock.so preauth silent deny=4 unlock_time=900 faillock_audit'
+    backup: yes
+    insertbefore: '^auth.*pam_unix.so'
+    state: present
+
+- name: Enable faillock in PAM authentication (second phase)
+  lineinfile:
+    path: /etc/pam.d/common-auth
+    regexp: '^auth.*pam_faillock.so.*authfail'
+    line: 'auth sufficient pam_faillock.so authfail sufficient unlock_time=900'
+    backup: yes
+    insertafter: '^auth.*pam_unix.so'
+    state: present
+
+- name: Enable faillock in PAM account phase
+  lineinfile:
+    path: /etc/pam.d/common-account
+    regexp: '^account.*pam_faillock.so'
+    line: 'account required pam_faillock.so'
+    backup: yes
+    create: yes
+    state: present
