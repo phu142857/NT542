@@ -3,8 +3,7 @@
 \section{Quy trình tổng thể}
 
 
-\vspace{10pt}
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[node distance=3.5cm, auto]
     % Define styles
@@ -29,181 +28,226 @@
 \label{fig:security_process}
 \end{figure}
 
-\vspace{5pt}
 \noindent Quy trình triển khai bảo mật được thiết kế theo chu trình 4 bước chính, đảm bảo tính toàn diện và có thể lặp lại. Mỗi bước có vai trò cụ thể và liên kết chặt chẽ với nhau để tạo ra một hệ thống bảo mật hoàn chỉnh.
 
-\vspace{5pt}
 \noindent Quy trình này bắt đầu từ việc đánh giá trạng thái hiện tại, tiếp theo là áp dụng các biện pháp hardening, sau đó xác thực kết quả và cuối cùng là tạo báo cáo chi tiết. Vòng lặp này giúp đảm bảo hệ thống luôn được cập nhật và tuân thủ các tiêu chuẩn bảo mật mới nhất.
-
 \section{Phương pháp tiếp cận}
+
 \subsection{Manual Configuration}
-\vspace{5pt}
-\noindent Cấu hình thủ công là phương pháp truyền thống trong quản trị hệ thống. Administrator trực tiếp thực hiện các thay đổi trên hệ thống thông qua command line, giao diện đồ họa hoặc file config.
 
-\vspace{5pt}
-\noindent \textbf{Các công cụ sử dụng trong cấu hình thủ công:}
+\noindent Cấu hình thủ công là phương pháp truyền thống trong quản trị hệ thống, trong đó administrator trực tiếp thực hiện các thay đổi thông qua dòng lệnh (CLI), giao diện đồ họa (GUI) hoặc chỉnh sửa các file cấu hình.
+
+\subsubsection{Cấu hình qua CLI (Command Line Interface)}
+
+\noindent Administrator sử dụng các lệnh trực tiếp trên terminal để cài đặt và cấu hình hệ thống, ví dụ:
+
 \begin{itemize}
-\item \textbf{Command Line Tools:} \texttt{ansible-playbook}, \texttt{systemctl}, \texttt{ufw}, \texttt{iptables}, \texttt{nftables},\\
-\texttt{chmod}, \texttt{chown}, \texttt{mount}, \texttt{netstat}, \texttt{lynis}, \texttt{aide}, \texttt{auditd}, \texttt{fail2ban}
-\item \textbf{Giao diện đồ họa (GUI):} AWX/Tower, Grafana, Webmin, Cockpit
-\item \textbf{File cấu hình:} \texttt{/etc/sysctl.conf}, \texttt{/etc/fstab}, \texttt{/etc/ssh/sshd\_config},\\
-\texttt{/etc/network/interfaces}, \texttt{/etc/passwd}, \texttt{/etc/shadow}, \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/}
+\item Cài đặt package: \texttt{apt install}, \texttt{apt update}
+\item Quản lý dịch vụ: \texttt{systemctl start/stop/enable}
+\item Cấu hình firewall: \texttt{ufw allow}, \texttt{ufw enable}
+\item Phân quyền file: \texttt{chmod}, \texttt{chown}
 \end{itemize}
 
-\vspace{5pt}
-\noindent Phương pháp này có ưu điểm là linh hoạt và dễ kiểm soát từng bước, nhưng nhược điểm lớn là tốn nhiều thời gian, dễ xảy ra sai sót, và khó đảm bảo tính nhất quán giữa nhiều hệ thống khác nhau.
+\noindent Phương pháp này cho phép kiểm soát chi tiết từng bước, tuy nhiên dễ xảy ra sai sót khi thực hiện lặp lại trên nhiều hệ thống.
 
-\vspace{5pt}
-\noindent Đối với các hệ thống quy mô nhỏ, cấu hình thủ công vẫn có thể được áp dụng cho các tác vụ đặc thù yêu cầu sự can thiệp chuyên sâu.
+\subsubsection{Cấu hình qua GUI (Graphical User Interface)}
 
-\subsection{Automation bằng Ansible}
-\vspace{5pt}
-\noindent Ansible là công cụ tự động hóa mạnh mẽ giúp loại bỏ các thao tác thủ công lặp đi lặp lại. Với Ansible, chúng ta có thể định nghĩa toàn bộ quy trình hardening dưới dạng code, đảm bảo tính nhất quán và có thể tái sử dụng.
+\noindent Một số tác vụ như quản lý người dùng, cấu hình dịch vụ hoặc firewall có thể được thực hiện thông qua giao diện đồ họa. Tuy nhiên, phương pháp này phụ thuộc vào thao tác thủ công, khó tự động hóa và không phù hợp với môi trường server hoặc hệ thống quy mô lớn.
 
-\vspace{5pt}
-\noindent \textbf{Các công cụ sử dụng trong automation bằng Ansible:}
+\subsubsection{Chỉnh sửa file cấu hình}
+
+\noindent Administrator chỉnh sửa trực tiếp các file cấu hình hệ thống bằng các trình soạn thảo như \texttt{vim}, \texttt{nano}. Ví dụ:
+
 \begin{itemize}
-\item \textbf{Ansible Command Line Tools:} \texttt{ansible-playbook}, \texttt{ansible-inventory},\\
-\texttt{ansible-vault}, \texttt{ansible-galaxy}, \texttt{ansible-pull}
-\item \textbf{Ansible GUI Tools:} AWX/Tower, Ansible Semaphore, Rundeck, Jenkins với Ansible plugin
-\item \textbf{Ansible Configuration Files:} \texttt{ansible.cfg}, \texttt{inventory/hosts}, \texttt{playbooks/*.yml},\\
-\texttt{roles/*/tasks/main.yml}, \texttt{group\_vars/*}, \texttt{host\_vars/*}, \texttt{vars/*}, \texttt{vault/*}
+\item \texttt{/etc/ssh/sshd\_config}
+\item \texttt{/etc/sysctl.conf}
+\item \texttt{/etc/fstab}
 \end{itemize}
 
-\vspace{5pt}
-\noindent Ansible sử dụng YAML để định nghĩa các playbook, giúp administrator dễ dàng đọc, hiểu và chỉnh sửa. Khả năng idempotent của Ansible đảm bảo rằng việc chạy nhiều lần sẽ không gây ra các trạng thái không mong muốn.
+\noindent Phương pháp này linh hoạt và mạnh mẽ, nhưng dễ gây lỗi cú pháp, khó kiểm soát thay đổi và không đảm bảo tính nhất quán giữa các hệ thống.
 
-\vspace{5pt}
-\section{Mô hình triển khai}
+\subsubsection{Đánh giá}
 
-\vspace{10pt}
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-    node distance=4cm and 3cm,
-    every node/.style={font=\small},
-    controller/.style={
-        rectangle, rounded corners,
-        minimum width=3cm, minimum height=1.5cm,
-        text centered, draw=black, fill=red!20,
-        align=center
-    },
-    worker/.style={
-        rectangle, rounded corners,
-        minimum width=2.8cm, minimum height=1.5cm,
-        text centered, draw=black, fill=blue!20,
-        align=center
-    },
-    arrow/.style={->, very thick}
-]
+\noindent Phương pháp cấu hình thủ công có ưu điểm là linh hoạt và cho phép kiểm soát chi tiết. Tuy nhiên, nhược điểm là tốn thời gian, dễ xảy ra sai sót và khó đảm bảo tính nhất quán khi triển khai trên nhiều hệ thống. Do đó, phương pháp này chỉ phù hợp với các hệ thống nhỏ hoặc các tác vụ yêu cầu can thiệp chuyên sâu.
 
-% Nodes
-\node (worker1) [worker] {Worker 1\\Ubuntu 22.04};
+% =========================
 
-\node (worker2) [worker, below=1cm of worker1] {Worker 2\\Ubuntu 24.04};
+\subsection{Automation Configuration}
 
-\node (controller) [controller, left=4cm of $(worker1)!0.5!(worker2)$] {Controller\\Arch Linux};
+\noindent Ansible là công cụ tự động hóa giúp loại bỏ các thao tác thủ công lặp lại. Toàn bộ quy trình cấu hình và hardening có thể được định nghĩa dưới dạng mã (Infrastructure as Code), từ đó đảm bảo tính nhất quán và khả năng tái sử dụng.
 
-% Arrows
-\draw [arrow] (controller.east) -- (worker1.west);
-\draw [arrow] (worker1.west) -- (controller.east);
+\noindent Ansible sử dụng định dạng YAML để xây dựng playbook, giúp dễ đọc và dễ bảo trì. Đặc biệt, cơ chế \textit{idempotent} đảm bảo việc thực thi nhiều lần không gây ra trạng thái không mong muốn. Ngoài ra, Ansible hoạt động theo mô hình \textit{agentless}, chỉ yêu cầu SSH và Python trên máy mục tiêu.
 
-\draw [arrow] (controller.east) -- (worker2.west);
-\draw [arrow] (worker2.west) -- (controller.east);
+\subsubsection{Tự động hóa thao tác CLI}
 
-\end{tikzpicture}
-\caption{Mô hình triển khai Controller-Workers}
-\label{fig:deployment_model}
-\end{figure}
+\noindent Các lệnh CLI thủ công được chuyển thành các module tương ứng trong Ansible:
 
-\noindent
-Hệ thống được triển khai theo mô hình Controller--Workers, trong đó một máy trung tâm (Controller) chịu trách nhiệm điều phối và quản lý cấu hình, trong khi các máy Worker đóng vai trò là các node mục tiêu được cấu hình tự động.
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Manual CLI} & \textbf{Module} & \textbf{Mô tả} \\
+\hline
+\texttt{apt install} & \texttt{apt} & Cài đặt package \\
+\texttt{systemctl} & \texttt{service/systemd} & Quản lý dịch vụ \\
+\texttt{ufw} & \texttt{ufw} & Cấu hình firewall \\
+\texttt{chmod, chown} & \texttt{file} & Phân quyền file/thư mục \\
+\hline
+\end{tabular}
+\end{center}
 
-\vspace{5pt}
-\noindent \textbf{Cụ thể trong đề tài:}
+\noindent Các thao tác được định nghĩa thành task trong playbook và có thể thực thi đồng thời trên nhiều máy.
+
+\subsubsection{Tự động hóa thao tác GUI}
+
+\noindent Các thao tác GUI được chuyển thành cấu hình bằng code:
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Manual GUI} & \textbf{Module} & \textbf{Mô tả} \\
+\hline
+Tạo user & \texttt{user} & Quản lý người dùng \\
+Quản lý group & \texttt{group} & Quản lý nhóm \\
+Bật/tắt service & \texttt{service} & Điều khiển dịch vụ \\
+Firewall & \texttt{ufw/firewalld} & Cấu hình firewall \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Việc này giúp loại bỏ thao tác thủ công và chuẩn hóa cấu hình trên toàn hệ thống.
+
+\subsubsection{Tự động hóa chỉnh sửa file cấu hình}
+
+\noindent Thay vì chỉnh sửa thủ công, Ansible cung cấp các module để quản lý file cấu hình:
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Manual} & \textbf{Module} & \textbf{Mô tả} \\
+\hline
+Sửa từng dòng & \texttt{lineinfile} & Thay đổi một dòng cụ thể \\
+Thêm block & \texttt{blockinfile} & Thêm đoạn cấu hình \\
+Copy file & \texttt{copy} & Sao chép file cấu hình \\
+Template & \texttt{template} & Sinh cấu hình động (Jinja2) \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Cách tiếp cận này giúp kiểm soát cấu hình tốt hơn, hỗ trợ version hóa và giảm lỗi cú pháp.
+
+\subsubsection{Ví dụ minh họa}
+
+\noindent Thực hiện thủ công:
+
+\begin{verbatim}
+apt install nginx
+systemctl enable nginx
+systemctl start nginx
+\end{verbatim}
+
+\noindent Sử dụng Ansible:
+
+\begin{verbatim}
+- name: Install and start nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Enable and start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
+\end{verbatim}
+
+\subsubsection{Kết luận}
+
+\noindent Việc chuyển đổi từ cấu hình thủ công sang tự động hóa giúp:
+
 \begin{itemize}
-\item \textbf{Controller:} Arch Linux (chạy Ansible)
-\item \textbf{Worker 1:} Ubuntu 22.04
-\item \textbf{Worker 2:} Ubuntu 24.04
+\item Giảm thiểu lỗi do con người
+\item Đảm bảo tính nhất quán
+\item Dễ dàng mở rộng hệ thống
+\item Tăng khả năng tái sử dụng
 \end{itemize}
 
-\vspace{5pt}
-\noindent Mô hình này cho phép thực hiện quản lý tập trung, đảm bảo tính nhất quán và giảm thiểu sai sót trong quá trình cấu hình hệ thống.
+\section{Thiết kế hệ thống Ansible}
 
-\subsection{Quy trình triển khai tự động}
+\subsection{Inventory}
 
-\noindent Hệ thống được triển khai theo hướng tự động hóa hoàn toàn thông qua Ansible, đảm bảo tính nhất quán và khả năng tái sử dụng. Quy trình tập trung vào việc định nghĩa cấu hình dưới dạng code, cho phép quản lý tập trung và giảm thiểu sai sót thủ công.
+\noindent Inventory là thành phần cơ bản của Ansible, dùng để định nghĩa danh sách các máy chủ mục tiêu. Inventory có thể được xây dựng dướidạng file \texttt{INI}, \texttt{YAML}, hoặc sử dụng \textit{dynamic inventory} từ các nguồn như cloud providers.
 
-\vspace{5pt}
-\noindent Mô hình này hỗ trợ việc triển khai trên nhiều hệ thống đồng thời, với khả năng mở rộng và bảo trì dễ dàng thông qua cơ chế kiểm soát phiên bản.
+\noindent Trong dự án này, inventory được tổ chức theo nhóm máy chủ nhằm thuận tiện cho việc quản lý và áp dụng các chính sách khác nhau cho từng nhóm. Mỗi nhóm có thể được gán các biến riêng phù hợp với vai trò và yêu cầu bảo mật cụ thể.
 
-\subsection{Mô hình triển khai Automated Security Hardening System}
+\noindent Ngoài ra, inventory hỗ trợ định nghĩa biến toàn cục (\textit{group variables}) và biến riêng cho từng host (\textit{host variables}), giúp linh hoạt trong việc cấu hình môi trường triển khai đa dạng.
 
-\noindent Dựa trên kiến trúc Controller--Workers, hệ thống Automated Security Hardening được thiết kế thành một quy trình tích hợp khép kín gồm ba thành phần cốt lõi: \textit{Auto-VM}, \textit{CIS-Ubuntu} và \textit{Report Module}. 
+% =========================
 
-\vspace{5pt}
-\noindent Mô hình này tự động hóa toàn bộ vòng đời bảo mật từ khâu khởi tạo môi trường, áp dụng cấu hình tiêu chuẩn đến đánh giá và tối ưu hóa hệ thống.
+\subsection{Playbooks}
 
-\vspace{10pt}
-\begin{figure}[htbp]
-\centering
-\begin{tikzpicture}[
-    node distance=5cm and 3cm,
-    every node/.style={font=\small},
-    component/.style={
-        rectangle, rounded corners,
-        minimum width=3.5cm, minimum height=2cm,
-        text centered, draw=black, 
-        align=center, line width=0.8pt
-    },
-    auto_vm/.style={component, fill=green!20},
-    cis_ubuntu/.style={component, fill=blue!20},
-    report/.style={component, fill=orange!20},
-    arrow/.style={->, very thick, line width=0.8pt},
-    feedback/.style={->, very thick, dashed, bend right=45, line width=0.8pt}
-]
-% Nodes
-\node (auto_vm) [auto_vm] {Auto-VM\\Tự động tạo\\máy ảo};
-\node (cis_ubuntu) [cis_ubuntu, right=of auto_vm] {CIS-Ubuntu\\Hardening\\bảo mật};
-\node (report) [report, right=of cis_ubuntu] {Đánh giá và\\báo cáo};
+\noindent Playbook là tập hợp các task được định nghĩa theo thứ tự thực thi. Mỗi playbook có thể chứa một hoặc nhiều \textit{play}, trong đó mỗi play áp dụng cho một nhóm host cụ thể và thực hiện các task thông qua các module của Ansible.
 
-% Main workflow arrows
-\draw [arrow] (auto_vm.east) -- node[above, text width=2cm, text centered] {VM sẵn sàng} (cis_ubuntu.west);
-\draw [arrow] (cis_ubuntu.east) -- node[above, text width=2cm, text centered] {Hệ thống hardening} (report.west);
+\noindent Trong dự án này, các playbook được phân chia theo các chức năng chính:
 
-% Feedback loop
-\draw [feedback] (report.north) to node[below, text width=2.5cm, text centered] {Phản hồi cải tiến} (auto_vm.north);
-
-% Labels for technologies
-\node[below=0.3cm of auto_vm, text width=3.5cm, text centered, font=\tiny] {KVM/QEMU, Ansible, Cloud-init};
-\node[below=0.3cm of cis_ubuntu, text width=3.5cm, text centered, font=\tiny] {CIS Ubuntu 24.04 LTS Benchmark};
-\node[below=0.3cm of report, text width=3.5cm, text centered, font=\tiny] {Lynis, OpenSCAP};
-\end{tikzpicture}
-\caption{Mô hình triển khai Automated Security Hardening System với chu trình khép kín}
-\label{fig:automated_security_model}
-\end{figure}
-
-\vspace{5pt}
-\noindent \textbf{1. Auto-VM (Khởi tạo môi trường)}
-\vspace{5pt}
-\noindent Thành phần này chịu trách nhiệm cấp phát máy ảo tự động thông qua KVM/QEMU và Cloud-init. Các máy ảo được tạo ra với cấu hình cơ bản đồng nhất, sẵn sàng để tiếp nhận các thiết lập bảo mật chuyên sâu mà không cần can thiệp thủ công.
-
-\vspace{5pt}
-\noindent \textbf{2. CIS-Ubuntu (Hardening hệ thống)}
-\vspace{5pt}
-\noindent Đây là module thực thi chính, áp dụng các chính sách bảo mật dựa trên tiêu chuẩn \textit{CIS Ubuntu Linux Benchmark}. Quá trình hardening được tổ chức theo dạng modular, bao phủ toàn diện từ cấu hình dịch vụ, mạng, kiểm soát truy cập đến hệ thống ghi log, đảm bảo tính nhất quán trên toàn bộ các node.
-
-\vspace{5pt}
-\noindent \textbf{3. Report Module (Đánh giá và phản hồi)}
-\vspace{5pt}
-\noindent Module này sử dụng các công cụ như Lynis và OpenSCAP để kiểm tra mức độ tuân thủ sau triển khai. Kết quả được tổng hợp thành báo cáo chi tiết, cung cấp dữ liệu phản hồi để liên tục tinh chỉnh và tối ưu hóa quy trình khởi tạo ban đầu.
-
-\vspace{5pt}
-\noindent \textbf{Ưu điểm nổi bật}
-\vspace{5pt}
-\noindent \begin{itemize}
-\item \textbf{Tự động hóa hoàn toàn:} Loại bỏ sai sót chủ quan, rút ngắn thời gian triển khai.
-\item \textbf{Chu trình khép kín:} Cơ chế phản hồi giúp hệ thống liên tục được cập nhật và cải thiện.
-\item \textbf{Tính chuẩn hóa:} Đảm bảo mọi máy ảo đều tuân thủ nghiêm ngặt các tiêu chuẩn bảo mật quốc tế.
-\item \textbf{Khả năng mở rộng:} Kiến trúc linh hoạt, dễ dàng tái sử dụng cho nhiều quy mô môi trường khác nhau.
+\begin{itemize}
+\item \textbf{Scanning}: Thu thập thông tin hệ thống và kiểm tra tuân thủ (compliance)
+\item \textbf{Hardening}: Áp dụng các chính sách bảo mật
+\item \textbf{Validation}: Kiểm tra lại trạng thái sau khi cấu hình
+\item \textbf{Reporting}: Tổng hợp và xuất báo cáo
 \end{itemize}
+
+\noindent Các playbook sử dụng các cơ chế như \textit{conditional logic} (\texttt{when}), \textit{handlers}, và \textit{error handling} (\texttt{ignore\_errors}, \texttt{failed\_when}) nhằm đảm bảo tính ổn định và khả năng tự phục hồi khi xảy ra lỗi.
+
+\subsubsection{Các module sử dụng trong Playbooks}
+
+\noindent Trong quá trình triển khai, các playbook sử dụng nhiều module khác nhau để thực hiện các tác vụ cụ thể:
+
+\begin{itemize}
+\item \textbf{Quản lý package}: \texttt{apt}, \texttt{package}  
+→ Cài đặt, cập nhật và gỡ bỏ phần mềm
+
+\item \textbf{Quản lý dịch vụ}: \texttt{service}, \texttt{systemd}  
+→ Bật, tắt và kiểm soát trạng thái dịch vụ
+
+\item \textbf{Quản lý file và cấu hình}: \texttt{file}, \texttt{copy}, \texttt{template}, \texttt{lineinfile}  
+→ Phân quyền, sao chép và chỉnh sửa file cấu hình
+
+\item \textbf{Quản lý người dùng}: \texttt{user}, \texttt{group}  
+→ Tạo, xóa và cấu hình user/group
+
+\item \textbf{Cấu hình mạng và firewall}: \texttt{ufw}, \texttt{firewalld}  
+→ Thiết lập các rule bảo mật mạng
+
+\item \textbf{Thu thập thông tin}: \texttt{setup}, \texttt{command}, \texttt{shell}  
+→ Lấy thông tin hệ thống và thực thi lệnh
+
+\item \textbf{Kiểm tra và xác thực}: \texttt{stat}, \texttt{assert}  
+→ Kiểm tra trạng thái file và validate cấu hình
+\end{itemize}
+
+\noindent Việc sử dụng đa dạng các module giúp playbook có khả năng tự động hóa toàn diện và giảm thiểu sự phụ thuộc vào các lệnh thủ công.
+
+% =========================
+
+\subsection{Roles}
+
+\noindent Roles là phương pháp tổ chức mã nguồn Ansible theo hướng module hóa, giúp tăng khả năng tái sử dụng và dễ bảo trì. Mỗi role tuân theo một cấu trúc thư mục chuẩn bao gồm: \texttt{tasks}, \texttt{handlers}, \texttt{templates}, \texttt{files}, \texttt{vars}, \texttt{defaults}, và \texttt{meta}.
+
+\noindent Trong dự án này, các role được phân chia theo các nhóm chức năng bảo mật như:
+
+\begin{itemize}
+\item \textbf{filesystem}: Quản lý phân vùng và quyền truy cập
+\item \textbf{network}: Cấu hình mạng và firewall
+\item \textbf{services}: Quản lý dịch vụ hệ thống
+\item \textbf{users}: Quản lý người dùng và phân quyền
+\item \textbf{logging}: Thiết lập logging và auditing
+\item \textbf{monitoring}: Giám sát hệ thống
+\end{itemize}
+
+\noindent Mỗi role chịu trách nhiệm cho một lĩnh vực cụ thể trong quá trình hardening hệ thống.
+
+\noindent Việc sử dụng roles giúp hệ thống dễ dàng mở rộng, cập nhật và tái sử dụng giữa các dự án khác nhau, đồng thời đảm bảo tính nhất quán trong việc triển khai các chính sách bảo mật.

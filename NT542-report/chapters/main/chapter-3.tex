@@ -1,5 +1,1145 @@
 \chapter{Triển khai}
 
-% Chapter 3 content has been removed as requested
+\section{Mô hình triển khai}
 
-% This chapter will be updated with new content
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=4cm and 3cm,
+    every node/.style={font=\small},
+    controller/.style={
+        rectangle, rounded corners,
+        minimum width=3cm, minimum height=1.5cm,
+        text centered, draw=black, fill=red!20,
+        align=center
+    },
+    worker/.style={
+        rectangle, rounded corners,
+        minimum width=2.8cm, minimum height=1.5cm,
+        text centered, draw=black, fill=blue!20,
+        align=center
+    },
+    arrow/.style={->, very thick}
+]
+
+\node (worker1) [worker] {Worker 1\\Ubuntu 22.04};
+\node (worker2) [worker, below=1cm of worker1] {Worker 2\\Ubuntu 24.04};
+\node (controller) [controller, left=4cm of $(worker1)!0.5!(worker2)$] {Controller\\Arch Linux};
+
+\draw [arrow] (controller.east) -- (worker1.west);
+\draw [arrow] (controller.east) -- (worker2.west);
+
+\end{tikzpicture}
+\caption{Mô hình triển khai Controller--Workers}
+\label{fig:deployment_model}
+\end{figure}
+
+\noindent Hệ thống được triển khai theo mô hình \textit{Controller--Workers}, trong đó máy Controller đóng vai trò trung tâm điều phối, thực thi các playbook Ansible và quản lý cấu hình. Các Worker là các máy mục tiêu nhận cấu hình thông qua kết nối SSH và thực thi các task tương ứng.
+
+\noindent Mô hình này cho phép quản lý tập trung, hỗ trợ triển khai đồng thời trên nhiều hệ thống và đảm bảo tính nhất quán trong quá trình cấu hình.
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{1.0\textwidth}{!}{
+\begin{tabular}{|p{2cm}|p{2cm}|p{2.5cm}|p{7cm}|}
+\hline
+\textbf{Tên} & \textbf{Phiên bản} & \textbf{IP} & \textbf{Các gói cài đặt} \\
+\hline
+Controller & 2026.02.01 & 192.168.1.10 & 
+\textbf{Core:} Ansible \\
+& & & \textbf{KVM:} qemu-kvm, libvirt-daemon-system, libvirt-clients, bridge-utils, virtinst \\
+& & & \textbf{Cloud-init:} cloud-image-utils, genisoimage \\
+& & & \textbf{Base images:} ubuntu-22.04.qcow2, ubuntu-24.04.qcow2 \\
+\hline
+Worker 1 & Ubuntu 22.04 & 192.168.1.11 & 
+\textbf{Ban đầu:} OpenSSH, Python3 \\
+& & & \textbf{Phase 1:} apparmor, apparmor-utils \\
+& & & \textbf{Phase 2:} fail2ban, libpam-tmpdir, debsums \\
+& & & \textbf{Phase 5:} libpam-modules, libpam-pwquality, sudo \\
+& & & \textbf{Phase 6:} auditd, audispd-plugins, rsyslog, aide \\
+& & & \textbf{Phase 7:} systemd-journal-remote \\
+& & & \textbf{Security:} lynis, chkrootkit, rkhunter, wget, unzip \\
+\hline
+Worker 2 & Ubuntu 24.04 & 192.168.1.12 & 
+\textbf{Ban đầu:} OpenSSH, Python3 \\
+& & & \textbf{Phase 1:} apparmor, apparmor-utils \\
+& & & \textbf{Phase 2:} fail2ban, libpam-tmpdir, debsums \\
+& & & \textbf{Phase 5:} libpam-modules, libpam-pwquality, sudo \\
+& & & \textbf{Phase 6:} auditd, audispd-plugins, rsyslog, aide \\
+& & & \textbf{Phase 7:} systemd-journal-remote \\
+& & & \textbf{Security:} lynis, chkrootkit, rkhunter, wget, unzip \\
+\hline
+\end{tabular}
+}
+\caption{Thông tin chi tiết các máy trong mô hình và các gói được cài đặt}
+\label{tab:system_info}
+\end{table}
+
+% =========================
+
+\subsection{Quy trình Automated Security Hardening}
+
+\noindent Dựa trên mô hình triển khai đã trình bày ở Hình~\ref{fig:deployment_model}, quy trình \textit{Automated Security Hardening} được xây dựng nhằm tự động hóa việc triển khai và đánh giá bảo mật hệ thống.
+
+\noindent Quy trình hoạt động của hệ thống diễn ra theo chu trình khép kín:
+
+\begin{itemize}
+\item Auto-VM khởi tạo môi trường và cung cấp các Worker sẵn sàng
+\item CIS-Ubuntu thực hiện hardening theo tiêu chuẩn bảo mật
+\item Report Module đánh giá và phát hiện các điểm chưa đạt
+\item Kết quả được phản hồi để cải tiến cấu hình trong các lần triển khai tiếp theo
+\end{itemize}
+
+\noindent Cách tiếp cận này giúp tự động hóa toàn bộ vòng đời bảo mật hệ thống, từ khởi tạo, cấu hình đến đánh giá và tối ưu hóa.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=5cm and 3cm,
+    every node/.style={font=\small},
+    component/.style={
+        rectangle, rounded corners,
+        minimum width=3.5cm, minimum height=2cm,
+        text centered, draw=black,
+        align=center, line width=0.8pt
+    },
+    auto_vm/.style={component, fill=green!20},
+    cis_ubuntu/.style={component, fill=blue!20},
+    report/.style={component, fill=orange!20},
+    arrow/.style={->, very thick, line width=0.8pt},
+    feedback/.style={->, very thick, dashed, bend right=45, line width=0.8pt}
+]
+
+\node (auto_vm) [auto_vm] {Auto-VM\\Tạo và cấu hình\\máy ảo};
+\node (cis_ubuntu) [cis_ubuntu, right=of auto_vm] {CIS-Ubuntu\\Hardening\\bảo mật};
+\node (report) [report, right=of cis_ubuntu] {Đánh giá và\\báo cáo};
+
+\draw [arrow] (auto_vm.east) -- node[above] {VM sẵn sàng} (cis_ubuntu.west);
+\draw [arrow] (cis_ubuntu.east) -- node[above] {Hardened} (report.west);
+
+\draw [feedback] (report.north) to node[above] {Phản hồi cải tiến} (auto_vm.north);
+
+\node[below=0.3cm of auto_vm, font=\tiny] {KVM/QEMU, Ansible, Cloud-init};
+\node[below=0.3cm of cis_ubuntu, font=\tiny] {CIS Ubuntu 24.04 Benchmark};
+\node[below=0.3cm of report, font=\tiny] {Lynis, OpenSCAP};
+
+\end{tikzpicture}
+\caption{Mô hình Automated Security Hardening System}
+\label{fig:automated_security_model}
+\end{figure}
+
+\section{Initial Setup}
+\subsection{Manual}
+
+\noindent \textbf{Cài đặt các gói bảo mật cơ bản:}
+\begin{verbatim}
+sudo apt update && sudo apt upgrade -y                   # Cập nhật hệ thống
+sudo apt install -y apparmor apparmor-utils \            # Framework bảo mật AppArmor
+                   fail2ban \                            # Bảo vệ SSH khỏi brute-force
+                   debsums \                             # Kiểm tra integrity packages
+                   auditd audispd-plugins \              # Hệ thống audit logs
+                   aide \                                # Intrusion detection system
+                   rsyslog \                             # Centralized logging
+                   libpam-pwquality \                    # Password quality enforcement
+                   libpam-modules \                      # PAM authentication modules
+                   sudo \                                # Privilege management
+                   systemd-journal-remote                # Remote journal logging
+\end{verbatim}
+
+\noindent \textbf{Cấu hình AppArmor:}
+\begin{verbatim}
+sudo systemctl enable apparmor                           # Kích hoạt AppArmor boot
+sudo systemctl start apparmor                            # Khởi động AppArmor service
+sudo aa-enforce /etc/apparmor.d/*                        # Enforce tất cả profiles
+
+sudo tee -a /etc/default/grub > /dev/null <<EOF
+apparmor=1 security=apparmor
+EOF
+
+sudo update-grub                                         # Cập nhật bootloader
+\end{verbatim}
+
+\noindent \textbf{Cấu hình filesystem security:}
+\begin{verbatim}
+sudo mount -o remount,nodev,nosuid,noexec /tmp           # Bảo vệ /tmp directory
+sudo mount -o remount,nodev,nosuid,noexec /dev/shm       # Bảo vệ shared memory
+
+sudo tee -a /etc/fstab > /dev/null <<EOF
+tmpfs /var/tmp tmpfs defaults,nodev,nosuid,noexec 0 0
+EOF
+
+sudo mount -a                                            # Mount lại filesystems
+\end{verbatim}
+
+\noindent \textbf{Cấu hình login banners:}
+\begin{verbatim}
+sudo tee /etc/issue /etc/issue.net /etc/motd > /dev/null <<EOF
+Authorized uses only. All activity may be monitored and reported.
+EOF
+
+sudo chmod 644 /etc/issue /etc/issue.net /etc/motd       # Set permissions
+
+sudo tee -a /etc/ssh/sshd_config > /dev/null <<EOF
+Banner /etc/issue.net
+EOF
+
+sudo systemctl restart sshd                              # Restart SSH service
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized AppArmor Configuration:}
+\begin{verbatim}
+- name: Configure AppArmor security framework
+  block:
+    - name: Install AppArmor packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apparmor
+        - apparmor-utils
+
+    - name: Enable AppArmor in bootloader
+      lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash apparmor=1 security=apparmor"'
+
+    - name: Start and enable AppArmor service
+      service:
+        name: apparmor
+        state: started
+        enabled: yes
+
+    - name: Enforce all AppArmor profiles
+      shell: aa-enforce /etc/apparmor.d/*
+      register: apparmor_enforce
+      changed_when: false
+      failed_when: false
+\end{verbatim}
+
+\noindent \textbf{Optimized Filesystem Security:}
+\begin{verbatim}
+- name: Configure filesystem security
+  block:
+    - name: Secure temporary directories
+      shell: |
+        mount -o remount,nodev,nosuid,noexec {{ item }} \
+        2>/dev/null || true
+      loop:
+        - /tmp
+        - /dev/shm
+      register: tmp_secured
+      changed_when: tmp_secured.rc == 0
+
+    - name: Add /var/tmp to fstab with security options
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^.*/var/tmp.*'
+        line: "tmpfs /var/tmp tmpfs defaults,nodev,nosuid,noexec 0 0"
+        create: yes
+
+    - name: Mount /var/tmp with security options
+      command: mount -t tmpfs -o nodev,nosuid,noexec tmpfs /var/tmp
+      register: var_tmp_mount
+      failed_when: var_tmp_mount.rc != 0 and "already mounted" not in var_tmp_mount.stderr
+\end{verbatim}
+
+\noindent \textbf{Optimized Login Banners:}
+\begin{verbatim}
+- name: Configure login banners and SSH
+  block:
+    - name: Create login warning banners
+      copy:
+        content: "Authorized uses only. All activity may be monitored and reported.\n"
+        dest: "{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop:
+        - /etc/issue
+        - /etc/issue.net
+        - /etc/motd
+
+    - name: Configure SSH to display banner
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^Banner'
+        line: 'Banner /etc/issue.net'
+        state: present
+      notify: restart sshd
+\end{verbatim}
+
+\section{Services}
+\subsection{Manual}
+
+\noindent \textbf{Disable unnecessary services:}
+\begin{verbatim}
+sudo systemctl stop telnet.socket telnet \               # Disable telnet services
+sudo systemctl disable telnet.socket telnet
+sudo systemctl stop rsh.socket rsh \                     # Disable rsh services
+sudo systemctl disable rsh.socket rsh
+sudo systemctl stop rlogin.socket rlogin \               # Disable rlogin services
+sudo systemctl disable rlogin.socket rlogin
+sudo systemctl stop ypbind && \                          # Disable NIS service
+sudo systemctl disable ypbind
+sudo systemctl stop tftp.socket tftp \                   # Disable tftp services
+sudo systemctl disable tftp.socket tftp
+sudo systemctl stop isc-dhcp-server && \                 # Disable DHCP server
+sudo systemctl disable isc-dhcp-server
+sudo systemctl stop slapd && \                           # Disable OpenLDAP
+sudo systemctl disable slapd
+sudo systemctl stop apache2 && \                         # Disable Apache web server
+sudo systemctl disable apache2
+sudo systemctl stop nfs-server && \                      # Disable NFS server
+sudo systemctl disable nfs-server
+sudo systemctl stop rpcbind && \                         # Disable RPC service
+sudo systemctl disable rpcbind
+sudo systemctl stop cups && \                            # Disable printing service
+sudo systemctl disable cups
+sudo systemctl stop avahi-daemon && \                    # Disable mDNS responder
+sudo systemctl disable avahi-daemon
+sudo systemctl stop bluetooth && \                       # Disable Bluetooth service
+sudo systemctl disable bluetooth
+\end{verbatim}
+
+\noindent \textbf{Configure fail2ban for intrusion prevention:}
+\begin{verbatim}
+sudo apt install -y fail2ban                             # Install fail2ban
+sudo systemctl enable fail2ban                           # Enable fail2ban boot
+sudo systemctl start fail2ban                            # Start fail2ban service
+
+cat << EOF | sudo tee /etc/fail2ban/jail.local           # Configure fail2ban
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 3
+
+[sshd]
+enabled = true
+port = ssh
+logpath = /var/log/auth.log
+maxretry = 3
+EOF
+
+sudo systemctl restart fail2ban                          # Apply configuration
+\end{verbatim}
+
+\noindent \textbf{Configure time synchronization:}
+\begin{verbatim}
+sudo apt install -y ntp                                  # Install NTP service
+sudo systemctl enable ntp                                # Enable NTP boot
+sudo systemctl start ntp                                 # Start NTP service
+sudo timedatectl set-ntp true                            # Enable system time sync
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized Service Management:}
+\begin{verbatim}
+- name: Disable unnecessary services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - telnet.socket
+    - telnet
+    - rsh.socket
+    - rsh
+    - rlogin.socket
+    - rlogin
+    - ypbind
+    - tftp.socket
+    - tftp
+    - isc-dhcp-server
+    - slapd
+    - apache2
+    - nfs-server
+    - rpcbind
+    - cups
+    - avahi-daemon
+    - bluetooth
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+\end{verbatim}
+
+\noindent \textbf{Optimized Fail2ban Configuration:}
+\begin{verbatim}
+- name: Configure fail2ban intrusion prevention
+  block:
+    - name: Install and enable fail2ban
+      apt:
+        name: fail2ban
+        state: present
+      notify: restart fail2ban
+
+    - name: Configure fail2ban settings
+      copy:
+        content: |
+          [DEFAULT]
+          bantime = 3600
+          findtime = 600
+          maxretry = 3
+          
+          [sshd]
+          enabled = true
+          port = ssh
+          logpath = /var/log/auth.log
+          maxretry = 3
+        dest: /etc/fail2ban/jail.local
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart fail2ban
+\end{verbatim}
+
+\noindent \textbf{Optimized Time Synchronization:}
+\begin{verbatim}
+- name: Configure time synchronization
+  block:
+    - name: Install NTP service
+      apt:
+        name: ntp
+        state: present
+
+    - name: Enable and start NTP
+      service:
+        name: ntp
+        state: started
+        enabled: yes
+
+    - name: Enable system time synchronization
+      command: timedatectl set-ntp true
+      changed_when: false
+\end{verbatim}
+
+\section{Network}
+\subsection{Manual}
+
+\noindent \textbf{Configure network kernel parameters:}
+\begin{verbatim}
+sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
+net.ipv4.ip_forward = 0
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.secure_redirects = 0
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.tcp_syncookies = 1
+net.ipv6.conf.all.accept_ra = 0
+EOF
+
+sudo sysctl -p /etc/sysctl.d/99-cis.conf                    # Apply all settings
+\end{verbatim}
+
+\noindent \textbf{Disable wireless services:}
+\begin{verbatim}
+sudo systemctl stop wpa_supplicant                     # Stop wireless service
+sudo systemctl disable wpa_supplicant                  # Disable wireless boot
+sudo systemctl stop NetworkManager                     # Stop NetworkManager
+sudo systemctl disable NetworkManager                  # Disable NetworkManager boot
+\end{verbatim}
+
+\noindent \textbf{Configure IPv6 status:}
+\begin{verbatim}
+sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+EOF
+
+sudo sysctl -p /etc/sysctl.d/99-cis.conf              # Apply IPv6 settings
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized Network Parameters Configuration:}
+\begin{verbatim}
+- name: Configure network security parameters
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis.conf
+  loop:
+    - { name: net.ipv4.ip_forward, value: '0' }
+    - { name: net.ipv4.conf.all.send_redirects, value: '0' }
+    - { name: net.ipv4.icmp_ignore_bogus_error_responses, value: '1' }
+    - { name: net.ipv4.icmp_echo_ignore_broadcasts, value: '1' }
+    - { name: net.ipv4.conf.all.accept_redirects, value: '0' }
+    - { name: net.ipv4.conf.all.secure_redirects, value: '0' }
+    - { name: net.ipv4.conf.all.rp_filter, value: '1' }
+    - { name: net.ipv4.conf.all.accept_source_route, value: '0' }
+    - { name: net.ipv4.conf.all.log_martians, value: '1' }
+    - { name: net.ipv4.tcp_syncookies, value: '1' }
+    - { name: net.ipv6.conf.all.accept_ra, value: '0' }
+
+- name: Apply network settings
+  command: sysctl -p /etc/sysctl.d/99-cis.conf
+  changed_when: false
+\end{verbatim}
+
+\noindent \textbf{Optimized Wireless Services Management:}
+\begin{verbatim}
+- name: Disable wireless services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - wpa_supplicant
+    - NetworkManager
+  when: ansible_facts.services[item] is defined
+  ignore_errors: yes
+\end{verbatim}
+
+\noindent \textbf{Optimized IPv6 Configuration:}
+\begin{verbatim}
+- name: Configure IPv6 settings
+  sysctl:
+    name: "{{ item }}"
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-cis.conf
+  loop:
+    - net.ipv6.conf.all.disable_ipv6
+    - net.ipv6.conf.default.disable_ipv6
+\end{verbatim}
+
+\section{Firewall}
+\subsection{Manual}
+
+\noindent \textbf{Configure UFW firewall:}
+\begin{verbatim}
+sudo apt install -y ufw                                    # Install UFW firewall
+sudo apt remove --purge iptables-persistent                # Remove conflicting firewall
+sudo ufw enable                                            # Enable firewall
+sudo ufw default deny incoming                             # Default deny inbound
+sudo ufw default allow outgoing                            # Default allow outbound
+sudo ufw allow in on lo                                    # Allow loopback traffic
+sudo ufw allow 22/tcp                                      # Allow SSH access
+sudo ufw allow 80/tcp                                      # Allow HTTP (if needed)
+sudo ufw allow 443/tcp                                     # Allow HTTPS (if needed)
+sudo ufw status verbose                                    # Check firewall status
+\end{verbatim}
+
+\noindent \textbf{Configure firewall logging:}
+\begin{verbatim}
+sudo ufw logging on                                       # Enable firewall logging
+sudo ufw logging medium                                   # Set log level to medium
+sudo tail -f /var/log/ufw.log                             # Monitor firewall logs
+\end{verbatim}
+
+\noindent \textbf{Advanced firewall rules:}
+\begin{verbatim}
+sudo ufw deny 23/tcp                                      # Block telnet
+sudo ufw deny 135/tcp                                     # Block RPC
+sudo ufw deny 139/tcp                                     # Block NetBIOS
+sudo ufw deny 445/tcp                                     # Block SMB
+sudo ufw deny 1433/tcp                                    # Block SQL Server
+sudo ufw deny 3389/tcp                                    # Block RDP
+sudo ufw reload                                           # Apply all rules
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized UFW Firewall Configuration:}
+\begin{verbatim}
+- name: Configure UFW firewall
+  block:
+    - name: Install UFW and remove conflicting packages
+      package:
+        name: "{{ item }}"
+        state: "{{ item.state | default('present') }}"
+      loop:
+        - { name: ufw, state: present }
+        - { name: iptables-persistent, state: absent }
+
+    - name: Enable and start UFW service
+      service:
+        name: ufw
+        state: started
+        enabled: yes
+
+    - name: Configure UFW default policies
+      ufw:
+        state: "{{ item.state | default('enabled') }}"
+        policy: "{{ item.policy }}"
+        direction: "{{ item.direction }}"
+      loop:
+        - { state: enabled, policy: deny, direction: incoming }
+        - { state: enabled, policy: allow, direction: outgoing }
+
+    - name: Configure UFW loopback traffic
+      ufw:
+        rule: allow
+        interface: lo
+        direction: in
+
+    - name: Configure essential UFW rules
+      ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto | default('tcp') }}"
+      loop:
+        - { rule: allow, port: 22, proto: tcp }      # SSH
+        - { rule: deny, port: 23, proto: tcp }       # Block telnet
+        - { rule: deny, port: 135, proto: tcp }      # Block RPC
+        - { rule: deny, port: 139, proto: tcp }      # Block NetBIOS
+        - { rule: deny, port: 445, proto: tcp }      # Block SMB
+        - { rule: deny, port: 3389, proto: tcp }     # Block RDP
+\end{verbatim}
+
+\noindent \textbf{Optimized Firewall Logging Configuration:}
+\begin{verbatim}
+- name: Configure firewall logging
+  block:
+    - name: Enable UFW logging
+      ufw:
+        logging: on
+
+    - name: Set UFW log level
+      lineinfile:
+        path: /etc/ufw/ufw.conf
+        regexp: '^LOGLEVEL='
+        line: 'LOGLEVEL=medium'
+      notify: restart ufw
+\end{verbatim}
+
+\section{Access Control}
+\subsection{Manual}
+
+\noindent \textbf{SSH Security Hardening:}
+\begin{verbatim}
+sudo chmod 600 /etc/ssh/sshd_config                         # Secure SSH config
+sudo chmod 600 /etc/ssh/ssh_host_*_key                      # Secure private keys
+sudo chmod 644 /etc/ssh/ssh_host_*_key.pub                  # Secure public keys
+
+sudo tee -a /etc/ssh/sshd_config > /dev/null <<EOF
+PermitEmptyPasswords no
+PermitRootLogin no
+MaxAuthTries 3
+MaxSessions 3
+HostbasedAuthentication no
+GSSAPIAuthentication no
+ClientAliveInterval 300
+ClientAliveCountMax 0
+EOF
+
+sudo systemctl restart sshd                                  # Apply SSH changes
+\end{verbatim}
+
+\noindent \textbf{Configure PAM Password Quality:}
+\begin{verbatim}
+sudo apt install -y libpam-pwquality                        # Install password quality
+
+sudo tee -a /etc/pam.d/common-password > /dev/null <<EOF
+password requisite pam_pwquality.so retry=3 \
+minlen=8 
+ucredit=-1 
+lcredit=-1 
+dcredit=-1 
+ocredit=-1
+EOF
+
+sudo tee -a /etc/security/pwquality.conf > /dev/null <<EOF
+minlen=8
+ucredit=-1
+lcredit=-1
+dcredit=-1
+ocredit=-1
+EOF
+\end{verbatim}
+
+\noindent \textbf{Configure SUDO Security:}
+\begin{verbatim}
+sudo tee -a /etc/sudoers.d/security > /dev/null <<EOF
+Defaults timestamp_timeout=15
+Defaults passwd_tries=3
+Defaults use_pty
+Defaults log_input, log_output
+EOF
+
+sudo chmod 440 /etc/sudoers.d/security                        # Secure sudoers file
+\end{verbatim}
+
+\noindent \textbf{Configure User Defaults:}
+\begin{verbatim}
+sudo tee -a /etc/login.defs > /dev/null <<EOF
+UMASK 077
+PASS_MAX_DAYS 90
+PASS_MIN_DAYS 1
+PASS_WARN_AGE 7
+LOGIN_RETRIES 5
+LOGIN_TIMEOUT 60
+EOF
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized SSH Security Configuration:}
+\begin{verbatim}
+- name: Configure SSH security
+  block:
+    - name: Secure SSH configuration files
+      file:
+        path: "{{ item.path }}"
+        mode: "{{ item.mode }}"
+        owner: root
+        group: root
+      loop:
+        - { path: /etc/ssh/sshd_config, mode: '0600' }
+        - { path: /etc/ssh/ssh_host_rsa_key, mode: '0600' }
+        - { path: /etc/ssh/ssh_host_ecdsa_key, mode: '0600' }
+        - { path: /etc/ssh/ssh_host_ed25519_key, mode: '0600' }
+        - { path: /etc/ssh/ssh_host_rsa_key.pub, mode: '0644' }
+        - { path: /etc/ssh/ssh_host_ecdsa_key.pub, mode: '0644' }
+        - { path: /etc/ssh/ssh_host_ed25519_key.pub, mode: '0644' }
+
+    - name: Configure SSH security parameters
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?{{ item.key }}'
+        line: '{{ item.key }} {{ item.value }}'
+        state: present
+      loop:
+        - { key: PermitEmptyPasswords, value: no }
+        - { key: PermitRootLogin, value: no }
+        - { key: MaxAuthTries, value: 3 }
+        - { key: MaxSessions, value: 3 }
+        - { key: HostbasedAuthentication, value: no }
+        - { key: GSSAPIAuthentication, value: no }
+        - { key: ClientAliveInterval, value: 300 }
+        - { key: ClientAliveCountMax, value: 0 }
+      notify: restart sshd
+\end{verbatim}
+
+\noindent \textbf{Optimized PAM Password Quality Configuration:}
+\begin{verbatim}
+- name: Configure PAM password quality
+  block:
+    - name: Install PAM password quality module
+      apt:
+        name: libpam-pwquality
+        state: present
+
+    - name: Configure password policy in PAM
+      lineinfile:
+        path: /etc/pam.d/common-password
+        line: "password requisite pam_pwquality.so retry=3 minlen=8 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1"
+
+    - name: Configure password quality settings
+      lineinfile:
+        path: /etc/security/pwquality.conf
+        line: "{{ item }}"
+      loop:
+        - "minlen=8"
+        - "ucredit=-1"
+        - "lcredit=-1"
+        - "dcredit=-1"
+        - "ocredit=-1"
+\end{verbatim}
+
+\noindent \textbf{Optimized SUDO Security Configuration:}
+\begin{verbatim}
+- name: Configure SUDO security
+  block:
+    - name: Configure SUDO security defaults
+      lineinfile:
+        path: /etc/sudoers.d/security
+        line: "{{ item }}"
+        create: yes
+        mode: '0440'
+      loop:
+        - "Defaults timestamp_timeout=15"
+        - "Defaults passwd_tries=3"
+        - "Defaults use_pty"
+        - "Defaults log_input, log_output"
+\end{verbatim}
+
+\noindent \textbf{Optimized User Defaults Configuration:}
+\begin{verbatim}
+- name: Configure user security defaults
+  lineinfile:
+    path: /etc/login.defs
+    line: "{{ item }}"
+  loop:
+    - "UMASK 077"
+    - "PASS_MAX_DAYS 90"
+    - "PASS_MIN_DAYS 1"
+    - "PASS_WARN_AGE 7"
+    - "LOGIN_RETRIES 5"
+    - "LOGIN_TIMEOUT 60"
+\end{verbatim}
+
+\section{Logging \& Auditing}
+\subsection{Manual}
+
+\noindent \textbf{Configure auditd service:}
+\begin{verbatim}
+sudo apt install -y auditd audispd-plugins                # Install audit packages
+sudo systemctl enable auditd                             # Enable auditd boot
+sudo systemctl start auditd                              # Start auditd service
+sudo tee /etc/default/grub.d/99-audit.cfg > /dev/null <<EOF
+quiet splash audit=1 audit_backlog_limit=8192
+EOF
+sudo update-grub                                         # Update bootloader
+\end{verbatim}
+
+\noindent \textbf{Configure auditd settings:}
+\begin{verbatim}
+sudo tee -a /etc/audit/auditd.conf > /dev/null <<EOF
+max_log_file = 8
+max_log_file_action = suspend
+space_left_action = single
+admin_space_left_action = suspend
+EOF
+
+sudo systemctl restart auditd                            # Apply auditd changes
+\end{verbatim}
+
+\noindent \textbf{Configure journald and rsyslog:}
+\begin{verbatim}
+sudo systemctl enable systemd-journald                     # Enable journald service
+sudo systemctl start systemd-journald                      # Start journald service
+sudo apt install -y rsyslog                               # Install rsyslog package
+sudo systemctl enable rsyslog                             # Enable rsyslog service
+sudo systemctl start rsyslog                              # Start rsyslog service
+
+sudo tee -a /etc/systemd/journald.conf > /dev/null <<EOF
+ForwardToSyslog=no
+Compress=yes
+Storage=persistent
+EOF
+
+sudo tee -a /etc/rsyslog.d/50-default.conf > /dev/null <<EOF
+\$FileCreateMode 0640
+EOF
+
+sudo chmod 0755 /var/log && \                           # Secure log directory
+sudo chown root:root /var/log
+sudo systemctl restart systemd-journald rsyslog           # Apply logging changes
+\end{verbatim}
+
+\noindent \textbf{Configure AIDE for file integrity:}
+\begin{verbatim}
+sudo apt install -y aide                                   # Install AIDE
+sudo aide --init                                          # Initialize AIDE database
+sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db    # Move initial database
+sudo aide --check                                         # Run integrity check
+sudo crontab - > /dev/null <<EOF
+0 2 * * * /usr/bin/aide --check
+EOF
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized Auditd Configuration:}
+\begin{verbatim}
+- name: Configure auditd service
+  block:
+    - name: Install audit packages
+      apt:
+        name:
+          - auditd
+          - audispd-plugins
+        state: present
+
+    - name: Enable and start auditd
+      service:
+        name: auditd
+        state: started
+        enabled: yes
+
+    - name: Configure kernel auditing parameters
+      lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash audit=1 audit_backlog_limit=8192"'
+
+    - name: Configure auditd settings
+      lineinfile:
+        path: /etc/audit/auditd.conf
+        regexp: '^{{ item.key }}'
+        line: '{{ item.key }} = {{ item.value }}'
+      loop:
+        - { key: max_log_file, value: 8 }
+        - { key: max_log_file_action, value: suspend }
+        - { key: space_left_action, value: single }
+        - { key: admin_space_left_action, value: suspend }
+      notify: restart auditd
+\end{verbatim}
+
+\noindent \textbf{Optimized Logging System Configuration:}
+\begin{verbatim}
+- name: Configure logging system
+  block:
+    - name: Install and enable rsyslog
+      apt:
+        name: rsyslog
+        state: present
+
+    - name: Enable and start logging services
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - systemd-journald
+        - rsyslog
+
+    - name: Configure journald settings
+      lineinfile:
+        path: /etc/systemd/journald.conf
+        regexp: '^#?{{ item.key }}'
+        line: '{{ item.key }}={{ item.value }}'
+      loop:
+        - { key: ForwardToSyslog, value: no }
+        - { key: Compress, value: yes }
+        - { key: Storage, value: persistent }
+
+    - name: Configure rsyslog file permissions
+      lineinfile:
+        path: /etc/rsyslog.d/50-default.conf
+        regexp: '^\$FileCreateMode'
+        line: '$FileCreateMode 0640'
+
+    - name: Secure log directory
+      file:
+        path: /var/log
+        mode: '0755'
+        owner: root
+        group: root
+        recurse: yes
+\end{verbatim}
+
+\noindent \textbf{Optimized AIDE Configuration:}
+\begin{verbatim}
+- name: Configure AIDE file integrity monitoring
+  block:
+    - name: Install AIDE
+      apt:
+        name: aide
+        state: present
+
+    - name: Initialize AIDE database
+      command: aide --init
+      register: aide_init
+      changed_when: false
+
+    - name: Move AIDE database to production location
+      command: mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+      when: aide_init.rc == 0
+
+    - name: Schedule daily AIDE checks
+      cron:
+        name: "AIDE integrity check"
+        minute: "0"
+        hour: "2"
+        job: "/usr/bin/aide --check"
+        user: root
+\end{verbatim}
+
+\section{System Maintenance}
+\subsection{Manual}
+
+\noindent \textbf{Configure critical system file permissions:}
+\begin{verbatim}
+sudo chmod 0644 /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
+sudo chown root:root /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
+sudo chmod 0000 /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
+sudo chown root:shadow /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
+sudo chmod 0600 /etc/security/opasswd
+sudo chown root:root /etc/security/opasswd
+\end{verbatim}
+
+\noindent \textbf{Find and secure world writable files:}
+\begin{verbatim}
+find / -type f -perm -002 \                              # Find world writable files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory  
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+
+find / -type d -perm -002 \                              # Find world writable dirs
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+chmod o-w /etc/passwd /etc/shadow /etc/group \           # Remove world write
+     /etc/gshadow 2>/dev/null || true
+\end{verbatim}
+
+\noindent \textbf{Review SUID/SGID files:}
+\begin{verbatim}
+find / -type f -perm -4000 \                             # Find SUID files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+find / -type f -perm -2000 \                             # Find SGID files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+chmod 0755 /usr/bin/passwd 2>/dev/null || true           # Secure passwd binary
+chmod 0755 /usr/bin/gpasswd 2>/dev/null || true          # Secure gpasswd binary
+chmod 0755 /usr/bin/chsh 2>/dev/null || true             # Secure chsh binary
+\end{verbatim}
+
+\noindent \textbf{Configure home directory permissions:}
+\begin{verbatim}
+find /home -type d -exec chmod 0750 {} \; \              # Set directory permissions
+     2>/dev/null || true
+find /home -type f -exec chmod 0640 {} \; \              # Set file permissions
+     2>/dev/null || true
+chmod 0755 /home 2>/dev/null || true                     # Set home base permission
+\end{verbatim}
+
+\noindent \textbf{System integrity checks:}
+\begin{verbatim}
+sudo debsums -c                                          # Check package integrity
+sudo dpkg --audit                                        # Check for broken packages
+sudo apt --fix-broken install                            # Fix broken packages
+sudo apt autoremove                                      # Remove unused packages
+sudo apt autoclean                                       # Clean package cache
+\end{verbatim}
+
+\subsection{Automation}
+
+\noindent \textbf{Optimized System File Permissions:}
+\begin{verbatim}
+- name: Configure critical system file permissions
+  file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - { path: /etc/passwd, mode: '0644', owner: root, group: root }
+    - { path: /etc/passwd-, mode: '0644', owner: root, group: root }
+    - { path: /etc/group, mode: '0644', owner: root, group: root }
+    - { path: /etc/group-, mode: '0644', owner: root, group: root }
+    - { path: /etc/shadow, mode: '0000', owner: root, group: shadow }
+    - { path: /etc/shadow-, mode: '0000', owner: root, group: shadow }
+    - { path: /etc/gshadow, mode: '0000', owner: root, group: shadow }
+    - { path: /etc/gshadow-, mode: '0000', owner: root, group: shadow }
+    - { path: /etc/shells, mode: '0644', owner: root, group: root }
+    - { path: /etc/security/opasswd, mode: '0600', owner: root, group: root }
+\end{verbatim}
+
+\noindent \textbf{Optimized World Writable Files Security:}
+\begin{verbatim}
+- name: Secure world writable files and directories
+  block:
+    - name: Find world writable files
+      shell: |
+        find / -type f -perm -002 \
+        -not -path "/proc/*" \
+        -not -path "/sys/*" \
+        -not -path "/dev/*" \
+        2>/dev/null || true
+      register: world_writable_files
+      changed_when: false
+
+    - name: Display world writable files
+      debug:
+        msg: "World writable files: {{ world_writable_files.stdout_lines }}"
+      when: world_writable_files.stdout_lines is defined
+
+    - name: Find world writable directories
+      shell: |
+        find / -type d -perm -002 \
+        -not -path "/proc/*" \
+        -not -path "/sys/*" \
+        -not -path "/dev/*" \
+        2>/dev/null || true
+      register: world_writable_dirs
+      changed_when: false
+
+    - name: Display world writable directories
+      debug:
+        msg: "World writable directories: {{ world_writable_dirs.stdout_lines }}"
+      when: world_writable_dirs.stdout_lines is defined
+
+    - name: Remove world writable permissions from critical files
+      shell: |
+        for file in /etc/passwd /etc/shadow /etc/group /etc/gshadow; do
+          if [ -f "$file" ]; then
+            chmod o-w "$file" 2>/dev/null || true
+          fi
+        done
+      changed_when: false
+\end{verbatim}
+
+\noindent \textbf{Optimized SUID/SGID Review:}
+\begin{verbatim}
+- name: Review and secure SUID/SGID files
+  block:
+    - name: Find SUID files
+      shell: |
+        find / -type f -perm -4000 \
+        -not -path "/proc/*" \
+        -not -path "/sys/*" \
+        -not -path "/dev/*" \
+        2>/dev/null || true
+      register: suid_files
+      changed_when: false
+
+    - name: Find SGID files
+      shell: |
+        find / -type f -perm -2000 \
+        -not -path "/proc/*" \
+        -not -path "/sys/*" \
+        -not -path "/dev/*" \
+        2>/dev/null || true
+      register: sgid_files
+      changed_when: false
+
+    - name: Secure common SUID binaries
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+      loop:
+        - /usr/bin/passwd
+        - /usr/bin/gpasswd
+        - /usr/bin/chsh
+      ignore_errors: yes
+\end{verbatim}
+
+\noindent \textbf{Optimized System Integrity Maintenance:}
+\begin{verbatim}
+- name: Perform system integrity checks
+  block:
+    - name: Check package integrity
+      command: debsums -c
+      register: debsums_check
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Audit broken packages
+      command: dpkg --audit
+      register: dpkg_audit
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Fix broken packages
+      apt:
+        upgrade: dist
+        fix_broken: yes
+      when: dpkg_audit.rc != 0
+
+    - name: Remove unused packages
+      apt:
+        autoremove: yes
+        purge: yes
+
+    - name: Clean package cache
+      apt:
+        autoclean: yes
+\end{verbatim}
+

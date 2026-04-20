@@ -1,10 +1,8 @@
 \chapter{Tổng quan hệ thống}
 
 \section{Tổng quan CIS}
-\vspace{5pt}
 \noindent \textbf{CIS (Center for Internet Security)} là tổ chức phi lợi nhuận phát triển các tiêu chuẩn bảo mật được công nhận rộng rãi trong ngành công nghệ thông tin. CIS Benchmarks cung cấp các hướng dẫn cấu hình chi tiết để bảo mật hệ thống theo best practices.
 
-\vspace{5pt}
 \noindent \textbf{CIS Ubuntu Linux 24.04 LTS Benchmark v1.0.0} là tài liệu tham chiếu chứa 188 đề xuất cấu hình bảo mật cho Ubuntu Server 24.04 LTS. Các đề xuất được phân loại theo 7 nhóm chính và đánh giá theo 2 trạng thái:
 
 \begin{itemize}
@@ -13,10 +11,8 @@
 \end{itemize}
 
 \section{Tổng quan Linux}
-\vspace{5pt}
 \noindent \textbf{Ubuntu Server 24.04 LTS} là phiên bản Long Term Support mới nhất, cung cấp nền tảng ổn định và an toàn cho môi trường production. Với kernel Linux 6.8 và các cải tiến bảo mật tích hợp, Ubuntu 24.04 LTS là lựa chọn lý tưởng cho triển khai các tiêu chuẩn bảo mật CIS.
 
-\vspace{5pt}
 \noindent \textbf{Kiến trúc bảo mật Linux} bao gồm nhiều lớp bảo vệ từ kernel level đến application level. Việc hardening hệ thống Linux đòi hỏi kiến thức sâu về:
 \begin{itemize}
 \item Kernel modules và filesystem security
@@ -27,7 +23,6 @@
 \end{itemize}
 
 \subsection{Manual Hardening}
-\vspace{5pt}
 \noindent \textbf{Phương pháp manual hardening} đòi hỏi người quản trị thực hiện từng bước kiểm tra và cấu hình thủ công. Mặc dù tốn thời gian hơn, phương pháp này cung cấp sự linh hoạt cao và kiểm soát chi tiết.
 
 \begin{longtable}{|p{0.05\linewidth}|p{0.85\linewidth}|}
@@ -63,7 +58,6 @@
 \end{longtable}
 
 \subsection{Automated Hardening}
-\vspace{5pt}
 \noindent \textbf{Phương pháp automation với Ansible} cho phép thực hiện hàng loạt các kiểm tra và cấu hình bảo mật một cách tự động, nhất quán và có thể tái sử dụng. Ansible cung cấp các module mạnh mẽ để tương tác với hệ thống Linux.
 
 \begin{longtable}{|p{0.05\linewidth}|p{0.75\linewidth}|p{0.1\linewidth}|}

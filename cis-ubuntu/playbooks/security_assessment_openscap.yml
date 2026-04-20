@@ -1,5 +1,4 @@
----
-- name: Security Assessment - Ubuntu Tools
+- name: Security Assessment - OpenSCAP
   hosts: all
   become: yes
   vars_files:
@@ -19,37 +18,57 @@
         update_cache: yes
         cache_valid_time: 3600
         
-    - name: Install security assessment tools
+    - name: Install OpenSCAP scanner
       apt:
         name:
-          - lynis
-          - chkrootkit
-          - rkhunter
-          - wget
-          - unzip
+          - "{{ 'openscap-scanner' if ansible_distribution_version is version('24', '>=') else 'libopenscap8' }}"
+          - python3-openscap
         state: present
         
-    - name: Run Lynis security scan
+    - name: Download ComplianceAsCode SCAP Security Guide content
       shell: |
-        lynis audit system --quick --report-file /tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat
-      register: lynis_scan
+        cd /tmp
+        wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.78/scap-security-guide-0.1.78.zip
+        unzip scap-security-guide-0.1.78.zip
+      register: ssg_download
       failed_when: false
         
-    - name: Debug Lynis output
-      debug:
-        var: lynis_scan.stdout_lines
-      when: lynis_scan.stdout_lines is defined
-        
-    - name: Run chkrootkit scan
+    - name: Run OpenSCAP scan for Ubuntu 22.04
       shell: |
-        chkrootkit > /tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt 2>&1
-      register: chkrootkit_scan
+        cd /tmp/scap-security-guide-0.1.78
+        oscap xccdf eval \
+          --profile xccdf_org.ssgproject.content_profile_cis_level1_server \
+          --results /tmp/result.xml \
+          --report /tmp/report.html \
+          ./ssg-ubuntu2204-ds.xml
+      register: oscap_scan_22
+      when: ansible_distribution_version == "22.04"
       failed_when: false
         
-    - name: Run rkhunter scan
+    - name: Run OpenSCAP scan for Ubuntu 24.04
       shell: |
-        rkhunter --check --sk --reportfile /tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt
-      register: rkhunter_scan
+        cd /tmp/scap-security-guide-0.1.78
+        oscap xccdf eval \
+          --profile xccdf_org.ssgproject.content_profile_cis_level1_server \
+          --results /tmp/result.xml \
+          --report /tmp/report.html \
+          ./ssg-ubuntu2404-ds.xml
+      register: oscap_scan_24
+      when: ansible_distribution_version == "24.04"
+      failed_when: false
+        
+    - name: Copy OpenSCAP XML results to results directory
+      copy:
+        src: "/tmp/result.xml"
+        dest: "{{ results_dir }}/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
+        remote_src: yes
+      failed_when: false
+        
+    - name: Copy OpenSCAP HTML report to results directory
+      copy:
+        src: "/tmp/report.html"
+        dest: "{{ results_dir }}/openscap-report-{{ ansible_date_time.iso8601 }}.html"
+        remote_src: yes
       failed_when: false
         
     - name: Ensure local results directory exists for host
@@ -60,36 +79,33 @@
       delegate_to: localhost
       become: false
         
-    - name: Fetch Lynis report to local
+    - name: Fetch OpenSCAP XML results to local results
       fetch:
-        src: "/tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
-        dest: "{{ results_dir }}/{{ inventory_hostname }}/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
+        src: "{{ results_dir }}/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
         flat: yes
       failed_when: false
         
-    - name: Fetch chkrootkit report to local
+    - name: Fetch OpenSCAP HTML report to local results
       fetch:
-        src: "/tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
-        dest: "{{ results_dir }}/{{ inventory_hostname }}/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
+        src: "{{ results_dir }}/openscap-report-{{ ansible_date_time.iso8601 }}.html"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/openscap-report-{{ ansible_date_time.iso8601 }}.html"
         flat: yes
       failed_when: false
         
-    - name: Fetch rkhunter report to local
-      fetch:
-        src: "/tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"
-        dest: "{{ results_dir }}/{{ inventory_hostname }}/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"
-        flat: yes
-      failed_when: false
-      
-    - name: Display security scan status
+    - name: Display OpenSCAP scan status
       debug:
-        msg: "Security scans completed. Results saved to {{ results_dir }}/"
+        msg: "OpenSCAP scan completed. Results saved to {{ results_dir }}/"
       
     - name: Clean up temporary files
       file:
         path: "{{ item }}"
         state: absent
       loop:
-        - "/tmp/lynis-report-{{ ansible_date_time.iso8601 }}.dat"
-        - "/tmp/chkrootkit-report-{{ ansible_date_time.iso8601 }}.txt"
-        - "/tmp/rkhunter-report-{{ ansible_date_time.iso8601 }}.txt"
+        - "/tmp/result.xml"
+        - "/tmp/report.html"
+        - "/tmp/scap-security-guide-0.1.78.zip"
+        - "/tmp/scap-security-guide-0.1.78"
+        - "{{ results_dir }}/openscap-results-{{ ansible_date_time.iso8601 }}.xml"
+        - "{{ results_dir }}/openscap-report-{{ ansible_date_time.iso8601 }}.html"
+      failed_when: false
