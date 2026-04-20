@@ -45,10 +45,7 @@
       tags: critical,important
 
   handlers:
-    - name: Import phase1 handlers
-      include_tasks: ../roles/phase1_initial_setup/handlers/main.yml
-    - name: Import phase2 handlers  
-      include_tasks: ../roles/phase2_services/handlers/main.yml
-    - name: Import phase6 handlers
-      include_tasks: ../roles/phase6_logging_auditing/handlers/main.yml
+    - import_tasks: ../roles/phase1_initial_setup/handlers/main.yml
+    - import_tasks: ../roles/phase2_services/handlers/main.yml
+    - import_tasks: ../roles/phase6_logging_auditing/handlers/main.yml
     

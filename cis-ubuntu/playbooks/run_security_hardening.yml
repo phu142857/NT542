@@ -1,0 +1,96 @@
+---
+- name: Complete Security Hardening Pipeline
+  hosts: all
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  vars:
+    results_dir: "../results"
+    
+  tasks:
+    - name: Ensure results directory exists
+      file:
+        path: "{{ results_dir }}"
+        state: directory
+        mode: '0755'
+        
+    - name: Display security hardening phase
+      debug:
+        msg: "Starting Complete Security Hardening Pipeline for {{ inventory_hostname }}"
+        
+    - name: Run Password Policies Hardening
+      include_tasks: ../playbooks/security_hardening_password_policies.yml
+      vars:
+        results_dir: "{{ results_dir }}"
+        
+    - name: Run Filesystem & AIDE Hardening
+      include_tasks: ../playbooks/security_hardening_filesystem.yml
+      vars:
+        results_dir: "{{ results_dir }}"
+        
+    - name: Run SSH Security Hardening
+      include_tasks: ../playbooks/security_hardening_ssh.yml
+      vars:
+        results_dir: "{{ results_dir }}"
+        
+    - name: Run System Services Hardening
+      include_tasks: ../playbooks/security_hardening_system.yml
+      vars:
+        results_dir: "{{ results_dir }}"
+        
+    - name: Generate comprehensive hardening summary
+      shell: |
+        echo "=== Complete Security Hardening Summary ===" > /tmp/hardening-summary.txt
+        echo "Generated: $(date)" >> /tmp/hardening-summary.txt
+        echo "Host: $(hostname)" >> /tmp/hardening-summary.txt
+        echo "IP Address: $(hostname -I | awk '{print $1}')" >> /tmp/hardening-summary.txt
+        echo "" >> /tmp/hardening-summary.txt
+        
+        echo "=== Hardening Phases Completed ===" >> /tmp/hardening-summary.txt
+        echo "1. Password Policies - PAM configuration, faillock, password quality" >> /tmp/hardening-summary.txt
+        echo "2. Filesystem Security - AIDE integrity monitoring, /tmp partition check" >> /tmp/hardening-summary.txt
+        echo "3. SSH Security - Configuration hardening, banner, key permissions" >> /tmp/hardening-summary.txt
+        echo "4. System Services - Remove unnecessary services, auditd, kernel parameters" >> /tmp/hardening-summary.txt
+        echo "" >> /tmp/hardening-summary.txt
+        
+        echo "=== Key Security Improvements ===" >> /tmp/hardening-summary.txt
+        echo "Password History: Enabled (remember 5 passwords)" >> /tmp/hardening-summary.txt
+        echo "Account Lockout: Enabled (4 attempts, 15 min lockout)" >> /tmp/hardening-summary.txt
+        echo "Password Complexity: Minimum 14 chars, 3 character classes" >> /tmp/hardening-summary.txt
+        echo "SSH Security: Root login disabled, max 3 auth attempts" >> /tmp/hardening-summary.txt
+        echo "File Integrity: AIDE monitoring initialized" >> /tmp/hardening-summary.txt
+        echo "Audit Logging: Comprehensive audit rules configured" >> /tmp/hardening-summary.txt
+        echo "Network Security: Unnecessary services removed" >> /tmp/hardening-summary.txt
+        echo "Kernel Hardening: Security parameters applied" >> /tmp/hardening-summary.txt
+        echo "" >> /tmp/hardening-summary.txt
+        
+        echo "=== Files Generated ===" >> /tmp/hardening-summary.txt
+        ls -la {{ results_dir }}/ | grep "$(date +%Y-%m-%d)" >> /tmp/hardening-summary.txt 2>/dev/null || echo "No report files found" >> /tmp/hardening-summary.txt
+        echo "" >> /tmp/hardening-summary.txt
+        
+        echo "=== Next Steps ===" >> /tmp/hardening-summary.txt
+        echo "1. Review all generated reports" >> /tmp/hardening-summary.txt
+        echo "2. Run OpenSCAP scan to verify improvements" >> /tmp/hardening-summary.txt
+        echo "3. Test SSH connectivity before closing session" >> /tmp/hardening-summary.txt
+        echo "4. Monitor system behavior after hardening" >> /tmp/hardening-summary.txt
+        echo "5. Schedule regular AIDE integrity checks" >> /tmp/hardening-summary.txt
+        
+      register: summary_report
+        
+    - name: Ensure local results directory exists for host
+      file:
+        path: "{{ results_dir }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: false
+        
+    - name: Fetch hardening summary to local
+      fetch:
+        src: "/tmp/hardening-summary.txt"
+        dest: "{{ results_dir }}/{{ inventory_hostname }}/hardening-summary-{{ ansible_date_time.iso8601 }}.txt"
+        flat: yes
+        
+    - name: Display completion status
+      debug:
+        msg: "Complete security hardening pipeline finished for {{ inventory_hostname }}. All reports saved to {{ results_dir }}/{{ inventory_hostname }}/"

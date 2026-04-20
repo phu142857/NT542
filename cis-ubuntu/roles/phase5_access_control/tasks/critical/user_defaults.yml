@@ -112,7 +112,14 @@
     msg: "Locked accounts: {{ locked_accounts.stdout_lines }}"
   when: locked_accounts.stdout_lines is defined
 
-- name: Set password expiry for s1 user
+- name: Set password expiry for s1 user (Ubuntu 22.04)
   shell: |
     chage -M 90 -W 14 -m 7 s1
+  when: ansible_distribution_version == "22.04"
+  ignore_errors: yes
+
+- name: Set password expiry for s2 user (Ubuntu 24.04)
+  shell: |
+    chage -M 90 -W 14 -m 7 s2
+  when: ansible_distribution_version == "24.04"
   ignore_errors: yes
