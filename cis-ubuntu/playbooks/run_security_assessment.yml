@@ -10,7 +10,8 @@
   tasks:
     - name: Clean up old temporary files and directories (raw)
       raw: |
-        # Force cleanup everything in /tmp
+        # Force cleanup everything in /tmpHiện thêm
+
         rm -rf /tmp/* || true
         echo "Force cleanup completed"
         
