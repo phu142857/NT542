@@ -42,6 +42,7 @@
     - ypserv
     - rshd
     - rlogind
+  when: ansible_facts.services[item] is defined
   ignore_errors: yes
 
 - name: Configure kernel security parameters

@@ -58,9 +58,14 @@
     creates: /var/lib/aide/aide.db.new
   register: aide_init
 
+- name: Check if AIDE database was created
+  stat:
+    path: /var/lib/aide/aide.db.new
+  register: aide_db_new
+
 - name: Move AIDE database to active location
   shell: mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
-  when: aide_init.changed
+  when: aide_db_new.stat.exists
 
 - name: Ensure filesystem integrity is regularly checked
   cron:

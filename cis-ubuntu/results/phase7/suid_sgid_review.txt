@@ -1,7 +1,7 @@
 SUID Files Review:
 -rwsr-xr-- 1 root messagebus 34960 Aug  9  2024 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 -rwsr-xr-x 1 root root 342632 Mar  4 17:55 /usr/lib/openssh/ssh-keysign
--rwsr-xr-x 1 root root 18736 Apr 10 10:57 /usr/lib/polkit-1/polkit-agent-helper-1
+-rwsr-xr-x 1 root root 18736 Dec  2  2024 /usr/lib/polkit-1/polkit-agent-helper-1
 -rwsr-xr-x 1 root root 10232 Apr  3  2018 /usr/sbin/pam-tmpdir-helper
 -rwsr-xr-x 1 root root 64152 May 30  2024 /usr/bin/passwd
 -rwsr-xr-x 1 root root 39296 Apr  8  2024 /usr/bin/fusermount3
@@ -26,4 +26,4 @@ SGID Files Review:
 -rwxr-sr-x 1 root mail 22680 Apr  8  2024 /usr/bin/dotlockfile
 -rwxr-sr-x 1 root shadow 72184 May 30  2024 /usr/bin/chage
 
-Generated: 2026-04-20T07:21:29Z
+Generated: 2026-04-22T05:28:48Z
