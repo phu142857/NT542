@@ -18,19 +18,26 @@
         update_cache: yes
         cache_valid_time: 3600
         
-    - name: Install OpenSCAP scanner
+    - name: Install OpenSCAP scanner + Unzip
       apt:
         name:
           - "{{ 'openscap-scanner' if ansible_distribution_version is version('24', '>=') else 'libopenscap8' }}"
           - python3-openscap
+          - unzip
         state: present
         
+    - name: Check if SCAP Security Guide already exists
+      stat:
+        path: /tmp/scap-security-guide-0.1.78/ssg-ubuntu2204-ds.xml
+      register: ssg_exists
+      
     - name: Download ComplianceAsCode SCAP Security Guide content
       shell: |
         cd /tmp
         wget https://github.com/ComplianceAsCode/content/releases/download/v0.1.78/scap-security-guide-0.1.78.zip
         unzip scap-security-guide-0.1.78.zip
       register: ssg_download
+      when: not ssg_exists.stat.exists
       failed_when: false
         
     - name: Run OpenSCAP scan for Ubuntu 22.04
@@ -44,6 +51,7 @@
       register: oscap_scan_22
       when: ansible_distribution_version == "22.04"
       failed_when: false
+      tags: scan
         
     - name: Run OpenSCAP scan for Ubuntu 24.04
       shell: |
@@ -56,6 +64,7 @@
       register: oscap_scan_24
       when: ansible_distribution_version == "24.04"
       failed_when: false
+      tags: scan
         
     - name: Copy OpenSCAP XML results to results directory
       copy:
