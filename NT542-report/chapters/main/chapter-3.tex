@@ -129,8 +129,9 @@ Worker 2 & Ubuntu 24.04 & 192.168.1.12 &
 \label{fig:automated_security_model}
 \end{figure}
 
-\section{Initial Setup}
-\subsection{Manual}
+\section{Manual}
+
+\subsection{Initial Setup}
 
 \noindent \textbf{Cài đặt các gói bảo mật cơ bản:}
 \begin{verbatim}
@@ -187,7 +188,403 @@ EOF
 sudo systemctl restart sshd                              # Restart SSH service
 \end{verbatim}
 
-\subsection{Automation}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Hệ thống được cập nhật với các bản vá bảo mật mới nhất
+\item AppArmor được kích hoạt và enforce tất cả profiles
+\item Các thư mục tạm thời (/tmp, /dev/shm, /var/tmp) được bảo vệ với các tùy chọn bảo mật
+\item Login banners hiển thị cảnh báo bảo mật khi người dùng đăng nhập
+\item Các gói bảo mật cơ bản được cài đặt và sẵn sàng cấu hình
+\end{itemize}
+
+\subsection{Services Configuration}
+
+\noindent \textbf{Disable unnecessary services:}
+\begin{verbatim}
+sudo systemctl stop telnet.socket telnet \               # Disable telnet services
+sudo systemctl disable telnet.socket telnet
+sudo systemctl stop rsh.socket rsh \                     # Disable rsh services
+sudo systemctl disable rsh.socket rsh
+sudo systemctl stop rlogin.socket rlogin \               # Disable rlogin services
+sudo systemctl disable rlogin.socket rlogin
+sudo systemctl stop ypbind && \                          # Disable NIS service
+sudo systemctl disable ypbind
+sudo systemctl stop tftp.socket tftp \                   # Disable tftp services
+sudo systemctl disable tftp.socket tftp
+sudo systemctl stop isc-dhcp-server && \                 # Disable DHCP server
+sudo systemctl disable isc-dhcp-server
+sudo systemctl stop slapd && \                           # Disable OpenLDAP
+sudo systemctl disable slapd
+sudo systemctl stop apache2 && \                         # Disable Apache web server
+sudo systemctl disable apache2
+sudo systemctl stop nfs-server && \                      # Disable NFS server
+sudo systemctl disable nfs-server
+sudo systemctl stop rpcbind && \                         # Disable RPC service
+sudo systemctl disable rpcbind
+sudo systemctl stop cups && \                            # Disable printing service
+sudo systemctl disable cups
+sudo systemctl stop avahi-daemon && \                    # Disable mDNS responder
+sudo systemctl disable avahi-daemon
+sudo systemctl stop bluetooth && \                       # Disable Bluetooth service
+sudo systemctl disable bluetooth
+\end{verbatim}
+
+\noindent \textbf{Configure fail2ban for intrusion prevention:}
+\begin{verbatim}
+sudo apt install -y fail2ban                             # Install fail2ban
+sudo systemctl enable fail2ban                           # Enable fail2ban boot
+sudo systemctl start fail2ban                            # Start fail2ban service
+
+cat << EOF | sudo tee /etc/fail2ban/jail.local           # Configure fail2ban
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 3
+
+[sshd]
+enabled = true
+port = ssh
+logpath = /var/log/auth.log
+maxretry = 3
+EOF
+
+sudo systemctl restart fail2ban                          # Apply configuration
+\end{verbatim}
+
+\noindent \textbf{Configure time synchronization:}
+\begin{verbatim}
+sudo apt install -y ntp                                  # Install NTP service
+sudo systemctl enable ntp                                # Enable NTP boot
+sudo systemctl start ntp                                 # Start NTP service
+sudo timedatectl set-ntp true                            # Enable system time sync
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Các dịch vụ không cần thiết (telnet, rsh, rlogin, etc.) được vô hiệu hóa hoàn toàn
+\item Fail2ban được cấu hình để bảo vệ SSH khỏi tấn công brute-force
+\item Hệ thống được đồng bộ thời gian với NTP server
+\item Chỉ các dịch vụ cần thiết cho hoạt động được kích hoạt
+\item Giảm thiểu bề mặt tấn công (attack surface) của hệ thống
+\end{itemize}
+
+\subsection{Network Security}
+
+\noindent \textbf{Configure network kernel parameters:}
+\begin{verbatim}
+sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
+net.ipv4.ip_forward = 0
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.secure_redirects = 0
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.tcp_syncookies = 1
+net.ipv6.conf.all.accept_ra = 0
+EOF
+
+sudo sysctl -p /etc/sysctl.d/99-cis.conf                    # Apply all settings
+\end{verbatim}
+
+\noindent \textbf{Disable wireless services:}
+\begin{verbatim}
+sudo systemctl stop wpa_supplicant                     # Stop wireless service
+sudo systemctl disable wpa_supplicant                  # Disable wireless boot
+sudo systemctl stop NetworkManager                     # Stop NetworkManager
+sudo systemctl disable NetworkManager                  # Disable NetworkManager boot
+\end{verbatim}
+
+\noindent \textbf{Configure IPv6 status:}
+\begin{verbatim}
+sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+EOF
+
+sudo sysctl -p /etc/sysctl.d/99-cis.conf              # Apply IPv6 settings
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Các tham số kernel mạng được cấu hình theo tiêu chuẩn bảo mật CIS
+\item IP forwarding bị vô hiệu hóa để ngăn chặn router functionality
+\item ICMP redirects và source routes bị chặn để chống lại spoofing attacks
+\item IPv6 được vô hiệu hóa nếu không sử dụng
+\item Các dịch vụ wireless không cần thiết được vô hiệu hóa
+\item TCP SYN cookies được kích hoạt để chống lại SYN flood attacks
+\end{itemize}
+
+\subsection{Firewall Configuration}
+
+\noindent \textbf{Configure UFW firewall:}
+\begin{verbatim}
+sudo apt install -y ufw                                    # Install UFW firewall
+sudo apt remove --purge iptables-persistent                # Remove conflicting firewall
+sudo ufw enable                                            # Enable firewall
+sudo ufw default deny incoming                             # Default deny inbound
+sudo ufw default allow outgoing                            # Default allow outbound
+sudo ufw allow in on lo                                    # Allow loopback traffic
+sudo ufw allow 22/tcp                                      # Allow SSH access
+sudo ufw allow 80/tcp                                      # Allow HTTP (if needed)
+sudo ufw allow 443/tcp                                     # Allow HTTPS (if needed)
+sudo ufw status verbose                                    # Check firewall status
+\end{verbatim}
+
+\noindent \textbf{Configure firewall logging:}
+\begin{verbatim}
+sudo ufw logging on                                       # Enable firewall logging
+sudo ufw logging medium                                   # Set log level to medium
+sudo tail -f /var/log/ufw.log                             # Monitor firewall logs
+\end{verbatim}
+
+\noindent \textbf{Advanced firewall rules:}
+\begin{verbatim}
+sudo ufw deny 23/tcp                                      # Block telnet
+sudo ufw deny 135/tcp                                     # Block RPC
+sudo ufw deny 139/tcp                                     # Block NetBIOS
+sudo ufw deny 445/tcp                                     # Block SMB
+sudo ufw deny 1433/tcp                                    # Block SQL Server
+sudo ufw deny 3389/tcp                                    # Block RDP
+sudo ufw reload                                           # Apply all rules
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item UFW firewall được kích hoạt và bảo vệ hệ thống
+\item Policy mặc định: deny inbound, allow outbound
+\item Các cổng nguy hiểm (telnet, RPC, NetBIOS, etc.) bị chặn
+\item Chỉ các cổng cần thiết (SSH, HTTP, HTTPS) được cho phép
+\item Logging được kích hoạt để monitor và audit traffic
+\item Loopback traffic được cho phép cho các dịch vụ nội bộ
+\end{itemize}
+
+\subsection{Access Control}
+
+\noindent \textbf{SSH Security Hardening:}
+\begin{verbatim}
+sudo chmod 600 /etc/ssh/sshd_config                         # Secure SSH config
+sudo chmod 600 /etc/ssh/ssh_host_*_key                      # Secure private keys
+sudo chmod 644 /etc/ssh/ssh_host_*_key.pub                  # Secure public keys
+
+sudo tee -a /etc/ssh/sshd_config > /dev/null <<EOF
+PermitEmptyPasswords no
+PermitRootLogin no
+MaxAuthTries 3
+MaxSessions 3
+HostbasedAuthentication no
+GSSAPIAuthentication no
+ClientAliveInterval 300
+ClientAliveCountMax 0
+EOF
+
+sudo systemctl restart sshd                                  # Apply SSH changes
+\end{verbatim}
+
+\noindent \textbf{Configure PAM Password Quality:}
+\begin{verbatim}
+sudo apt install -y libpam-pwquality                        # Install password quality
+
+sudo tee -a /etc/pam.d/common-password > /dev/null <<EOF
+password requisite pam_pwquality.so retry=3 \
+minlen=8 
+ucredit=-1 
+lcredit=-1 
+dcredit=-1 
+ocredit=-1
+EOF
+
+sudo tee -a /etc/security/pwquality.conf > /dev/null <<EOF
+minlen=8
+ucredit=-1
+lcredit=-1
+dcredit=-1
+ocredit=-1
+EOF
+\end{verbatim}
+
+\noindent \textbf{Configure SUDO Security:}
+\begin{verbatim}
+sudo tee -a /etc/sudoers.d/security > /dev/null <<EOF
+Defaults timestamp_timeout=15
+Defaults passwd_tries=3
+Defaults use_pty
+Defaults log_input, log_output
+EOF
+
+sudo chmod 440 /etc/sudoers.d/security                        # Secure sudoers file
+\end{verbatim}
+
+\noindent \textbf{Configure User Defaults:}
+\begin{verbatim}
+sudo tee -a /etc/login.defs > /dev/null <<EOF
+UMASK 077
+PASS_MAX_DAYS 90
+PASS_MIN_DAYS 1
+PASS_WARN_AGE 7
+LOGIN_RETRIES 5
+LOGIN_TIMEOUT 60
+EOF
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item SSH được hardening với các thiết lập bảo mật tối đa
+\item Root login bị vô hiệu hóa, chỉ cho phép SSH key authentication
+\item Password quality enforcement được áp dụng với các yêu cầu phức tạp
+\item Sudo được cấu hình với logging và timeout hợp lý
+\item User defaults được cấu hình với các chính sách bảo mật chặt chẽ
+\item Các file SSH keys được bảo vệ với permissions phù hợp
+\end{itemize}
+
+\subsection{Logging \& Auditing}
+
+\noindent \textbf{Configure auditd service:}
+\begin{verbatim}
+sudo apt install -y auditd audispd-plugins                # Install audit packages
+sudo systemctl enable auditd                             # Enable auditd boot
+sudo systemctl start auditd                              # Start auditd service
+sudo tee /etc/default/grub.d/99-audit.cfg > /dev/null <<EOF
+quiet splash audit=1 audit_backlog_limit=8192
+EOF
+sudo update-grub                                         # Update bootloader
+\end{verbatim}
+
+\noindent \textbf{Configure auditd settings:}
+\begin{verbatim}
+sudo tee -a /etc/audit/auditd.conf > /dev/null <<EOF
+max_log_file = 8
+max_log_file_action = suspend
+space_left_action = single
+admin_space_left_action = suspend
+EOF
+
+sudo systemctl restart auditd                            # Apply auditd changes
+\end{verbatim}
+
+\noindent \textbf{Configure journald and rsyslog:}
+\begin{verbatim}
+sudo systemctl enable systemd-journald                     # Enable journald service
+sudo systemctl start systemd-journald                      # Start journald service
+sudo apt install -y rsyslog                               # Install rsyslog package
+sudo systemctl enable rsyslog                             # Enable rsyslog service
+sudo systemctl start rsyslog                              # Start rsyslog service
+
+sudo tee -a /etc/systemd/journald.conf > /dev/null <<EOF
+ForwardToSyslog=no
+Compress=yes
+Storage=persistent
+EOF
+
+sudo tee -a /etc/rsyslog.d/50-default.conf > /dev/null <<EOF
+\$FileCreateMode 0640
+EOF
+
+sudo chmod 0755 /var/log && \                           # Secure log directory
+sudo chown root:root /var/log
+sudo systemctl restart systemd-journald rsyslog           # Apply logging changes
+\end{verbatim}
+
+\noindent \textbf{Configure AIDE for file integrity:}
+\begin{verbatim}
+sudo apt install -y aide                                   # Install AIDE
+sudo aide --init                                          # Initialize AIDE database
+sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db    # Move initial database
+sudo aide --check                                         # Run integrity check
+sudo crontab - > /dev/null <<EOF
+0 2 * * * /usr/bin/aide --check
+EOF
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Auditd được kích hoạt và cấu hình để monitor system events
+\item Logging system được thiết lập với persistent storage và appropriate permissions
+\item AIDE database được khởi tạo để monitor file integrity
+\item Daily integrity checks được schedule để phát hiện thay đổi bất thường
+\item Log files được bảo vệ với permissions phù hợp
+\item System events được ghi lại để phục vụ cho forensic analysis
+\end{itemize}
+
+\subsection{System Maintenance}
+
+\noindent \textbf{Configure critical system file permissions:}
+\begin{verbatim}
+sudo chmod 0644 /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
+sudo chown root:root /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
+sudo chmod 0000 /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
+sudo chown root:shadow /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
+sudo chmod 0600 /etc/security/opasswd
+sudo chown root:root /etc/security/opasswd
+\end{verbatim}
+
+\noindent \textbf{Find and secure world writable files:}
+\begin{verbatim}
+find / -type f -perm -002 \                              # Find world writable files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory  
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+
+find / -type d -perm -002 \                              # Find world writable dirs
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+chmod o-w /etc/passwd /etc/shadow /etc/group \           # Remove world write
+     /etc/gshadow 2>/dev/null || true
+\end{verbatim}
+
+\noindent \textbf{Review SUID/SGID files:}
+\begin{verbatim}
+find / -type f -perm -4000 \                             # Find SUID files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+find / -type f -perm -2000 \                             # Find SGID files
+     -not -path "/proc/*" \                              # Exclude /proc directory
+     -not -path "/sys/*" \                               # Exclude /sys directory
+     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
+     
+chmod 0755 /usr/bin/passwd 2>/dev/null || true           # Secure passwd binary
+chmod 0755 /usr/bin/gpasswd 2>/dev/null || true          # Secure gpasswd binary
+chmod 0755 /usr/bin/chsh 2>/dev/null || true             # Secure chsh binary
+\end{verbatim}
+
+\noindent \textbf{Configure home directory permissions:}
+\begin{verbatim}
+find /home -type d -exec chmod 0750 {} \; \              # Set directory permissions
+     2>/dev/null || true
+find /home -type f -exec chmod 0640 {} \; \              # Set file permissions
+     2>/dev/null || true
+chmod 0755 /home 2>/dev/null || true                     # Set home base permission
+\end{verbatim}
+
+\noindent \textbf{System integrity checks:}
+\begin{verbatim}
+sudo debsums -c                                          # Check package integrity
+sudo dpkg --audit                                        # Check for broken packages
+sudo apt --fix-broken install                            # Fix broken packages
+sudo apt autoremove                                      # Remove unused packages
+sudo apt autoclean                                       # Clean package cache
+\end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Các file hệ thống quan trọng được bảo vệ với permissions phù hợp
+\item World writable files và directories được xác định và secured
+\item SUID/SGID files được review và chỉ giữ lại những file cần thiết
+\item Home directories được cấu hình với permissions an toàn
+\item Package integrity được kiểm tra và các broken packages được fix
+\item System được dọn dẹp với unused packages và cache removal
+\item File system permissions tuân thủ theo tiêu chuẩn bảo mật
+\end{itemize}
+
+\section{Automation}
+
+\subsection{Initial Setup Automation}
 
 \noindent \textbf{Optimized AppArmor Configuration:}
 \begin{verbatim}
@@ -272,70 +669,17 @@ sudo systemctl restart sshd                              # Restart SSH service
       notify: restart sshd
 \end{verbatim}
 
-\section{Services}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item AppArmor được tự động cài đặt và cấu hình với enforce mode
+\item Filesystem security được áp dụng một cách nhất quán trên tất cả systems
+\item Login banners được triển khai đồng bộ với nội dung thống nhất
+\item Quá trình automation đảm bảo consistency và repeatability
+\item Các tasks được thực hiện với error handling và appropriate logging
+\item Configuration drift được ngăn chặn thông qua standardized automation
+\end{itemize}
 
-\noindent \textbf{Disable unnecessary services:}
-\begin{verbatim}
-sudo systemctl stop telnet.socket telnet \               # Disable telnet services
-sudo systemctl disable telnet.socket telnet
-sudo systemctl stop rsh.socket rsh \                     # Disable rsh services
-sudo systemctl disable rsh.socket rsh
-sudo systemctl stop rlogin.socket rlogin \               # Disable rlogin services
-sudo systemctl disable rlogin.socket rlogin
-sudo systemctl stop ypbind && \                          # Disable NIS service
-sudo systemctl disable ypbind
-sudo systemctl stop tftp.socket tftp \                   # Disable tftp services
-sudo systemctl disable tftp.socket tftp
-sudo systemctl stop isc-dhcp-server && \                 # Disable DHCP server
-sudo systemctl disable isc-dhcp-server
-sudo systemctl stop slapd && \                           # Disable OpenLDAP
-sudo systemctl disable slapd
-sudo systemctl stop apache2 && \                         # Disable Apache web server
-sudo systemctl disable apache2
-sudo systemctl stop nfs-server && \                      # Disable NFS server
-sudo systemctl disable nfs-server
-sudo systemctl stop rpcbind && \                         # Disable RPC service
-sudo systemctl disable rpcbind
-sudo systemctl stop cups && \                            # Disable printing service
-sudo systemctl disable cups
-sudo systemctl stop avahi-daemon && \                    # Disable mDNS responder
-sudo systemctl disable avahi-daemon
-sudo systemctl stop bluetooth && \                       # Disable Bluetooth service
-sudo systemctl disable bluetooth
-\end{verbatim}
-
-\noindent \textbf{Configure fail2ban for intrusion prevention:}
-\begin{verbatim}
-sudo apt install -y fail2ban                             # Install fail2ban
-sudo systemctl enable fail2ban                           # Enable fail2ban boot
-sudo systemctl start fail2ban                            # Start fail2ban service
-
-cat << EOF | sudo tee /etc/fail2ban/jail.local           # Configure fail2ban
-[DEFAULT]
-bantime = 3600
-findtime = 600
-maxretry = 3
-
-[sshd]
-enabled = true
-port = ssh
-logpath = /var/log/auth.log
-maxretry = 3
-EOF
-
-sudo systemctl restart fail2ban                          # Apply configuration
-\end{verbatim}
-
-\noindent \textbf{Configure time synchronization:}
-\begin{verbatim}
-sudo apt install -y ntp                                  # Install NTP service
-sudo systemctl enable ntp                                # Enable NTP boot
-sudo systemctl start ntp                                 # Start NTP service
-sudo timedatectl set-ntp true                            # Enable system time sync
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{Services Automation}
 
 \noindent \textbf{Optimized Service Management:}
 \begin{verbatim}
@@ -416,47 +760,17 @@ sudo timedatectl set-ntp true                            # Enable system time sy
       changed_when: false
 \end{verbatim}
 
-\section{Network}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Các dịch vụ không cần thiết được tự động vô hiệu hóa trên toàn bộ infrastructure
+\item Fail2ban được triển khai với configuration chuẩn hóa
+\item Time synchronization được đảm bảo trên tất cả systems
+\item Service management được thực hiện với proper error handling
+\item Automation đảm bảo consistency across multiple environments
+\item Các services được monitor và maintained trong desired state
+\end{itemize}
 
-\noindent \textbf{Configure network kernel parameters:}
-\begin{verbatim}
-sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
-net.ipv4.ip_forward = 0
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.icmp_ignore_bogus_error_responses = 1
-net.ipv4.icmp_echo_ignore_broadcasts = 1
-net.ipv4.conf.all.accept_redirects = 0
-net.ipv4.conf.all.secure_redirects = 0
-net.ipv4.conf.all.rp_filter = 1
-net.ipv4.conf.all.accept_source_route = 0
-net.ipv4.conf.all.log_martians = 1
-net.ipv4.tcp_syncookies = 1
-net.ipv6.conf.all.accept_ra = 0
-EOF
-
-sudo sysctl -p /etc/sysctl.d/99-cis.conf                    # Apply all settings
-\end{verbatim}
-
-\noindent \textbf{Disable wireless services:}
-\begin{verbatim}
-sudo systemctl stop wpa_supplicant                     # Stop wireless service
-sudo systemctl disable wpa_supplicant                  # Disable wireless boot
-sudo systemctl stop NetworkManager                     # Stop NetworkManager
-sudo systemctl disable NetworkManager                  # Disable NetworkManager boot
-\end{verbatim}
-
-\noindent \textbf{Configure IPv6 status:}
-\begin{verbatim}
-sudo tee -a /etc/sysctl.d/99-cis.conf > /dev/null <<EOF
-net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.default.disable_ipv6 = 1
-EOF
-
-sudo sysctl -p /etc/sysctl.d/99-cis.conf              # Apply IPv6 settings
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{Network Security Automation}
 
 \noindent \textbf{Optimized Network Parameters Configuration:}
 \begin{verbatim}
@@ -511,42 +825,17 @@ sudo sysctl -p /etc/sysctl.d/99-cis.conf              # Apply IPv6 settings
     - net.ipv6.conf.default.disable_ipv6
 \end{verbatim}
 
-\section{Firewall}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Network security parameters được áp dụng một cách nhất quán
+\item IPv6 được quản lý centralized thông qua automation
+\item Wireless services được vô hiệu hóa tự động khi không cần thiết
+\item Sysctl configuration được version controlled và auditable
+\item Network hardening được thực hiện với minimal manual intervention
+\item Changes được tracked và rollback capability được đảm bảo
+\end{itemize}
 
-\noindent \textbf{Configure UFW firewall:}
-\begin{verbatim}
-sudo apt install -y ufw                                    # Install UFW firewall
-sudo apt remove --purge iptables-persistent                # Remove conflicting firewall
-sudo ufw enable                                            # Enable firewall
-sudo ufw default deny incoming                             # Default deny inbound
-sudo ufw default allow outgoing                            # Default allow outbound
-sudo ufw allow in on lo                                    # Allow loopback traffic
-sudo ufw allow 22/tcp                                      # Allow SSH access
-sudo ufw allow 80/tcp                                      # Allow HTTP (if needed)
-sudo ufw allow 443/tcp                                     # Allow HTTPS (if needed)
-sudo ufw status verbose                                    # Check firewall status
-\end{verbatim}
-
-\noindent \textbf{Configure firewall logging:}
-\begin{verbatim}
-sudo ufw logging on                                       # Enable firewall logging
-sudo ufw logging medium                                   # Set log level to medium
-sudo tail -f /var/log/ufw.log                             # Monitor firewall logs
-\end{verbatim}
-
-\noindent \textbf{Advanced firewall rules:}
-\begin{verbatim}
-sudo ufw deny 23/tcp                                      # Block telnet
-sudo ufw deny 135/tcp                                     # Block RPC
-sudo ufw deny 139/tcp                                     # Block NetBIOS
-sudo ufw deny 445/tcp                                     # Block SMB
-sudo ufw deny 1433/tcp                                    # Block SQL Server
-sudo ufw deny 3389/tcp                                    # Block RDP
-sudo ufw reload                                           # Apply all rules
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{Firewall Automation}
 
 \noindent \textbf{Optimized UFW Firewall Configuration:}
 \begin{verbatim}
@@ -611,76 +900,17 @@ sudo ufw reload                                           # Apply all rules
       notify: restart ufw
 \end{verbatim}
 
-\section{Access Control}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item UFW firewall được tự động cấu hình với standardized rules
+\item Firewall policies được áp dụng consistent across environments
+\item Logging được kích hoạt với appropriate log levels
+\item Rules được managed through code (Infrastructure as Code)
+\item Changes được tracked và audit trail được maintained
+\item Firewall configuration được version controlled và testable
+\end{itemize}
 
-\noindent \textbf{SSH Security Hardening:}
-\begin{verbatim}
-sudo chmod 600 /etc/ssh/sshd_config                         # Secure SSH config
-sudo chmod 600 /etc/ssh/ssh_host_*_key                      # Secure private keys
-sudo chmod 644 /etc/ssh/ssh_host_*_key.pub                  # Secure public keys
-
-sudo tee -a /etc/ssh/sshd_config > /dev/null <<EOF
-PermitEmptyPasswords no
-PermitRootLogin no
-MaxAuthTries 3
-MaxSessions 3
-HostbasedAuthentication no
-GSSAPIAuthentication no
-ClientAliveInterval 300
-ClientAliveCountMax 0
-EOF
-
-sudo systemctl restart sshd                                  # Apply SSH changes
-\end{verbatim}
-
-\noindent \textbf{Configure PAM Password Quality:}
-\begin{verbatim}
-sudo apt install -y libpam-pwquality                        # Install password quality
-
-sudo tee -a /etc/pam.d/common-password > /dev/null <<EOF
-password requisite pam_pwquality.so retry=3 \
-minlen=8 
-ucredit=-1 
-lcredit=-1 
-dcredit=-1 
-ocredit=-1
-EOF
-
-sudo tee -a /etc/security/pwquality.conf > /dev/null <<EOF
-minlen=8
-ucredit=-1
-lcredit=-1
-dcredit=-1
-ocredit=-1
-EOF
-\end{verbatim}
-
-\noindent \textbf{Configure SUDO Security:}
-\begin{verbatim}
-sudo tee -a /etc/sudoers.d/security > /dev/null <<EOF
-Defaults timestamp_timeout=15
-Defaults passwd_tries=3
-Defaults use_pty
-Defaults log_input, log_output
-EOF
-
-sudo chmod 440 /etc/sudoers.d/security                        # Secure sudoers file
-\end{verbatim}
-
-\noindent \textbf{Configure User Defaults:}
-\begin{verbatim}
-sudo tee -a /etc/login.defs > /dev/null <<EOF
-UMASK 077
-PASS_MAX_DAYS 90
-PASS_MIN_DAYS 1
-PASS_WARN_AGE 7
-LOGIN_RETRIES 5
-LOGIN_TIMEOUT 60
-EOF
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{Access Control Automation}
 
 \noindent \textbf{Optimized SSH Security Configuration:}
 \begin{verbatim}
@@ -777,67 +1007,17 @@ EOF
     - "LOGIN_TIMEOUT 60"
 \end{verbatim}
 
-\section{Logging \& Auditing}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item SSH security được tự động hardening với consistent configuration
+\item Password policies được áp dụng standardized across all users
+\item Sudo configuration được managed centrally với proper logging
+\item User defaults được cấu hình với security-first approach
+\item Access control policies được enforced through automation
+\item Configuration drift được eliminated và compliance được đảm bảo
+\end{itemize}
 
-\noindent \textbf{Configure auditd service:}
-\begin{verbatim}
-sudo apt install -y auditd audispd-plugins                # Install audit packages
-sudo systemctl enable auditd                             # Enable auditd boot
-sudo systemctl start auditd                              # Start auditd service
-sudo tee /etc/default/grub.d/99-audit.cfg > /dev/null <<EOF
-quiet splash audit=1 audit_backlog_limit=8192
-EOF
-sudo update-grub                                         # Update bootloader
-\end{verbatim}
-
-\noindent \textbf{Configure auditd settings:}
-\begin{verbatim}
-sudo tee -a /etc/audit/auditd.conf > /dev/null <<EOF
-max_log_file = 8
-max_log_file_action = suspend
-space_left_action = single
-admin_space_left_action = suspend
-EOF
-
-sudo systemctl restart auditd                            # Apply auditd changes
-\end{verbatim}
-
-\noindent \textbf{Configure journald and rsyslog:}
-\begin{verbatim}
-sudo systemctl enable systemd-journald                     # Enable journald service
-sudo systemctl start systemd-journald                      # Start journald service
-sudo apt install -y rsyslog                               # Install rsyslog package
-sudo systemctl enable rsyslog                             # Enable rsyslog service
-sudo systemctl start rsyslog                              # Start rsyslog service
-
-sudo tee -a /etc/systemd/journald.conf > /dev/null <<EOF
-ForwardToSyslog=no
-Compress=yes
-Storage=persistent
-EOF
-
-sudo tee -a /etc/rsyslog.d/50-default.conf > /dev/null <<EOF
-\$FileCreateMode 0640
-EOF
-
-sudo chmod 0755 /var/log && \                           # Secure log directory
-sudo chown root:root /var/log
-sudo systemctl restart systemd-journald rsyslog           # Apply logging changes
-\end{verbatim}
-
-\noindent \textbf{Configure AIDE for file integrity:}
-\begin{verbatim}
-sudo apt install -y aide                                   # Install AIDE
-sudo aide --init                                          # Initialize AIDE database
-sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db    # Move initial database
-sudo aide --check                                         # Run integrity check
-sudo crontab - > /dev/null <<EOF
-0 2 * * * /usr/bin/aide --check
-EOF
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{Logging \& Auditing Automation}
 
 \noindent \textbf{Optimized Auditd Configuration:}
 \begin{verbatim}
@@ -945,71 +1125,17 @@ EOF
         user: root
 \end{verbatim}
 
-\section{System Maintenance}
-\subsection{Manual}
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item Auditd được tự động cấu hình với comprehensive logging
+\item Logging system được standardized với persistent storage
+\item AIDE database được initialized và scheduled checks được automated
+\item Log retention policies được applied consistently
+\item Audit trail được maintained cho compliance và forensic purposes
+\item Monitoring và alerting được integrated với logging infrastructure
+\end{itemize}
 
-\noindent \textbf{Configure critical system file permissions:}
-\begin{verbatim}
-sudo chmod 0644 /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
-sudo chown root:root /etc/passwd /etc/passwd- /etc/group /etc/group- /etc/shells
-sudo chmod 0000 /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
-sudo chown root:shadow /etc/shadow /etc/shadow- /etc/gshadow /etc/gshadow-
-sudo chmod 0600 /etc/security/opasswd
-sudo chown root:root /etc/security/opasswd
-\end{verbatim}
-
-\noindent \textbf{Find and secure world writable files:}
-\begin{verbatim}
-find / -type f -perm -002 \                              # Find world writable files
-     -not -path "/proc/*" \                              # Exclude /proc directory
-     -not -path "/sys/*" \                               # Exclude /sys directory  
-     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
-
-find / -type d -perm -002 \                              # Find world writable dirs
-     -not -path "/proc/*" \                              # Exclude /proc directory
-     -not -path "/sys/*" \                               # Exclude /sys directory
-     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
-     
-chmod o-w /etc/passwd /etc/shadow /etc/group \           # Remove world write
-     /etc/gshadow 2>/dev/null || true
-\end{verbatim}
-
-\noindent \textbf{Review SUID/SGID files:}
-\begin{verbatim}
-find / -type f -perm -4000 \                             # Find SUID files
-     -not -path "/proc/*" \                              # Exclude /proc directory
-     -not -path "/sys/*" \                               # Exclude /sys directory
-     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
-     
-find / -type f -perm -2000 \                             # Find SGID files
-     -not -path "/proc/*" \                              # Exclude /proc directory
-     -not -path "/sys/*" \                               # Exclude /sys directory
-     -not -path "/dev/*" 2>/dev/null                     # Exclude /dev directory
-     
-chmod 0755 /usr/bin/passwd 2>/dev/null || true           # Secure passwd binary
-chmod 0755 /usr/bin/gpasswd 2>/dev/null || true          # Secure gpasswd binary
-chmod 0755 /usr/bin/chsh 2>/dev/null || true             # Secure chsh binary
-\end{verbatim}
-
-\noindent \textbf{Configure home directory permissions:}
-\begin{verbatim}
-find /home -type d -exec chmod 0750 {} \; \              # Set directory permissions
-     2>/dev/null || true
-find /home -type f -exec chmod 0640 {} \; \              # Set file permissions
-     2>/dev/null || true
-chmod 0755 /home 2>/dev/null || true                     # Set home base permission
-\end{verbatim}
-
-\noindent \textbf{System integrity checks:}
-\begin{verbatim}
-sudo debsums -c                                          # Check package integrity
-sudo dpkg --audit                                        # Check for broken packages
-sudo apt --fix-broken install                            # Fix broken packages
-sudo apt autoremove                                      # Remove unused packages
-sudo apt autoclean                                       # Clean package cache
-\end{verbatim}
-
-\subsection{Automation}
+\subsection{System Maintenance Automation}
 
 \noindent \textbf{Optimized System File Permissions:}
 \begin{verbatim}
@@ -1142,4 +1268,15 @@ sudo apt autoclean                                       # Clean package cache
       apt:
         autoclean: yes
 \end{verbatim}
+
+\noindent \textbf{Kết quả mong đợi:}
+\begin{itemize}
+\item System file permissions được tự động cấu hình và maintained
+\item World writable files được identified và remediated automatically
+\item SUID/SGID files được reviewed và secured với minimal manual intervention
+\item System integrity checks được performed regularly
+\item Package management được automated với proper cleanup
+\item Configuration drift được prevented và compliance được ensured
+\item Maintenance tasks được scheduled và executed consistently
+\end{itemize}
 
