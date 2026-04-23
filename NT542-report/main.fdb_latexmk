@@ -1,13 +1,13 @@
 # Fdb version 4
-["biber main"] 0 "main.bcf" "main.bbl" "main" 1776833345.60564 -1
-  "main.bcf" 1776833345.50743 108544 70f364145896ab5cf5ad8eb029af2ab1 "pdflatex"
+["biber main"] 0 "main.bcf" "main.bbl" "main" 1776929016.55489 -1
+  "main.bcf" 1776929016.43485 108544 70f364145896ab5cf5ad8eb029af2ab1 "pdflatex"
   "ref.bib" 1774851447.02825 1783 6be9f18fbf05c41e172e3e236e8536f7 ""
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1776833344.28873 "/home/teifu142/ATE/UIT/NT542/NT542-report/main.tex" "main.pdf" "main" 1776833345.60588 0
-  "/home/teifu142/ATE/UIT/NT542/NT542-report/main.tex" 1776614195.35172 2790 cd4823d043aea96a721d7b917261b6d7 ""
+["pdflatex"] 1776929014.8289 "/home/teifu142/ATE/UIT/NT542/NT542-report/main.tex" "main.pdf" "main" 1776929016.55516 0
+  "/home/teifu142/ATE/UIT/NT542/NT542-report/main.tex" 1776928436.58444 2790 cd4823d043aea96a721d7b917261b6d7 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1775415801 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/vntex/t5.enc" 1775415801 7824 21ade6c3c7fd67cb4ace8dbc91c53118 ""
@@ -240,13 +240,13 @@
   "chapters/main/chapter-1.tex" 1776585410.50205 23443 9ef21ed2f62621b5d8efb14e0ad62141 ""
   "chapters/main/chapter-2.tex" 1776833344.13232 12585 5e6be6207b7512d75e8eb62866ea2656 ""
   "chapters/main/chapter-3.tex" 1776797722.42667 46027 1aa2b29e9f5038c4e1f039abc30587a3 ""
-  "chapters/main/chapter-4.tex" 1774856503.96974 206 08766a5140ae52ba639879804f50078c ""
-  "main.aux" 1776833345.50443 8956 477649fdd3b79f50503160568ff1c889 "pdflatex"
+  "chapters/main/chapter-4.tex" 1776929013.01579 6877 9d98de3dfa2328d44b1c4c2eda040830 ""
+  "main.aux" 1776929016.43085 10875 618108925b206f529280767bc2e3c1c0 "pdflatex"
   "main.bbl" 1775297025.94244 466 76d65a242ec496c9b4361af646ff12cb "biber main"
-  "main.out" 1776833345.50643 5819 5f760b3f388e17d631e6cf0708950549 "pdflatex"
-  "main.run.xml" 1776833345.5093 2298 9255f4d2cb39a5ffeeda22d5a40b248a "pdflatex"
-  "main.tex" 1776614195.35172 2790 cd4823d043aea96a721d7b917261b6d7 ""
-  "main.toc" 1776833345.5093 4180 c9951b966fc41b39f7474e098045c8cc "pdflatex"
+  "main.out" 1776929016.43385 7250 87d6f0b61f05d76be9b0f583ff1bbee8 "pdflatex"
+  "main.run.xml" 1776929016.43669 2298 9255f4d2cb39a5ffeeda22d5a40b248a "pdflatex"
+  "main.tex" 1776928436.58444 2790 cd4823d043aea96a721d7b917261b6d7 ""
+  "main.toc" 1776929016.43669 5086 3aa58dbcf1c81c8047a052468ba87206 "pdflatex"
   "project.cls" 1775188120.63685 4209 6a76b24835757c2686120e98ea0bec96 ""
   (generated)
   "main.aux"

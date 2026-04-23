@@ -1,0 +1,39 @@
+Dưới đây là phiên bản **text thuần (raw text, không LaTeX)**, đã được rút gọn còn 3 phần, tránh lặp nhưng vẫn giữ đầy đủ ý:
+
+---
+
+## Tổng kết
+
+### 1. Kết quả đạt được
+
+Sau khi triển khai quy trình Automated Security Hardening, hệ thống đã đạt được các kết quả quan trọng về bảo mật và tự động hóa.
+
+Trước hết, hệ thống đạt mức tuân thủ 83.7% theo tiêu chuẩn CIS Benchmark (đánh giá bởi OpenSCAP). Điều này cho thấy phần lớn các cấu hình bảo mật quan trọng đã được áp dụng thành công. Bên cạnh đó, chỉ số Hardening Index đạt 75/100 theo Lynis, phản ánh hệ thống đã được tăng cường bảo mật ở mức khá tốt.
+
+Về mặt triển khai kỹ thuật, nhiều cơ chế bảo mật cốt lõi đã được áp dụng như kích hoạt AppArmor, cấu hình firewall (UFW/iptables), hardening SSH, thiết lập hệ thống logging và auditing (auditd), cũng như áp dụng các tùy chọn bảo mật filesystem như nodev, nosuid, noexec.
+
+Một trong những thành công quan trọng nhất là việc tự động hóa toàn bộ quy trình bằng Ansible. Điều này giúp đảm bảo tính nhất quán cấu hình trên nhiều hệ thống, giảm thiểu sai sót thủ công và hạn chế configuration drift. Ngoài ra, hệ thống có thể được kiểm tra và đánh giá định kỳ thông qua OpenSCAP và Lynis, giúp duy trì mức độ bảo mật theo thời gian.
+
+---
+
+### 2. Hạn chế và hướng phát triển
+
+Mặc dù đạt được nhiều kết quả tích cực, hệ thống vẫn còn tồn tại một số hạn chế cần được cải thiện.
+
+Trước hết, hệ thống chưa đạt đầy đủ 100% CIS Benchmark, với khoảng 16.3% các rule chưa được đáp ứng. Trong đó có một số vấn đề quan trọng như chưa cấu hình mật khẩu GRUB, hệ thống File Integrity Monitoring (AIDE) chưa hoàn chỉnh, và chưa tách riêng các partition quan trọng như /home, /tmp, /var.
+
+Ngoài ra, một số cấu hình hệ thống vẫn chưa được tối ưu hoàn toàn, bao gồm các tham số kernel (sysctl), hardening dịch vụ và chính sách bảo mật mạng. Môi trường triển khai trên máy ảo cũng gây hạn chế về tài nguyên và khả năng mở rộng. Bên cạnh đó, vẫn còn một số thiết lập yêu cầu can thiệp thủ công, chưa được tự động hóa hoàn toàn.
+
+Trong tương lai, các cải tiến ngắn hạn cần tập trung vào việc hoàn thiện cấu hình AIDE, thiết lập mật khẩu GRUB, và tối ưu các tham số kernel. Về dài hạn, hệ thống nên được mở rộng với các giải pháp nâng cao như triển khai SIEM để giám sát tập trung, áp dụng IDS/IPS để phát hiện xâm nhập, mở rộng sang môi trường cloud, và tích hợp bảo mật vào pipeline CI/CD theo mô hình DevSecOps.
+
+Các mục tiêu cụ thể bao gồm đạt trên 90% CIS Benchmark compliance, nâng Hardening Index lên trên 85, loại bỏ hoàn toàn các lỗi mức cao và giảm số lỗi mức trung bình xuống dưới 10.
+
+---
+
+### 3. Kết luận
+
+Quy trình Automated Security Hardening đã chứng minh hiệu quả rõ rệt trong việc nâng cao mức độ bảo mật của hệ thống. Việc áp dụng tự động hóa giúp giảm đáng kể thời gian triển khai (từ vài ngày xuống còn dưới một giờ), đồng thời đảm bảo tính nhất quán và khả năng tái sử dụng trong nhiều môi trường khác nhau.
+
+Bên cạnh đó, hệ thống đã xây dựng được nền tảng vững chắc cho việc kiểm tra, đánh giá và duy trì bảo mật theo tiêu chuẩn. Điều này không chỉ giúp cải thiện hiện trạng mà còn tạo điều kiện thuận lợi cho việc mở rộng và nâng cấp trong tương lai.
+
+Với các định hướng phát triển đã đề ra, hệ thống hoàn toàn có khả năng đạt mức bảo mật cao hơn, tiến tới mô hình DevSecOps và Security-as-Code, trong đó bảo mật được tích hợp xuyên suốt trong toàn bộ vòng đời phát triển và vận hành hệ thống.
