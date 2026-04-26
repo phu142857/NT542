@@ -569,6 +569,11 @@ INPUT /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texmf-dist/fonts/tfm/vntex/urwvn/utmb8v.tfm
+INPUT /usr/share/texmf-dist/fonts/tfm/vntex/vnr/vntt10.tfm
+INPUT ./chapters/main/openscap_results_table.tex
+INPUT chapters/main/openscap_results_table.tex
+INPUT ./chapters/main/openscap_results_table.tex
+INPUT chapters/main/openscap_results_table.tex
 OUTPUT main.toc
 INPUT main.aux
 INPUT ./main.out
@@ -580,4 +585,5 @@ INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmb8v.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmr8v.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/urwvn/utmri8v.pfb
+INPUT /usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt10.pfb
 INPUT /usr/share/texmf-dist/fonts/type1/vntex/vnr/vntt12.pfb

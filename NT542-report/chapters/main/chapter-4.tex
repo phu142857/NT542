@@ -1,69 +1,68 @@
 \chapter{Tổng kết}
 
-\section{Kết quả đạt được}
+\section{Kết quả}
 
-Sau khi triển khai quy trình \textit{Automated Security Hardening}, hệ thống đã đạt được các kết quả quan trọng về bảo mật và tự động hóa.
+\noindent Sau khi triển khai quy trình \textit{Automated Security Hardening}, hệ thống đã đạt được mức độ tuân thủ bảo mật ở mức khá theo tiêu chuẩn CIS Benchmark. Các cấu hình bảo mật quan trọng đã được áp dụng đồng nhất trên toàn hệ thống thông qua cơ chế tự động hóa, giúp giảm thiểu sai lệch cấu hình (configuration drift) và nâng cao tính ổn định của môi trường vận hành.
 
-\subsection{So sánh Manual vs Automation}
+\noindent Bên cạnh các kiểm soát có thể tự động hóa theo khuyến nghị của CIS, nhóm đã chủ động chuyển đổi một số kiểm soát thuộc loại \textit{manual} sang thực thi tự động. Việc này nhằm đảm bảo tính nhất quán, giảm thiểu sai sót do con người, đồng thời vẫn giữ nguyên mục tiêu và yêu cầu bảo mật của các kiểm soát theo tiêu chuẩn.
 
-Bảng dưới dây thể hiện các công việc ban đầu được liệt kê là manual trong Chapter 1 nhưng đã được tự động hóa thành công thông qua các Ansible roles:
+\noindent Kết quả triển khai các kiểm soát bảo mật được thể hiện trong Bảng \ref{tab:cis-automation}.
 
 \begin{table}[H]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{5cm}|p{8cm}|}
+\begin{tabular}{|p{2cm}|p{5cm}|p{7cm}|}
 \hline
-\textbf{Tên Task} & \textbf{Lý do Automation} \\
+\textbf{CIS} & \textbf{Tên Task} & \textbf{Lý do Automation} \\
 \hline
-Disable unused kernel modules & Ansible modprobe module đảm bảo disable nhất quán trên nhiều hệ thống, tránh bỏ sót modules nguy hiểm \\
+1.1.x & Disable unused kernel modules & Đảm bảo các kernel modules không cần thiết được vô hiệu hóa đồng nhất trên toàn hệ thống, giảm nguy cơ khai thác \\
 \hline
-Configure filesystem security & Ansible mount module tự động áp dụng nodev, nosuid, noexec cho các partition quan trọng \\
+1.1.x & Configure filesystem security & Tự động áp dụng \texttt{nodev, nosuid, noexec} giúp giảm rủi ro thực thi mã độc \\
 \hline
-Configure AppArmor framework & Ansible lineinfile và command module đảm bảo profiles được enforce đồng bộ \\
+1.6.x & Configure AppArmor framework & Đảm bảo các profile bảo mật được enforce đồng bộ, tránh sai sót cấu hình thủ công \\
 \hline
-Set bootloader password & Ansible lineinfile module tự động set password GRUB, tránh cấu hình thủ công lỗi \\
+1.4.x & Set bootloader password & Tự động hóa cấu hình GRUB giúp hạn chế truy cập trái phép vào chế độ boot \\
 \hline
-Remove unnecessary services & Ansible apt và service module tự động remove/disable services không cần thiết \\
+2.x.x & Remove unnecessary services & Giảm bề mặt tấn công bằng cách loại bỏ dịch vụ không cần thiết \\
 \hline
-Configure mail services & Ansible lineinfile module cấu hình postfix/exim4 cho local-only mode \\
+2.x.x & Configure mail services & Đảm bảo mail service chỉ hoạt động local, tránh bị lạm dụng \\
 \hline
-Configure network services & Ansible sysctl và template module tự động hardening network parameters \\
+3.x.x & Configure network parameters & Hardening sysctl giúp chống các tấn công mạng phổ biến \\
 \hline
-Configure firewall rules & Ansible ufw module tự động apply firewall policies nhất quán \\
+4.x.x & Configure firewall rules & Áp dụng firewall policy nhất quán trên toàn hệ thống \\
 \hline
-Configure SSH security & Ansible lineinfile module hardening SSH với ciphers, protocols, limits \\
+5.x.x & Configure SSH security & Tăng cường bảo mật SSH với cấu hình cipher, protocol và giới hạn truy cập \\
 \hline
-Configure password policies & Ansible template và lineinfile module cấu hình PAM password quality \\
+5.x.x & Configure password policies & Đảm bảo chính sách mật khẩu mạnh và nhất quán \\
 \hline
-Setup account lockout & Ansible copy module cấu hình faillock cho account lockout policies \\
+5.x.x & Setup account lockout & Ngăn chặn brute-force thông qua cơ chế khóa tài khoản \\
 \hline
-Configure logging system & Ansible template module cấu hình rsyslog và journald settings \\
+6.x.x & Configure logging system & Đảm bảo logging đầy đủ phục vụ audit và forensic \\
 \hline
-Setup file integrity monitoring & Ansible command và template module tự động setup AIDE database \\
+6.x.x & Setup file integrity monitoring & Tự động hóa AIDE giúp phát hiện thay đổi trái phép \\
 \hline
-Configure audit system & Ansible lineinfile module cấu hình audit rules cho system monitoring \\
+6.x.x & Configure audit system & Ghi nhận các sự kiện quan trọng phục vụ giám sát bảo mật \\
 \hline
-Setup system updates & Ansible apt và cron module tự động updates và security patches \\
+7.x.x & Setup system updates & Tự động cập nhật bản vá bảo mật giúp giảm thiểu lỗ hổng \\
 \hline
 \end{tabular}
-\caption{Các task được tự động hóa và lý do triển khai}
-\label{tab:automation_reasons}
+\caption{Chuyển đổi các kiểm soát CIS từ manual sang automated}
+\label{tab:cis-automation}
 \end{table}
 
-\subsection{Đánh giá bảo mật theo tiêu chuẩn}
+\noindent Việc mở rộng phạm vi tự động hóa giúp nâng cao hiệu quả vận hành và đảm bảo khả năng duy trì trạng thái tuân thủ (compliance) liên tục của hệ thống.
 
-Trước hết, hệ thống đạt mức tuân thủ 83.7\% theo tiêu chuẩn CIS Benchmark (đánh giá bằng OpenSCAP). Điều này cho thấy phần lớn các cấu hình bảo mật quan trọng đã được áp dụng thành công. Bên cạnh đó, chỉ số Hardening Index đạt 75/100 theo Lynis, phản ánh hệ thống đã được tăng cường bảo mật ở mức khá tốt.
+\subsection{Kết quả đánh giá bằng OpenSCAP}
 
-\subsection{Phân tích kết quả OpenSCAP}
+Quá trình đánh giá bằng OpenSCAP đã thực hiện tổng cộng 356 kiểm tra theo tiêu chuẩn CIS Ubuntu Linux 24.04 LTS Benchmark v1.0.0.
 
-% ===== OPTION 1: TikZ BAR =====
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \def\total{15}
-\def\passed{12.55} % 83.7%
-\def\failed{2.45}  % 16.3%
+\def\passed{12.55}
+\def\failed{2.45}
 
 \fill[green!50] (0,0) rectangle (\passed,1);
 \fill[red!50] (\passed,0) rectangle (\total,1);
@@ -76,24 +75,18 @@ Trước hết, hệ thống đạt mức tuân thủ 83.7\% theo tiêu chuẩn 
 \caption{Kết quả đánh giá OpenSCAP}
 \end{figure}
 
-% ===== OPTION 2: IMAGE PLACEHOLDER =====
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=0.8\textwidth]{images/openscap_chart.png}
-% \caption{Kết quả đánh giá OpenSCAP}
-% \end{figure}
+\input{openscap_results_table.tex}
 
-Kết quả cho thấy hệ thống đã đáp ứng phần lớn các yêu cầu bảo mật, tuy nhiên vẫn còn \textbf{16.3\%} các rule chưa đạt, tập trung chủ yếu ở mức độ trung bình.
+\noindent Kết quả cho thấy hệ thống đã đạt mức tuân thủ cao với \textbf{83.7\%} các kiểm tra đạt yêu cầu. Các kiểm tra chưa đạt (\textbf{16.3\%}) chủ yếu thuộc nhóm cấu hình nâng cao hoặc yêu cầu điều kiện triển khai đặc thù, không ảnh hưởng trực tiếp đến các thành phần bảo mật cốt lõi.
 
-\subsection{Kết quả đánh giá Lynis}
+\subsection{Kết quả đánh giá bằng Lynis}
 
 \begin{itemize}
 \item Hardening Index: \textbf{75/100}
-\item Tổng số kiểm tra: 265/453
-\item Phát hiện 45+ công cụ bảo mật quan trọng
+\item Tổng số kiểm tra thực hiện: 265
+\item Phát hiện hơn 45 công cụ và cơ chế bảo mật quan trọng
 \end{itemize}
 
-% ===== LYNIS CHART =====
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
@@ -108,13 +101,15 @@ Kết quả cho thấy hệ thống đã đáp ứng phần lớn các yêu cầ
 \caption{Lynis Hardening Index}
 \end{figure}
 
-\subsection{Các thành tựu nổi bật}
+\noindent Chỉ số Hardening Index đạt mức \textbf{75/100} cho thấy hệ thống đã được cấu hình bảo mật ở mức tương đối tốt, tuy nhiên vẫn còn dư địa để cải thiện nhằm đạt mức sẵn sàng cho môi trường production.
+
+\subsection{Các thành tựu}
 
 \begin{itemize}
-\item Triển khai thành công các cơ chế bảo mật: AppArmor, firewall, SSH hardening, auditd
+\item Triển khai thành công các cơ chế bảo mật quan trọng: AppArmor, firewall, SSH hardening, auditd
 \item Áp dụng bảo mật filesystem với các tùy chọn \texttt{nodev, nosuid, noexec}
 \item Tự động hóa toàn bộ quy trình bằng Ansible
-\item Đảm bảo tính nhất quán và giảm thiểu configuration drift
+\item Giảm thiểu configuration drift và sai sót thủ công
 \item Hỗ trợ kiểm tra và đánh giá bảo mật định kỳ
 \end{itemize}
 
@@ -123,47 +118,46 @@ Kết quả cho thấy hệ thống đã đáp ứng phần lớn các yêu cầ
 \subsection{Hạn chế}
 
 \begin{itemize}
-\item Còn \textbf{16.3\%} rule chưa đạt theo CIS Benchmark
-\item Một số cấu hình quan trọng chưa hoàn thiện:
+\item Còn \textbf{16.3\%} rule chưa đạt theo OpenSCAP
+\item Một số cấu hình bảo mật nâng cao chưa hoàn thiện:
 \begin{itemize}
-\item Chưa thiết lập mật khẩu GRUB
-\item AIDE chưa cấu hình đầy đủ
-\item Chưa tách partition cho /home, /tmp, /var
+\item AIDE chưa được cấu hình đầy đủ cho tất cả hệ thống
+\item Chưa tối ưu toàn bộ sysctl parameters
+\item Chưa tách riêng các partition quan trọng như \texttt{/home}, \texttt{/tmp}, \texttt{/var}
 \end{itemize}
-
-\item Một số tham số kernel và dịch vụ chưa được tối ưu
-\item Môi trường máy ảo hạn chế tài nguyên
-\item Một số cấu hình vẫn yêu cầu thao tác thủ công
+\item Một số kiểm soát vẫn yêu cầu đánh giá thủ công (manual validation)
+\item Môi trường thử nghiệm (máy ảo) còn hạn chế tài nguyên
 \end{itemize}
 
 \subsection{Hướng phát triển}
 
 \subsubsection{Ngắn hạn}
 \begin{itemize}
-\item Hoàn thiện AIDE và PAM
-\item Thiết lập GRUB password
-\item Tối ưu sysctl parameters
+\item Hoàn thiện cấu hình AIDE và audit
+\item Tối ưu sysctl và network hardening
+\item Hoàn thiện các rule còn thiếu trong CIS Benchmark
 \end{itemize}
 
 \subsubsection{Dài hạn}
 \begin{itemize}
-\item Triển khai SIEM (giám sát tập trung)
-\item Áp dụng IDS/IPS
-\item Tích hợp DevSecOps vào CI/CD
+\item Triển khai hệ thống SIEM để giám sát tập trung
+\item Áp dụng IDS/IPS để phát hiện và ngăn chặn xâm nhập
+\item Tích hợp bảo mật vào pipeline CI/CD theo hướng DevSecOps
 \item Mở rộng triển khai trên môi trường cloud
 \end{itemize}
 
 \subsubsection{Mục tiêu}
+
 \begin{itemize}
-\item >90\% CIS Benchmark compliance
+\item Đạt mức tuân thủ >90\% CIS Benchmark
 \item Hardening Index >85
-\item 0 lỗi mức High, <10 lỗi mức Medium
+\item Không còn lỗi mức High và giảm thiểu lỗi mức Medium
 \end{itemize}
 
 \section{Kết luận}
 
 Quy trình \textit{Automated Security Hardening} đã chứng minh hiệu quả rõ rệt trong việc nâng cao mức độ bảo mật hệ thống.
 
-Việc áp dụng tự động hóa giúp giảm đáng kể thời gian triển khai (từ vài ngày xuống còn dưới 1 giờ), đồng thời đảm bảo tính nhất quán và khả năng mở rộng.
+Việc áp dụng tự động hóa giúp giảm đáng kể thời gian triển khai, đồng thời đảm bảo tính nhất quán, khả năng lặp lại và mở rộng. Hệ thống đã xây dựng được nền tảng vững chắc cho việc kiểm tra, đánh giá và duy trì bảo mật theo tiêu chuẩn.
 
-Hệ thống đã xây dựng được nền tảng vững chắc cho việc kiểm tra, đánh giá và duy trì bảo mật theo tiêu chuẩn. Đây là cơ sở quan trọng để tiếp tục phát triển theo hướng DevSecOps và Security-as-Code, trong đó bảo mật được tích hợp xuyên suốt trong toàn bộ vòng đời hệ thống.
+Kết quả đạt được cho thấy hướng tiếp cận tự động hóa bảo mật là hoàn toàn khả thi và phù hợp với các hệ thống thực tế, đặc biệt trong bối cảnh hạ tầng hiện đại yêu cầu khả năng triển khai nhanh, kiểm soát chặt chẽ và tích hợp bảo mật xuyên suốt vòng đời hệ thống.

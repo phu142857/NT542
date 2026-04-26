@@ -1,0 +1,99 @@
+% Use longtable for multi-page table support
+\usepackage{longtable}
+
+% Begin longtable with proper headers
+\begin{longtable}{|p{7cm}|p{2cm}|p{2cm}|}
+\caption{Toàn bộ kết quả đánh giá OpenSCAP (pass/fail)} \label{tab:openscap-all-results} \\
+
+% First page header
+\hline
+\textbf{Title} & \textbf{Severity} & \textbf{Result} \\
+\hline
+\endfirsthead
+
+% Subsequent pages header
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Title} & \textbf{Severity} & \textbf{Result} \\
+\hline
+\endhead
+
+% Footer for pages except last
+\hline
+\multicolumn{3}{r}{{Continued on next page}} \\
+\endfoot
+
+% Footer for last page
+\hline
+\endlastfoot
+
+% PASS RESULTS - First 20 entries
+Rule xccdf\_org.ssgproject.content\_rule\_account\_disable\_post\_p... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_account\_unique\_id & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_account\_unique\_name & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_maximum\_age\_l... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_no\_uid\_except... & high & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_all\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_last\... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & pass \\
+\hline
+
+% NOTE: This is a truncated version for demonstration
+% The full table would contain all 356 entries
+% For the complete table, run the Python script again with longtable formatting
+
+% Sample FAIL RESULTS
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_password\_pam\_... & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_accounts\_passwords\_pam\... & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_aide\_build\_database & medium & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_grub2\_password & high & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_grub2\_uefi\_password & high & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_no\_empty\_passwords\_unix & high & fail \\
+\hline
+Rule xccdf\_org.ssgproject.content\_rule\_sshd\_disable\_root\_login & medium & fail \\
+\hline
+
+\end{longtable}

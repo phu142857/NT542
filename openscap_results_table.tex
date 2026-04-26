@@ -1,0 +1,738 @@
+% Use longtable for multi-page table support
+% Add \usepackage{longtable} to preamble if not already present
+
+\begin{longtable}{|p{10cm}|p{2cm}|p{2cm}|}
+\caption{Toàn bộ kết quả đánh giá OpenSCAP (pass/fail)} \label{tab:openscap-all-results} \\
+
+\hline
+\textbf{Title} & \textbf{Severity} & \textbf{Result} \\
+\hline
+\endfirsthead
+
+\multicolumn{3}{c}%
+{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+\hline
+\textbf{Title} & \textbf{Severity} & \textbf{Result} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{{Continued on next page}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+account\_disable\_post\_pw\_expiration & medium & pass \\
+\hline
+account\_unique\_id & medium & pass \\
+\hline
+account\_unique\_name & medium & pass \\
+\hline
+accounts\_maximum\_age\_login\_defs & medium & pass \\
+\hline
+accounts\_no\_uid\_except\_zero & high & pass \\
+\hline
+accounts\_password\_all\_shadowed & medium & pass \\
+\hline
+accounts\_password\_last\_change\_is\_in\_past & medium & pass \\
+\hline
+accounts\_password\_pam\_dcredit & medium & pass \\
+\hline
+accounts\_password\_pam\_dictcheck & medium & pass \\
+\hline
+accounts\_password\_pam\_difok & medium & pass \\
+\hline
+accounts\_password\_pam\_enforce\_root & medium & pass \\
+\hline
+accounts\_password\_pam\_enforcing & medium & pass \\
+\hline
+accounts\_password\_pam\_lcredit & medium & pass \\
+\hline
+accounts\_password\_pam\_maxrepeat & medium & pass \\
+\hline
+accounts\_password\_pam\_maxsequence & medium & pass \\
+\hline
+accounts\_password\_pam\_minlen & medium & pass \\
+\hline
+accounts\_password\_pam\_ocredit & medium & pass \\
+\hline
+accounts\_password\_pam\_pwhistory\_use\_authtok & medium & pass \\
+\hline
+accounts\_password\_pam\_pwquality\_enabled & medium & pass \\
+\hline
+accounts\_password\_pam\_ucredit & medium & pass \\
+\hline
+accounts\_password\_pam\_unix\_authtok & medium & pass \\
+\hline
+accounts\_password\_pam\_unix\_enabled & medium & pass \\
+\hline
+accounts\_password\_pam\_unix\_no\_remember & medium & pass \\
+\hline
+accounts\_password\_set\_max\_life\_existing & medium & pass \\
+\hline
+accounts\_password\_warn\_age\_login\_defs & medium & pass \\
+\hline
+accounts\_root\_gid\_zero & high & pass \\
+\hline
+accounts\_root\_path\_dirs\_no\_write & medium & pass \\
+\hline
+accounts\_set\_post\_pw\_existing & medium & pass \\
+\hline
+accounts\_umask\_etc\_login\_defs & medium & pass \\
+\hline
+accounts\_umask\_etc\_profile & medium & pass \\
+\hline
+accounts\_umask\_root & medium & pass \\
+\hline
+accounts\_user\_dot\_group\_ownership & medium & pass \\
+\hline
+accounts\_user\_dot\_user\_ownership & medium & pass \\
+\hline
+accounts\_user\_interactive\_home\_directory\_exists & medium & pass \\
+\hline
+aide\_periodic\_checking\_systemd\_timer & medium & pass \\
+\hline
+banner\_etc\_issue\_cis & medium & pass \\
+\hline
+banner\_etc\_issue\_net\_cis & medium & pass \\
+\hline
+banner\_etc\_motd\_cis & medium & pass \\
+\hline
+check\_ufw\_active & medium & pass \\
+\hline
+disable\_host\_auth & medium & pass \\
+\hline
+disable\_users\_coredumps & medium & pass \\
+\hline
+ensure\_root\_access\_controlled & medium & pass \\
+\hline
+ensure\_shadow\_group\_empty & medium & pass \\
+\hline
+file\_at\_allow\_exists & medium & pass \\
+\hline
+file\_cron\_allow\_exists & medium & pass \\
+\hline
+file\_cron\_deny\_not\_exist & medium & pass \\
+\hline
+file\_groupowner\_at\_allow & medium & pass \\
+\hline
+file\_groupowner\_at\_deny & medium & pass \\
+\hline
+file\_groupowner\_backup\_etc\_group & medium & pass \\
+\hline
+file\_groupowner\_backup\_etc\_gshadow & medium & pass \\
+\hline
+file\_groupowner\_backup\_etc\_passwd & medium & pass \\
+\hline
+file\_groupowner\_backup\_etc\_shadow & medium & pass \\
+\hline
+file\_groupowner\_cron\_d & medium & pass \\
+\hline
+file\_groupowner\_cron\_daily & medium & pass \\
+\hline
+file\_groupowner\_cron\_hourly & medium & pass \\
+\hline
+file\_groupowner\_cron\_monthly & medium & pass \\
+\hline
+file\_groupowner\_cron\_weekly & medium & pass \\
+\hline
+file\_groupowner\_crontab & medium & pass \\
+\hline
+file\_groupowner\_etc\_group & medium & pass \\
+\hline
+file\_groupowner\_etc\_gshadow & medium & pass \\
+\hline
+file\_groupowner\_etc\_issue & medium & pass \\
+\hline
+file\_groupowner\_etc\_issue\_net & medium & pass \\
+\hline
+file\_groupowner\_etc\_motd & medium & pass \\
+\hline
+file\_groupowner\_etc\_passwd & medium & pass \\
+\hline
+file\_groupowner\_etc\_security\_opasswd & medium & pass \\
+\hline
+file\_groupowner\_etc\_security\_opasswd\_old & medium & pass \\
+\hline
+file\_groupowner\_etc\_shadow & medium & pass \\
+\hline
+file\_groupowner\_etc\_shells & medium & pass \\
+\hline
+file\_groupowner\_sshd\_config & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_auth & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_cloud\_init & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_journal & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_lastlog & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_localmessages & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_messages & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_secure & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_syslog & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_waagent & medium & pass \\
+\hline
+file\_groupowner\_var\_log\_wbtmp & medium & pass \\
+\hline
+file\_groupownership\_home\_directories & medium & pass \\
+\hline
+file\_groupownerships\_var\_log & medium & pass \\
+\hline
+file\_groupownerships\_var\_log\_apt & medium & pass \\
+\hline
+file\_groupownerships\_var\_log\_gdm & medium & pass \\
+\hline
+file\_groupownerships\_var\_log\_gdm3 & medium & pass \\
+\hline
+file\_groupownerships\_var\_log\_landscape & medium & pass \\
+\hline
+file\_groupownerships\_var\_log\_sssd & medium & pass \\
+\hline
+file\_owner\_at\_allow & medium & pass \\
+\hline
+file\_owner\_at\_deny & medium & pass \\
+\hline
+file\_owner\_backup\_etc\_group & medium & pass \\
+\hline
+file\_owner\_backup\_etc\_gshadow & medium & pass \\
+\hline
+file\_owner\_backup\_etc\_passwd & medium & pass \\
+\hline
+file\_owner\_backup\_etc\_shadow & medium & pass \\
+\hline
+file\_owner\_cron\_allow & medium & pass \\
+\hline
+file\_owner\_cron\_d & medium & pass \\
+\hline
+file\_owner\_cron\_daily & medium & pass \\
+\hline
+file\_owner\_cron\_hourly & medium & pass \\
+\hline
+file\_owner\_cron\_monthly & medium & pass \\
+\hline
+file\_owner\_cron\_weekly & medium & pass \\
+\hline
+file\_owner\_crontab & medium & pass \\
+\hline
+file\_owner\_etc\_group & medium & pass \\
+\hline
+file\_owner\_etc\_gshadow & medium & pass \\
+\hline
+file\_owner\_etc\_issue & medium & pass \\
+\hline
+file\_owner\_etc\_issue\_net & medium & pass \\
+\hline
+file\_owner\_etc\_motd & medium & pass \\
+\hline
+file\_owner\_etc\_passwd & medium & pass \\
+\hline
+file\_owner\_etc\_security\_opasswd & medium & pass \\
+\hline
+file\_owner\_etc\_security\_opasswd\_old & medium & pass \\
+\hline
+file\_owner\_etc\_shadow & medium & pass \\
+\hline
+file\_owner\_etc\_shells & medium & pass \\
+\hline
+file\_owner\_grub2\_cfg & medium & pass \\
+\hline
+file\_owner\_sshd\_config & medium & pass \\
+\hline
+file\_owner\_var\_log\_auth & medium & pass \\
+\hline
+file\_owner\_var\_log\_cloud\_init & medium & pass \\
+\hline
+file\_owner\_var\_log\_journal & medium & pass \\
+\hline
+file\_owner\_var\_log\_lastlog & medium & pass \\
+\hline
+file\_owner\_var\_log\_localmessages & medium & pass \\
+\hline
+file\_owner\_var\_log\_messages & medium & pass \\
+\hline
+file\_owner\_var\_log\_secure & medium & pass \\
+\hline
+file\_owner\_var\_log\_syslog & medium & pass \\
+\hline
+file\_owner\_var\_log\_waagent & medium & pass \\
+\hline
+file\_owner\_var\_log\_wbtmp & medium & pass \\
+\hline
+file\_ownership\_home\_directories & medium & pass \\
+\hline
+file\_ownerships\_var\_log & medium & pass \\
+\hline
+file\_ownerships\_var\_log\_apt & medium & pass \\
+\hline
+file\_ownerships\_var\_log\_gdm & medium & pass \\
+\hline
+file\_ownerships\_var\_log\_gdm3 & medium & pass \\
+\hline
+file\_ownerships\_var\_log\_landscape & medium & pass \\
+\hline
+file\_ownerships\_var\_log\_sssd & medium & pass \\
+\hline
+file\_permission\_user\_bash\_history & medium & pass \\
+\hline
+file\_permissions\_at\_allow & medium & pass \\
+\hline
+file\_permissions\_at\_deny & medium & pass \\
+\hline
+file\_permissions\_backup\_etc\_group & medium & pass \\
+\hline
+file\_permissions\_backup\_etc\_gshadow & medium & pass \\
+\hline
+file\_permissions\_backup\_etc\_passwd & medium & pass \\
+\hline
+file\_permissions\_backup\_etc\_shadow & medium & pass \\
+\hline
+file\_permissions\_cron\_allow & medium & pass \\
+\hline
+file\_permissions\_cron\_d & medium & pass \\
+\hline
+file\_permissions\_cron\_daily & medium & pass \\
+\hline
+file\_permissions\_cron\_hourly & medium & pass \\
+\hline
+file\_permissions\_cron\_monthly & medium & pass \\
+\hline
+file\_permissions\_cron\_weekly & medium & pass \\
+\hline
+file\_permissions\_crontab & medium & pass \\
+\hline
+file\_permissions\_etc\_group & medium & pass \\
+\hline
+file\_permissions\_etc\_gshadow & medium & pass \\
+\hline
+file\_permissions\_etc\_issue & medium & pass \\
+\hline
+file\_permissions\_etc\_issue\_net & medium & pass \\
+\hline
+file\_permissions\_etc\_motd & medium & pass \\
+\hline
+file\_permissions\_etc\_passwd & medium & pass \\
+\hline
+file\_permissions\_etc\_security\_opasswd & medium & pass \\
+\hline
+file\_permissions\_etc\_security\_opasswd\_old & medium & pass \\
+\hline
+file\_permissions\_etc\_shadow & medium & pass \\
+\hline
+file\_permissions\_etc\_shells & medium & pass \\
+\hline
+file\_permissions\_grub2\_cfg & medium & pass \\
+\hline
+file\_permissions\_home\_directories & medium & pass \\
+\hline
+file\_permissions\_sshd\_config & medium & pass \\
+\hline
+file\_permissions\_sshd\_private\_key & medium & pass \\
+\hline
+file\_permissions\_sshd\_pub\_key & medium & pass \\
+\hline
+file\_permissions\_unauthorized\_world\_writable & medium & pass \\
+\hline
+file\_permissions\_ungroupowned & medium & pass \\
+\hline
+file\_permissions\_var\_log\_gdm & medium & pass \\
+\hline
+file\_permissions\_var\_log\_gdm3 & medium & pass \\
+\hline
+file\_permissions\_var\_log\_localmessages & medium & pass \\
+\hline
+file\_permissions\_var\_log\_messages & medium & pass \\
+\hline
+file\_permissions\_var\_log\_secure & medium & pass \\
+\hline
+file\_permissions\_var\_log\_sssd & medium & pass \\
+\hline
+file\_permissions\_var\_log\_waagent & medium & pass \\
+\hline
+firewall\_single\_service\_active & medium & pass \\
+\hline
+gid\_passwd\_group\_same & low & pass \\
+\hline
+group\_unique\_id & medium & pass \\
+\hline
+group\_unique\_name & medium & pass \\
+\hline
+groups\_no\_zero\_gid\_except\_root & high & pass \\
+\hline
+has\_nonlocal\_mta & medium & pass \\
+\hline
+journald\_forward\_to\_syslog & medium & pass \\
+\hline
+kernel\_module\_cramfs\_disabled & low & pass \\
+\hline
+kernel\_module\_freevxfs\_disabled & low & pass \\
+\hline
+kernel\_module\_hfs\_disabled & low & pass \\
+\hline
+kernel\_module\_hfsplus\_disabled & low & pass \\
+\hline
+kernel\_module\_jffs2\_disabled & low & pass \\
+\hline
+logging\_services\_active & medium & pass \\
+\hline
+mount\_option\_var\_tmp\_nodev & medium & pass \\
+\hline
+mount\_option\_var\_tmp\_noexec & medium & pass \\
+\hline
+mount\_option\_var\_tmp\_nosuid & medium & pass \\
+\hline
+no\_dirs\_unowned\_by\_root & medium & pass \\
+\hline
+no\_empty\_passwords\_etc\_shadow & high & pass \\
+\hline
+no\_files\_unowned\_by\_user & medium & pass \\
+\hline
+no\_forward\_files & medium & pass \\
+\hline
+no\_invalid\_shell\_accounts\_unlocked & medium & pass \\
+\hline
+no\_netrc\_files & medium & pass \\
+\hline
+no\_shelllogin\_for\_systemaccounts & medium & pass \\
+\hline
+ntp\_single\_service\_active & medium & pass \\
+\hline
+package\_aide\_installed & medium & pass \\
+\hline
+package\_apparmor-utils\_installed & medium & pass \\
+\hline
+package\_apparmor\_installed & medium & pass \\
+\hline
+package\_autofs\_removed & low & pass \\
+\hline
+package\_avahi\_removed & medium & pass \\
+\hline
+package\_bind\_removed & low & pass \\
+\hline
+package\_chrony\_installed & medium & pass \\
+\hline
+package\_cron\_installed & medium & pass \\
+\hline
+package\_cups\_removed & unknown & pass \\
+\hline
+package\_dhcp\_removed & medium & pass \\
+\hline
+package\_dnsmasq\_removed & low & pass \\
+\hline
+package\_dovecot\_removed & unknown & pass \\
+\hline
+package\_ftp\_removed & low & pass \\
+\hline
+package\_httpd\_removed & unknown & pass \\
+\hline
+package\_inetutils-telnet\_removed & low & pass \\
+\hline
+package\_iptables-persistent\_installed & medium & pass \\
+\hline
+package\_iptables-persistent\_removed & medium & pass \\
+\hline
+package\_net-snmp\_removed & unknown & pass \\
+\hline
+package\_nfs-kernel-server\_removed & low & pass \\
+\hline
+package\_nginx\_removed & unknown & pass \\
+\hline
+package\_nis\_removed & low & pass \\
+\hline
+package\_openldap-clients\_removed & low & pass \\
+\hline
+package\_openldap-servers\_removed & low & pass \\
+\hline
+package\_pam\_modules\_installed & medium & pass \\
+\hline
+package\_pam\_pwquality\_installed & medium & pass \\
+\hline
+package\_pam\_runtime\_installed & medium & pass \\
+\hline
+package\_prelink\_removed & medium & pass \\
+\hline
+package\_rpcbind\_removed & low & pass \\
+\hline
+package\_rsh\_removed & unknown & pass \\
+\hline
+package\_rsync\_removed & medium & pass \\
+\hline
+package\_rsyslog\_installed & medium & pass \\
+\hline
+package\_samba\_removed & unknown & pass \\
+\hline
+package\_squid\_removed & unknown & pass \\
+\hline
+package\_sudo\_installed & medium & pass \\
+\hline
+package\_talk\_removed & medium & pass \\
+\hline
+package\_telnet\_removed & low & pass \\
+\hline
+package\_tftp-server\_removed & high & pass \\
+\hline
+package\_timesyncd\_installed & high & pass \\
+\hline
+package\_ufw\_installed & medium & pass \\
+\hline
+package\_vsftpd\_removed & high & pass \\
+\hline
+package\_xinetd\_removed & low & pass \\
+\hline
+package\_ypserv\_removed & high & pass \\
+\hline
+partition\_for\_dev\_shm & low & pass \\
+\hline
+root\_path\_all\_dirs & medium & pass \\
+\hline
+root\_path\_no\_dot & unknown & pass \\
+\hline
+rsyslog\_nolisten & medium & pass \\
+\hline
+service\_bluetooth\_disabled & medium & pass \\
+\hline
+service\_cron\_enabled & medium & pass \\
+\hline
+service\_cups\_disabled & unknown & pass \\
+\hline
+service\_dhcpd6\_disabled & medium & pass \\
+\hline
+service\_dhcpd\_disabled & medium & pass \\
+\hline
+service\_dnsmasq\_disabled & medium & pass \\
+\hline
+service\_dovecot\_disabled & unknown & pass \\
+\hline
+service\_httpd\_disabled & unknown & pass \\
+\hline
+service\_named\_disabled & medium & pass \\
+\hline
+service\_nfs\_disabled & unknown & pass \\
+\hline
+service\_nftables\_disabled & medium & pass \\
+\hline
+service\_nginx\_disabled & unknown & pass \\
+\hline
+service\_rpcbind\_disabled & low & pass \\
+\hline
+service\_rsyncd\_disabled & medium & pass \\
+\hline
+service\_rsyslog\_enabled & medium & pass \\
+\hline
+service\_slapd\_disabled & medium & pass \\
+\hline
+service\_smb\_disabled & low & pass \\
+\hline
+service\_systemd-journald\_enabled & medium & pass \\
+\hline
+service\_tftp\_disabled & high & pass \\
+\hline
+service\_timesyncd\_disabled & medium & pass \\
+\hline
+service\_timesyncd\_enabled & high & pass \\
+\hline
+service\_ufw\_enabled & medium & pass \\
+\hline
+service\_vsftpd\_disabled & medium & pass \\
+\hline
+service\_xinetd\_disabled & medium & pass \\
+\hline
+service\_ypserv\_disabled & medium & pass \\
+\hline
+set\_nftables\_base\_chain & medium & pass \\
+\hline
+set\_password\_hashing\_algorithm\_logindefs & medium & pass \\
+\hline
+socket\_systemd-journal-remote\_disabled & medium & pass \\
+\hline
+sshd\_disable\_empty\_passwords & high & pass \\
+\hline
+sshd\_disable\_rhosts & medium & pass \\
+\hline
+sshd\_do\_not\_permit\_user\_env & medium & pass \\
+\hline
+sshd\_enable\_pam & medium & pass \\
+\hline
+sshd\_enable\_warning\_banner\_net & medium & pass \\
+\hline
+sshd\_set\_login\_grace\_time & medium & pass \\
+\hline
+sshd\_set\_max\_auth\_tries & medium & pass \\
+\hline
+sshd\_set\_max\_sessions & medium & pass \\
+\hline
+sshd\_use\_strong\_ciphers & medium & pass \\
+\hline
+sshd\_use\_strong\_kex & medium & pass \\
+\hline
+sudo\_add\_use\_pty & medium & pass \\
+\hline
+sudo\_custom\_logfile & low & pass \\
+\hline
+sudo\_remove\_no\_authenticate & medium & pass \\
+\hline
+sudo\_require\_reauthentication & medium & pass \\
+\hline
+sysctl\_fs\_suid\_dumpable & medium & pass \\
+\hline
+sysctl\_kernel\_randomize\_va\_space & medium & pass \\
+\hline
+sysctl\_kernel\_yama\_ptrace\_scope & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_accept\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_accept\_source\_route & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_secure\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_send\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_accept\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_accept\_source\_route & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_secure\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_send\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_icmp\_echo\_ignore\_broadcasts & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_icmp\_ignore\_bogus\_error\_responses & unknown & pass \\
+\hline
+sysctl\_net\_ipv4\_ip\_forward & medium & pass \\
+\hline
+sysctl\_net\_ipv4\_tcp\_syncookies & medium & pass \\
+\hline
+sysctl\_net\_ipv6\_conf\_all\_accept\_ra & medium & pass \\
+\hline
+sysctl\_net\_ipv6\_conf\_all\_accept\_redirects & medium & pass \\
+\hline
+sysctl\_net\_ipv6\_conf\_default\_accept\_ra & medium & pass \\
+\hline
+sysctl\_net\_ipv6\_conf\_default\_accept\_redirects & medium & pass \\
+\hline
+wireless\_disable\_interfaces & medium & pass \\
+\hline
+accounts\_password\_pam\_minclass & medium & fail \\
+\hline
+accounts\_password\_pam\_pwhistory\_enabled & medium & fail \\
+\hline
+accounts\_password\_pam\_pwhistory\_enforce\_root & medium & fail \\
+\hline
+accounts\_password\_pam\_pwhistory\_remember & medium & fail \\
+\hline
+accounts\_passwords\_pam\_faillock\_deny & medium & fail \\
+\hline
+accounts\_passwords\_pam\_faillock\_enabled & medium & fail \\
+\hline
+accounts\_passwords\_pam\_faillock\_unlock\_time & medium & fail \\
+\hline
+accounts\_tmout & medium & fail \\
+\hline
+accounts\_umask\_etc\_bashrc & medium & fail \\
+\hline
+aide\_build\_database & medium & fail \\
+\hline
+all\_apparmor\_profiles\_in\_enforce\_complain\_mode & medium & fail \\
+\hline
+ensure\_pam\_wheel\_group\_empty & medium & fail \\
+\hline
+file\_groupowner\_cron\_allow & medium & fail \\
+\hline
+file\_permission\_user\_init\_files & medium & fail \\
+\hline
+file\_permissions\_var\_log\_apt & medium & fail \\
+\hline
+file\_permissions\_var\_log\_auth & medium & fail \\
+\hline
+file\_permissions\_var\_log\_cloud-init & medium & fail \\
+\hline
+file\_permissions\_var\_log\_lastlog & medium & fail \\
+\hline
+file\_permissions\_var\_log\_syslog & medium & fail \\
+\hline
+file\_permissions\_var\_log\_wbtmp & medium & fail \\
+\hline
+grub2\_enable\_apparmor & medium & fail \\
+\hline
+grub2\_password & high & fail \\
+\hline
+grub2\_uefi\_password & high & fail \\
+\hline
+kernel\_module\_usb-storage\_disabled & medium & fail \\
+\hline
+mount\_option\_dev\_shm\_nodev & medium & fail \\
+\hline
+mount\_option\_dev\_shm\_noexec & medium & fail \\
+\hline
+mount\_option\_dev\_shm\_nosuid & medium & fail \\
+\hline
+nftables\_rules\_permanent & medium & fail \\
+\hline
+no\_empty\_passwords\_unix & high & fail \\
+\hline
+package\_tnftp\_removed & low & fail \\
+\hline
+package\_ufw\_removed & medium & fail \\
+\hline
+partition\_for\_tmp & low & fail \\
+\hline
+permissions\_local\_var\_log & medium & fail \\
+\hline
+postfix\_network\_listening\_disabled & medium & fail \\
+\hline
+rsyslog\_filecreatemode & medium & fail \\
+\hline
+service\_nftables\_enabled & medium & fail \\
+\hline
+service\_timesyncd\_configured & medium & fail \\
+\hline
+set\_nftables\_loopback\_traffic & medium & fail \\
+\hline
+set\_nftables\_table & medium & fail \\
+\hline
+set\_password\_hashing\_algorithm\_systemauth & medium & fail \\
+\hline
+set\_ufw\_default\_rule & medium & fail \\
+\hline
+set\_ufw\_loopback\_traffic & medium & fail \\
+\hline
+sshd\_disable\_root\_login & medium & fail \\
+\hline
+sshd\_limit\_user\_access & unknown & fail \\
+\hline
+sshd\_set\_idle\_timeout & medium & fail \\
+\hline
+sshd\_set\_keepalive & medium & fail \\
+\hline
+sshd\_set\_loglevel\_info & low & fail \\
+\hline
+sshd\_set\_maxstartups & medium & fail \\
+\hline
+sshd\_use\_strong\_macs & medium & fail \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_log\_martians & unknown & fail \\
+\hline
+sysctl\_net\_ipv4\_conf\_all\_rp\_filter & medium & fail \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_log\_martians & unknown & fail \\
+\hline
+sysctl\_net\_ipv4\_conf\_default\_rp\_filter & medium & fail \\
+\hline
+sysctl\_net\_ipv6\_conf\_all\_accept\_source\_route & medium & fail \\
+\hline
+sysctl\_net\_ipv6\_conf\_all\_forwarding & medium & fail \\
+\hline
+sysctl\_net\_ipv6\_conf\_default\_accept\_source\_route & medium & fail \\
+\hline
+ufw\_rules\_for\_open\_ports & medium & fail \\
+\hline
+use\_pam\_wheel\_group\_for\_su & medium & fail \\
+\hline
+\end{longtable}
